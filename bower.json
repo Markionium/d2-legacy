@@ -1,0 +1,21 @@
+{
+  "name": "D2DocGenerator",
+  "version": "0.1a",
+  "description": "This generates the documentation for the d2 library",
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootstrap": "~3.2.0",
+    "open-sans-fontface": "~1.1.0",
+    "google-code-prettify": "~1.0.1",
+    "marked": "~0.3.2",
+    "lunr.js": "~0.5.3",
+    "angular": "~1.2.19",
+    "angular-route": "~1.2.19",
+    "angular-resource": "~1.2.19",
+    "angular-cookies": "~1.2.19",
+    "angular-sanitize": "~1.2.19",
+    "angular-touch": "~1.2.19",
+    "angular-animate": "~1.2.19"
+  },
+  "devDependencies": {}
+}
