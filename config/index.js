@@ -2,7 +2,7 @@ var _ = require('lodash');
 var path = require('canonical-path');
 var packagePath = __dirname;
 
-var angularjsPackage = require('dgeni-packages/d2doc');
+var angularjsPackage = require('d2doc-dgeni-packages/d2doc');
 
 module.exports = function(config) {
 

@@ -84,7 +84,7 @@ gulp.task('server', function() {
 });
 
 gulp.task('test', function() {
-    var d2DocDir = 'node_modules/dgeni-packages/d2doc';
+    var d2DocDir = 'node_modules/d2doc-dgeni-packages/d2doc';
     var files = [
         d2DocDir + '/spec/**/*.js'
     ];
