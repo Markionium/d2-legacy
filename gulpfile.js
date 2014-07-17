@@ -7,7 +7,7 @@ var dgeni = require('dgeni');
 var merge = require('event-stream').merge;
 var path = require('canonical-path');
 var connect = require('gulp-connect');
-var karma = karma = require('gulp-karma');
+//var karma = karma = require('gulp-karma');
 var historyApiFallback = require('connect-history-api-fallback');
 
 
@@ -61,7 +61,7 @@ gulp.task('assets', ['bower'], function() {
 
 
 gulp.task('doc-gen', function() {
-    var generateDocs = dgeni.generator('dgeni.conf.js');
+    var generateDocs = dgeni.generator('doc/dgeni.conf.js');
     return generateDocs()
         .catch(function(error) {
             process.exit(1);
