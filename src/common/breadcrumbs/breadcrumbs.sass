@@ -1,0 +1,19 @@
+@import "../d2-variables"
+
+$bread-crumb-spacing: 10px
+
+.d2-breadcrumbs
+  @extend .d2
+
+  .crumb
+    display: inline-block
+    height: 30px
+    margin-right: $bread-crumb-spacing
+    cursor: pointer
+
+  .crumb.last
+    color: $dhis-blue
+
+  .crumb-separator
+    margin-left: $bread-crumb-spacing
+    color: $dhis-blue

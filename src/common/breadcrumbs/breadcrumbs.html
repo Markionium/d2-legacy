@@ -1,0 +1,5 @@
+<div class="d2-breadcrumbs">
+    <ul>
+        <li ng-repeat="crumb in crumbsList" ng-class="{'last':$last}" ng-click="crumbClick(crumb)" class="crumb">{{ crumb.name }}<span ng-if="!$last" class="crumb-separator fa fa-caret-right"></span></li>
+    </ul>
+</div>

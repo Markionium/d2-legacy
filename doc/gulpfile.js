@@ -1,23 +1,23 @@
 "use strict";
 
+//General
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var bower = require('bower');
+var connect = require('gulp-connect');
+
+//Docs
 var dgeni = require('dgeni');
 var merge = require('event-stream').merge;
 var path = require('canonical-path');
-var connect = require('gulp-connect');
-//var karma = karma = require('gulp-karma');
 var historyApiFallback = require('connect-history-api-fallback');
-
 
 // We indicate to gulp that tasks are async by returning the stream.
 // Gulp can then wait for the stream to close before starting dependent tasks.
 // See clean and bower for async tasks, and see assets and doc-gen for dependent tasks below
 
 var outputFolder = 'doc/build/docs';
-var bowerFolder = 'bower_components';
-
+var bowerFolder = './bower_components';
 
 var copyComponent = function(component, pattern, sourceFolder, packageFile) {
     pattern = pattern || '/**/*';
@@ -29,19 +29,27 @@ var copyComponent = function(component, pattern, sourceFolder, packageFile) {
         .pipe(gulp.dest(outputFolder + '/components/' + component + '-' + version));
 };
 
+/***********************************************************************************************************************
+ * General tasks
+ **********************************************************************************************************************/
+
 gulp.task('bower', function() {
     return bower.commands.install();
 });
 
-gulp.task('build-doc-app', function() {
-    gulp.src('doc/app/src/**/*.js')
+/***********************************************************************************************************************
+ * Documentation tasks
+ **********************************************************************************************************************/
+
+gulp.task('doc-build-app', function() {
+    gulp.src('app/src/**/*.js')
         .pipe(concat('docs.js'))
         .pipe(gulp.dest(outputFolder + '/js/'));
 });
 
-gulp.task('assets', ['bower'], function() {
+gulp.task('doc-assets', ['bower'], function() {
     return merge(
-        gulp.src(['doc/app/assets/**/*']).pipe(gulp.dest(outputFolder)),
+        gulp.src(['app/assets/**/*']).pipe(gulp.dest(outputFolder)),
         copyComponent('bootstrap', '/dist/**/*'),
         copyComponent('open-sans-fontface'),
         copyComponent('lunr.js','/*.js'),
@@ -61,7 +69,7 @@ gulp.task('assets', ['bower'], function() {
 
 
 gulp.task('doc-gen', function() {
-    var generateDocs = dgeni.generator('doc/dgeni.conf.js');
+    var generateDocs = dgeni.generator('dgeni.conf.js');
     return generateDocs()
         .catch(function(error) {
             process.exit(1);
@@ -69,9 +77,10 @@ gulp.task('doc-gen', function() {
 });
 
 // The default task that will be run if no task is supplied
-gulp.task('default', ['assets', 'doc-gen', 'build-doc-app']);
+gulp.task('default', ['doc-assets', 'doc-gen', 'doc-build-app']);
 
-gulp.task('server', function() {
+// Run the doc server
+gulp.task('doc-server', function() {
     var server = connect.server({
         root: 'doc/build/docs/',
         port: 8000,
@@ -81,19 +90,4 @@ gulp.task('server', function() {
     });
 
     return server;
-});
-
-gulp.task('test', function() {
-    var d2DocDir = 'node_modules/d2doc-dgeni-packages/d2doc';
-    var files = [
-        d2DocDir + '/spec/**/*.js'
-    ];
-    return gulp.src(files)
-        .pipe(karma({
-            configFile: d2DocDir + '/karma.conf.js',
-            action: 'run'
-        }))
-        .on('error', function( err ) {
-            throw err;
-        });
 });
