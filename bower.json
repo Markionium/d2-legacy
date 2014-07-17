@@ -10,5 +10,14 @@
         "angular-resource": "1.2.x",
         "jasmine": "1.3.x",
         "angular-mocks": "1.2.x"
-    }
+    },
+    "ignore": [
+        "doc",
+        "test",
+        ".bowerrc",
+        ".gitignore",
+        "gulpfile.js",
+        "README.md",
+        "package.json"
+    ]
 }
