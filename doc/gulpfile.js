@@ -80,9 +80,9 @@ gulp.task('doc-gen', function() {
 gulp.task('default', ['doc-assets', 'doc-gen', 'doc-build-app']);
 
 // Run the doc server
-gulp.task('doc-server', function() {
+gulp.task('server', function() {
     var server = connect.server({
-        root: 'doc/build/docs/',
+        root: 'build/docs/',
         port: 8000,
         middleware: function (connect, opt) {
             return [historyApiFallback];

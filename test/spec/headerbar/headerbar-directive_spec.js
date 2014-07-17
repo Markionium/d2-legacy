@@ -3,7 +3,7 @@ describe('d2-header-bar directive', function () {
     var element, scope;
 
     beforeEach(module('d2-headerbar'));
-    beforeEach(module('components/common/headerbar/headerbar.html'));
+    beforeEach(module('common/headerbar/headerbar.html'));
 
     describe('with attributes', function () {
 

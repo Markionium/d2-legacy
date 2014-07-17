@@ -93,7 +93,7 @@
                 tableConfig: '=',
                 tableData: '='
             },
-            templateUrl: 'components/common/datatable/datatable.html',
+            templateUrl: 'common/datatable/datatable.html',
             controller: 'DataTableController',
             link: function (scope, element, attrs, controller) {
                 controller.parseTableConfig();

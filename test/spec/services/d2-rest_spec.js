@@ -2,10 +2,6 @@
 
 describe('D2 Rest Interface', function () {
 
-    beforeEach(function () {
-        this.addMatchers(jasmine_custom_matchers);
-    });
-
     describe('D2 Rest interface (Indicators type Api)', function () {
 
         var api, $httpBackend, indicatorList;
@@ -190,10 +186,6 @@ describe('D2 Rest Interface', function () {
      */
     describe('Api config', function () {
         var provider;
-
-        beforeEach(function () {
-            this.addMatchers(jasmine_custom_matchers);
-        });
 
         beforeEach(module('d2-rest', function (d2ApiProvider) {
             provider = d2ApiProvider;

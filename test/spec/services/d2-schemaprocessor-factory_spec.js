@@ -1,11 +1,7 @@
 describe('SchemaProcessor', function () {
     var schemaProcessor;
 
-    beforeEach(function () {
-        this.addMatchers(jasmine_custom_matchers);
-    });
-
-    beforeEach(module('maintenance'));
+    beforeEach(module('d2-services'));
     beforeEach(inject(function ($injector) {
         schemaProcessor = $injector.get('schemaProcessor');
     }));

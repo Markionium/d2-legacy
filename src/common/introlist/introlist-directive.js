@@ -61,7 +61,7 @@
                 itemList: '=',
                 itemClick: '&'
             },
-            templateUrl: 'components/common/introlist/introlist.html',
+            templateUrl: 'common/introlist/introlist.html',
             link: function (scope) {
                 scope.clickFunction = function (item) {
                     var itemToPass = {item: angular.copy(item)};

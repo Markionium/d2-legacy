@@ -51,7 +51,7 @@
             restrict: 'E',
             replace: true,
             scope: true,
-            templateUrl: 'components/common/breadcrumbs/breadcrumbs.html',
+            templateUrl: 'common/breadcrumbs/breadcrumbs.html',
             controller: function ($scope, d2BreadCrumbsService) {
                 $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
 

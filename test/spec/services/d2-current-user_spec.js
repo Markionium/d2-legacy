@@ -2,10 +2,6 @@ describe('User Profile Service', function () {
     var user,
         $httpBackend;
 
-    beforeEach(function () {
-        this.addMatchers(jasmine_custom_matchers);
-    });
-
     beforeEach(module('d2-services'));
     beforeEach(inject(function ($injector) {
         user = $injector.get('currentUser');

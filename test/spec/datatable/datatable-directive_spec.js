@@ -2,10 +2,9 @@
 describe('Directive: datatable', function () {
     var element, scope;
 
-    beforeEach(module('ngTable'));
     beforeEach(module('d2-datatable'));
     beforeEach(module('d2-rest'));
-    beforeEach(module('components/common/datatable/datatable.html'));
+    beforeEach(module('common/datatable/datatable.html'));
 
     beforeEach(inject(function ($rootScope) {
         var tableConfig = {},

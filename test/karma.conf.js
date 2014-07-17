@@ -1,10 +1,10 @@
 module.exports = function( config ) {
   config.set({
-    basePath: '../main',
+    basePath: '../src',
     frameworks: ['jasmine'],
 
     preprocessors: {
-      'components/common/**/*.html': 'html2js'
+      'common/**/*.html': 'html2js'
     },
 
     reporters: ['progress'],

@@ -4,7 +4,7 @@ describe('introlist-directive should create an introlist', function() {
     var element, scope;
 
     beforeEach(module('d2-introlist'));
-    beforeEach(module('components/common/introlist/introlist.html'));
+    beforeEach(module('common/introlist/introlist.html'));
 
     beforeEach(inject(function( $compile, $rootScope ) {
         scope = $rootScope.$new();

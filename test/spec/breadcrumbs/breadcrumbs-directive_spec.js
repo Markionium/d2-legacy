@@ -3,7 +3,7 @@ describe('Breadcrumbs directive', function () {
     var element, scope, crumbsService;
 
     beforeEach(module('d2-breadcrumbs'));
-    beforeEach(module('components/common/breadcrumbs/breadcrumbs.html'));
+    beforeEach(module('common/breadcrumbs/breadcrumbs.html'));
 
     beforeEach(inject(function( $compile, $rootScope, d2BreadCrumbsService ) {
         scope = $rootScope.$new();

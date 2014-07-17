@@ -60,7 +60,7 @@ module.exports = function(config) {
     var cdnUrl = "//d2.dhis2.org/" + version.cdn;
 
     var getVersion = function(component, sourceFolder, packageFile) {
-        sourceFolder = sourceFolder || '../bower_components';
+        sourceFolder = sourceFolder || './bower_components';
         packageFile = packageFile || 'bower.json';
         return require(path.resolve(sourceFolder,component,packageFile)).version;
     };
