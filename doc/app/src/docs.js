@@ -50,7 +50,8 @@ angular.module('docsApp', [
   };
 
   $scope.afterPartialLoaded = function() {
-    $window._gaq.push(['_trackPageview', $location.path()]);
+    //TODO: If we add google analytics back, reenable this line;
+    //$window._gaq.push(['_trackPageview', $location.path()]);
   };
 
   /** stores a cookie that is used by apache to decide which manifest ot send */
