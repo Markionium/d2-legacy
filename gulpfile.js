@@ -15,7 +15,7 @@ var historyApiFallback = require('connect-history-api-fallback');
 // Gulp can then wait for the stream to close before starting dependent tasks.
 // See clean and bower for async tasks, and see assets and doc-gen for dependent tasks below
 
-var outputFolder = 'build/docs';
+var outputFolder = 'doc/build/docs';
 var bowerFolder = 'bower_components';
 
 
@@ -33,15 +33,15 @@ gulp.task('bower', function() {
     return bower.commands.install();
 });
 
-gulp.task('build-app', function() {
-    gulp.src('app/src/**/*.js')
+gulp.task('build-doc-app', function() {
+    gulp.src('doc/app/src/**/*.js')
         .pipe(concat('docs.js'))
         .pipe(gulp.dest(outputFolder + '/js/'));
 });
 
 gulp.task('assets', ['bower'], function() {
     return merge(
-        gulp.src(['app/assets/**/*']).pipe(gulp.dest(outputFolder)),
+        gulp.src(['doc/app/assets/**/*']).pipe(gulp.dest(outputFolder)),
         copyComponent('bootstrap', '/dist/**/*'),
         copyComponent('open-sans-fontface'),
         copyComponent('lunr.js','/*.js'),
@@ -69,11 +69,11 @@ gulp.task('doc-gen', function() {
 });
 
 // The default task that will be run if no task is supplied
-gulp.task('default', ['assets', 'doc-gen', 'build-app']);
+gulp.task('default', ['assets', 'doc-gen', 'build-doc-app']);
 
 gulp.task('server', function() {
     var server = connect.server({
-        root: 'build/docs/',
+        root: 'doc/build/docs/',
         port: 8000,
         middleware: function (connect, opt) {
             return [historyApiFallback];
