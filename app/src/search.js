@@ -85,7 +85,7 @@ angular.module('search', [])
 
   return function(q) {
     var results = {
-        d2 : []
+        api : []
     };
     angular.forEach(index.search(q), function(result) {
       var key = result.ref;
@@ -93,7 +93,7 @@ angular.module('search', [])
       var area = item.area;
       item.path = key;
 
-      var limit = area == 'd2' ? 40 : 14;
+      var limit = area == 'api' ? 40 : 14;
       if(results[area].length < limit) {
         results[area].push(item);
       }

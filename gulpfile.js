@@ -8,6 +8,7 @@ var merge = require('event-stream').merge;
 var path = require('canonical-path');
 var connect = require('gulp-connect');
 var karma = karma = require('gulp-karma');
+var historyApiFallback = require('connect-history-api-fallback');
 
 
 // We indicate to gulp that tasks are async by returning the stream.
@@ -71,10 +72,15 @@ gulp.task('doc-gen', function() {
 gulp.task('default', ['assets', 'doc-gen', 'build-app']);
 
 gulp.task('server', function() {
-    return connect.server({
+    var server = connect.server({
         root: 'build/docs/',
-        port: 8000
+        port: 8000,
+        middleware: function (connect, opt) {
+            return [historyApiFallback];
+        }
     });
+
+    return server;
 });
 
 gulp.task('test', function() {

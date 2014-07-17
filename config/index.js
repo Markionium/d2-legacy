@@ -19,7 +19,7 @@ module.exports = function(config) {
   ]);
 
   config.append('processing.tagDefinitions', [
-    require('./tag-defs/tutorial-step')
+    //require('./tag-defs/tutorial-step')
   ]);
 
   config.set('processing.search.ignoreWordsFile', path.resolve(packagePath, 'ignore.words'));

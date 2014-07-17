@@ -1,0 +1,9 @@
+@ngdoc overview
+@name API Reference
+@description
+
+# DHIS2 D2 Javascript API Docs
+
+D2 is the javascript library build on top of AngularJS <a title="AngularJs" href="http://www.angularjs.org">http://www.angularjs.org</a>.
+
+We have included several directives, services and other angular objects to help you build your dhis2 apps.

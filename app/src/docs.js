@@ -3,7 +3,6 @@ angular.module('docsApp', [
   'ngCookies',
   'ngSanitize',
   'ngAnimate',
-  'versionsData',
   'pagesData',
   'directives',
   'errors',

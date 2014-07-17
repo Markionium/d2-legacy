@@ -21,6 +21,9 @@
     "gulp-karma": "0.0.4",
     "karma-jasmine": "~0.1.5",
     "karma-phantomjs-launcher": "~0.1.4",
-    "jasmine-node": "~1.14.3"
+    "jasmine-reporters": "~0.4",
+    "jasmine-node": "~1.14.3",
+    "connect-modrewrite": "~0.7.6",
+    "connect-history-api-fallback": "0.0.4"
   }
 }

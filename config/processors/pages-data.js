@@ -131,7 +131,7 @@ module.exports = {
   name: 'pages-data',
   description: 'This plugin will create a new doc that will be rendered as an angularjs module ' +
                'which will contain meta information about the pages and navigation',
-  runAfter: ['adding-extra-docs', 'component-groups-generate'],
+  runAfter: ['adding-extra-docs', 'component-groups-generate', 'compute-path'],
   runBefore: ['extra-docs-added'],
   init: function(config) {
     outputFolder = config.rendering.outputFolder;

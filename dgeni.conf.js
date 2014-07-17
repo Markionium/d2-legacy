@@ -68,9 +68,10 @@ module.exports = function(config) {
 
     config = basePackage(config);
     config.set('source.projectPath', path.resolve(basePath, '.'));
-
+    console.log(path.resolve(basePath, 'content'));
     config.set('source.files', [
-        { pattern: '**/*.js', basePath: path.resolve(basePath, '../dhis-web-upkeep/src/main/components') }
+        { pattern: '**/*.js', basePath: path.resolve(basePath, '../dhis-web-upkeep/src/main/components') },
+        { pattern: '**/*.ngdoc', basePath: path.resolve(basePath, 'content') }
     ]);
     /*
     config.set('processing.examples.commonFiles', {
@@ -102,7 +103,6 @@ module.exports = function(config) {
                 'components/lunr.js-' + getVersion('lunr.js') + '/lunr.js',
                 'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/prettify.js',
                 'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/lang-css.js',
-                'js/versions-data.js',
                 'js/pages-data.js',
                 'js/docs.js'
             ],
@@ -132,7 +132,6 @@ module.exports = function(config) {
                     'components/lunr.js-' + getVersion('lunr.js') + '/lunr.min.js',
                     'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/prettify.js',
                     'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/lang-css.js',
-                    'js/versions-data.js',
                     'js/pages-data.js',
                     'js/docs.js'
                 ],
@@ -161,7 +160,6 @@ module.exports = function(config) {
                     'components/lunr.js-' + getVersion('lunr.js') + '/lunr.min.js',
                     'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/prettify.js',
                     'components/google-code-prettify-' + getVersion('google-code-prettify') + '/src/lang-css.js',
-                    'js/versions-data.js',
                     'js/pages-data.js',
                     'js/docs.js'
                 ],
