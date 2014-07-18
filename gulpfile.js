@@ -112,14 +112,14 @@ gulp.task('make-css', function () {
 });
 
 //TODO: min-js and src-js can probably be optimized so we do a few of the steps only once and pipe the result?
-gulp.task('min-js', function () {
+gulp.task('src-js', function () {
     return gulp.src('./src/common/**/*.js')
         .pipe(ngannotate())
         .pipe(concat('d2.js'))
         .pipe(gulp.dest(destFold + '/js'))
 });
 
-gulp.task('src-js', function () {
+gulp.task('min-js', function () {
     return gulp.src('./src/common/**/*.js')
         .pipe(ngannotate())
         .pipe(uglify())
@@ -133,8 +133,7 @@ gulp.task('make-js', function () {
 
 gulp.task('templates', function () {
    return gulp.src('./src/common/**/*.html')
-       .pipe(flatten())
-       .pipe(gulp.dest(destFold + '/js'));
+       .pipe(gulp.dest(destFold + '/js/common'));
 });
 
 /***********************************************************************************************************************

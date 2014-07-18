@@ -57,7 +57,7 @@
                 logo: '@',
                 hasContent: '@'
             },
-            templateUrl: 'common/headerbar/headerbar.html',
+            templateUrl: d2.utils.scriptPath() + 'common/headerbar/headerbar.html',
             compile: function (element, attrs) {
                 attrs.title = attrs.title || 'District Health Information Software 2';
                 attrs.link = attrs.link || '../dhis-web-dashboard-integration/index.action';

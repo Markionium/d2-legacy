@@ -35,6 +35,17 @@
  *       based on what directives / services you use.
  */
 !function (angular, d2, undefined) {
+
+    //TODO Write tests for this.
+    d2.utils = {
+        scriptPath: function () {
+            var scripts = document.getElementsByTagName("script")
+            var currentScriptPath = scripts[scripts.length-1].src;
+
+            return currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
+        }
+    };
+
     angular.module('d2-services', ['d2-rest']);
 
     angular.module('d2-filters', []);
@@ -142,7 +153,8 @@
             restrict: 'E',
             replace: true,
             scope: true,
-            templateUrl: 'common/breadcrumbs/breadcrumbs.html',
+            //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
+            templateUrl: d2.utils.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
             controller: ["$scope", "d2BreadCrumbsService", function ($scope, d2BreadCrumbsService) {
                 $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
 
@@ -386,7 +398,7 @@
                 tableConfig: '=',
                 tableData: '='
             },
-            templateUrl: 'common/datatable/datatable.html',
+            templateUrl: d2.utils.scriptPath() + 'common/datatable/datatable.html',
             controller: 'DataTableController',
             link: function (scope, element, attrs, controller) {
                 controller.parseTableConfig();
@@ -572,7 +584,7 @@
                 logo: '@',
                 hasContent: '@'
             },
-            templateUrl: 'common/headerbar/headerbar.html',
+            templateUrl: d2.utils.scriptPath() + 'common/headerbar/headerbar.html',
             compile: function (element, attrs) {
                 attrs.title = attrs.title || 'District Health Information Software 2';
                 attrs.link = attrs.link || '../dhis-web-dashboard-integration/index.action';
@@ -645,7 +657,7 @@
                 itemList: '=',
                 itemClick: '&'
             },
-            templateUrl: 'common/introlist/introlist.html',
+            templateUrl: d2.utils.scriptPath() + 'common/introlist/introlist.html',
             link: function (scope) {
                 scope.clickFunction = function (item) {
                     var itemToPass = {item: angular.copy(item)};

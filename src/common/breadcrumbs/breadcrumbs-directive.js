@@ -51,7 +51,8 @@
             restrict: 'E',
             replace: true,
             scope: true,
-            templateUrl: 'common/breadcrumbs/breadcrumbs.html',
+            //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
+            templateUrl: d2.utils.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
             controller: function ($scope, d2BreadCrumbsService) {
                 $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
 

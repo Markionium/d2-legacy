@@ -35,6 +35,17 @@
  *       based on what directives / services you use.
  */
 !function (angular, d2, undefined) {
+
+    //TODO Write tests for this.
+    d2.utils = {
+        scriptPath: function () {
+            var scripts = document.getElementsByTagName("script")
+            var currentScriptPath = scripts[scripts.length-1].src;
+
+            return currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
+        }
+    };
+
     angular.module('d2-services', ['d2-rest']);
 
     angular.module('d2-filters', []);
