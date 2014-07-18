@@ -38,12 +38,31 @@
 
     //TODO Write tests for this.
     d2.utils = {
-        scriptPath: function () {
-            var scripts = document.getElementsByTagName("script")
-            var currentScriptPath = scripts[scripts.length-1].src;
+        scriptPath: (function () {
+            var d2ScriptPath;
 
-            return currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
-        }
+            return function () {
+                var scripts,
+                    currentScriptPath,
+                    d2ScriptTag = angular.element('<script src=""></script>');
+
+                if (d2ScriptPath) {
+                    return d2ScriptPath;
+                }
+
+                scripts = document.getElementsByTagName('script');
+
+                angular.forEach(scripts, function (script) {
+                    if (/d2(\.min)?\.js$/i.test(script.src)) {
+                        d2ScriptTag = script;
+                    }
+                });
+
+                currentScriptPath = d2ScriptTag.src || '';
+                d2ScriptPath = currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
+                return d2ScriptPath;
+            }
+        })()
     };
 
     angular.module('d2-services', ['d2-rest']);
