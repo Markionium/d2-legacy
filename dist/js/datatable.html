@@ -1,0 +1,14 @@
+<div class="d2-data-table">
+    <table class="table">
+        <thead>
+            <tr>
+                <th ng-repeat="column in columns">{{ column | capitalize }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in items">
+                <td ng-repeat="column in columns">{{ item[column]}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

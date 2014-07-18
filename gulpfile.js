@@ -42,6 +42,7 @@ var ngannotate = require('gulp-ng-annotate');
 var uglify = require('gulp-uglify');
 var rev = require('gulp-rev');
 var concat = require('gulp-concat');
+var flatten = require('gulp-flatten');
 
 /***********************************************************************************************************************
  * Settings
@@ -130,12 +131,18 @@ gulp.task('make-js', function () {
     runSequence(['min-js', 'src-js']);
 });
 
+gulp.task('templates', function () {
+   return gulp.src('./src/common/**/*.html')
+       .pipe(flatten())
+       .pipe(gulp.dest(destFold + '/js'));
+});
+
 /***********************************************************************************************************************
  * Dev
  */
 gulp.task('build', function () {
     destFold = 'dev';
-    runSequence('clean', ['make-css', 'src-js']);
+    runSequence('clean', ['make-css', 'src-js', 'templates']);
 });
 
 /***********************************************************************************************************************
@@ -144,5 +151,5 @@ gulp.task('build', function () {
 //TODO: Add JSHint to the build check
 gulp.task('build-prod', function () {
     destFold = 'dist';
-    runSequence('test', 'clean', ['make-css', 'make-js']);
+    runSequence('test', 'clean', ['make-css', 'make-js', 'templates']);
 });
