@@ -122,4 +122,64 @@ describe('Controller: Datatable', function () {
         expect(scope.items[1].name).toBe('Mark');
         expect(scope.items[2].name).toBe('Lars');
     });
+
+    it('should set localSort to true when the data is an array', function () {
+        controller.parseTableData(sampleData);
+
+        expect(controller.localSort).toBe(true);
+    });
+
+    it('should set localSort to false when the data is a promise', inject(function ($q) {
+        var promise = $q.defer().promise;
+
+        controller.parseTableData(promise)
+    }));
+});
+
+describe('Controller: Datatable with remote data', function () {
+    var scope,
+        $httpBackend,
+        controller;
+
+    beforeEach(module('d2-rest'));
+    beforeEach(module('d2-datatable'));
+
+    beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q) {
+        $httpBackend = _$httpBackend_;
+        scope = $rootScope.$new();
+
+        $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+
+        scope.columns = [
+                { name: 'name', sortable: true, sort: 'asc' },
+                { name: 'code', sortable: true },
+                { name: 'lastUpdated' }
+        ];
+
+        scope.tableData = d2Api.indicators;
+
+        controller = $controller('DataTableController', {
+            $scope: scope,
+            $q: $q
+        });
+
+        controller.parseTableData();
+        $httpBackend.flush();
+    }));
+
+    afterEach(function () {
+        $httpBackend.verifyNoOutstandingExpectation ();
+        $httpBackend.verifyNoOutstandingRequest ();
+    });
+
+    /**
+     * TODO: This is coming to 2.17 so we cannot test this yet
+     * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
+     */
+    it('should call the sort method on the service when sorting is changed', function () {
+        //$httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+        //controller.setSortOrder(scope.columns[0]);
+
+        expect(scope.items[0].name).toBe('ANC 1 Coverage');
+    });
 });

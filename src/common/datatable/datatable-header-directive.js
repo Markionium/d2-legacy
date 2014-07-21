@@ -41,14 +41,19 @@
             scope: {
                 column: '='
             },
-            template: '<th class="table-header"><a href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span></th>',
+            template: '<th class="table-header"><a href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-change="doSearch" ng-if="column.searchable" ng-model="column.filter" type="search"></th>',
             link: function (scope, element, attr, parentCtrl) {
                 scope.sortOrder = function (event) {
-                    console.log('click');
                     parentCtrl.setSortOrder(scope.column);
                     event.preventDefault();
                 }
                 element.bind('click', scope.sortOrder);
+
+                scope.doSearch = function (event) {
+                    console.log(scope.column);
+                    parentCtrl.setSearchOnColumn(scope.column);
+                    event.preventDefault();
+                };
             }
         };
     });

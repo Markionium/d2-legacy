@@ -168,11 +168,16 @@ describe('Directive: datatable', function () {
             $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
             scope.tableConfig = {};
-            scope.tableData = d2Api.indicators.getList();
+            scope.tableData = d2Api.indicators;
 
             $compile(element)(scope);
             scope.$digest();
         }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation ();
+            $httpBackend.verifyNoOutstandingRequest ();
+        });
 
         it('it should display the returned amount of elements as rows', function () {
             var tableDataRows;

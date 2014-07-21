@@ -357,6 +357,10 @@
     var dataTable = angular.module('d2-datatable');
 
     dataTable.controller('DataTableController', ["$scope", "$q", function ($scope, $q) {
+        var self = this;
+
+        this.localSort = true;
+
         /**
          * Generates the header names based on the data that is given to the table.
          *
@@ -396,6 +400,13 @@
          * Wraps the table data is a promise and adds the processData handler
          */
         this.parseTableData = function () {
+            //If tableData is a d2 service
+            if (angular.isArray($scope.tableData) && $scope.tableData.getList !== undefined) {
+                this.localSort = false;
+                $scope.d2Service = $scope.tableData;
+                $scope.tableData = $scope.d2Service.getList();
+            }
+
             $q.when($scope.tableData).then(this.processData.bind(this));
         };
 
@@ -432,22 +443,49 @@
             $scope.$digest();
         };
 
+        this.setSearchOnColumn = function (column) {
+
+        };
+
+        this.doLocalSorting = function () {
+            var sorting = _.filter($scope.columns, 'sort'),
+                sortBy = _.pluck(sorting, 'name'),
+                items;
+
+            //Don't do anything when there is no sorting to be done
+            if (sorting.length === 0) return;
+
+            items = _.sortBy($scope.items, sortBy);
+            if (sorting[0] && sorting[0].sort === 'desc') {
+                items = items.reverse();
+            }
+
+            $scope.items = items;
+        };
+
+        /**
+         * TODO: Api sorting is coming to 2.17 so we cannot test this yet
+         * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
+         */
+        this.serviceSorting = function () {
+            var sorting = _.filter($scope.columns, 'sort'),
+                sortBy = _.pluck(sorting, 'name');
+
+            //Don't do anything when there is no sorting to be done
+            if (sorting.length === 0) return;
+
+            alert('API Sorting not yet implemented');
+        };
+
+
         $scope.$watch('columns', function (newValue, oldValue) {
             if (oldValue !== newValue && $scope.items.length > 0) {
-                var sorting = _.filter($scope.columns, 'sort'),
-                    sortBy = _.pluck(sorting, 'name'),
-                    items;
-
-                //Don't do anything when there is no sorting to be done
-                if (sorting.length === 0) return;
-
-                items = _.sortBy($scope.items, sortBy);
-                if (sorting[0] && sorting[0].sort === 'desc') {
-                    items = items.reverse();
+                if (self.localSort) {
+                    self.doLocalSorting();
                 }
-
-                $scope.items = items;
-                console.log($scope.items);
+                if ($scope.d2Service) {
+                    self.serviceSorting();
+                }
             };
         }, true);
     }]);
@@ -513,14 +551,19 @@
             scope: {
                 column: '='
             },
-            template: '<th class="table-header"><a href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span></th>',
+            template: '<th class="table-header"><a href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-change="doSearch" ng-if="column.searchable" ng-model="column.filter" type="search"></th>',
             link: function (scope, element, attr, parentCtrl) {
                 scope.sortOrder = function (event) {
-                    console.log('click');
                     parentCtrl.setSortOrder(scope.column);
                     event.preventDefault();
                 }
                 element.bind('click', scope.sortOrder);
+
+                scope.doSearch = function (event) {
+                    console.log(scope.column);
+                    parentCtrl.setSearchOnColumn(scope.column);
+                    event.preventDefault();
+                };
             }
         };
     });

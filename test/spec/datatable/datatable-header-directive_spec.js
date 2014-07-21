@@ -153,4 +153,15 @@ describe('Directive: DataTable Header', function () {
 
         expect(element.find('th').first().find('a').hasClass('sorting-desc')).toBe(true);
     });
+
+    it('should display a searchbox if searchable is on', function () {
+        scope.tableConfig.columns = [
+            { name: 'HeaderColumnText', searchable: true }
+        ];
+
+        $compile(element)(scope);
+        scope.$digest();
+
+        expect(element.find('th').first().find('input').length).toBe(1);
+    });
 });
