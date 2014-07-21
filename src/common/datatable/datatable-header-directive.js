@@ -46,7 +46,6 @@
                 scope.sortOrder = function (event) {
                     console.log('click');
                     parentCtrl.setSortOrder(scope.column);
-                    scope.$digest();
                     event.preventDefault();
                 }
                 element.bind('click', scope.sortOrder);

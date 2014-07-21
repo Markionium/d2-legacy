@@ -429,6 +429,7 @@
             });
 
             $scope.columns = columns;
+            $scope.$digest();
         };
 
         $scope.$watch('columns', function (newValue, oldValue) {
@@ -517,7 +518,6 @@
                 scope.sortOrder = function (event) {
                     console.log('click');
                     parentCtrl.setSortOrder(scope.column);
-                    scope.$digest();
                     event.preventDefault();
                 }
                 element.bind('click', scope.sortOrder);

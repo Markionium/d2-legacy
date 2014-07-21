@@ -105,6 +105,7 @@
             });
 
             $scope.columns = columns;
+            $scope.$digest();
         };
 
         $scope.$watch('columns', function (newValue, oldValue) {
