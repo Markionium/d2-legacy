@@ -116,10 +116,16 @@
             });
 
             $scope.columns = columns;
-            $scope.$digest();
         };
 
         this.setSearchOnColumn = function (column) {
+            var columnsWithFilters = _.filter($scope.columns, 'filter'),
+                filters = _.map(columnsWithFilters, function (column) {
+                    return column.name + ":like:" + column.filter;
+                });
+        };
+
+        this.doLocalFiltering = function () {
 
         };
 
