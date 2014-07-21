@@ -16,8 +16,6 @@ describe('Directive: datatable', function () {
 
         scope = $rootScope.$new();
 
-        tableConfig.columns = ['name', 'desk'];
-
         scope.tableConfig = tableConfig;
         scope.tableData = tableData;
 

@@ -44,11 +44,15 @@
             _.map($scope.items, function (object) {
                 var data = object.getDataOnly ? object.getDataOnly() : object;
                 _.map(data, function (value, key) {
-                    columns.push(key);
+                    columns.push({
+                        name: key
+                    });
                 });
                 return columns;
             });
-            columns = _.uniq(columns);
+            columns = _.uniq(columns, function (column) {
+                return column.name;
+            });
 
             $scope.columns = columns;
             return $scope.columns;
@@ -61,6 +65,7 @@
             var tableConfig = $scope.tableConfig || {};
 
             $scope.pageItems = tableConfig.pageItems;
+            $scope.columns = tableConfig.columns || undefined;
         };
 
         /**
@@ -83,6 +88,42 @@
                 $scope.items = $scope.items.slice(0, $scope.pageItems);
             }
         };
+
+        this.setSortOrder = function (currentColumn) {
+            var columns = angular.copy($scope.columns);
+
+            angular.forEach(columns, function (column) {
+                if (column.name === currentColumn.name) {
+                    if (currentColumn.sort === 'asc') {
+                        column.sort = 'desc';
+                    } else {
+                        column.sort = 'asc';
+                    }
+                } else {
+                    column.sort = undefined;
+                }
+            });
+
+            $scope.columns = columns;
+        };
+
+        $scope.$watch('columns', function (newValue, oldValue) {
+            if (oldValue !== newValue && $scope.items.length > 0) {
+                var sorting = _.filter($scope.columns, 'sort'),
+                    sortBy = _.pluck(sorting, 'name'),
+                    items;
+
+                //Don't do anything when there is no sorting to be done
+                if (sorting.length === 0) return;
+
+                items = _.sortBy($scope.items, sortBy);
+                if (sorting[0] && sorting[0].sort === 'desc') {
+                    items = items.reverse();
+                }
+
+                $scope.items = items;
+            };
+        }, true);
     });
 
     dataTable.directive('d2DataTable', function () {
