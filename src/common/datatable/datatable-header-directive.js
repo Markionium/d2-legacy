@@ -41,10 +41,13 @@
             scope: {
                 column: '='
             },
-            template: '<th class="table-header"><a ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span></th>',
+            template: '<th class="table-header"><a href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span></th>',
             link: function (scope, element, attr, parentCtrl) {
-                scope.sortOrder = function () {
+                scope.sortOrder = function (event) {
+                    console.log('click');
                     parentCtrl.setSortOrder(scope.column);
+                    scope.$digest();
+                    event.preventDefault();
                 }
                 element.bind('click', scope.sortOrder);
             }

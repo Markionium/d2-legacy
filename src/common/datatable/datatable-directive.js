@@ -122,6 +122,7 @@
                 }
 
                 $scope.items = items;
+                console.log($scope.items);
             };
         }, true);
     });
