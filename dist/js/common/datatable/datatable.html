@@ -2,12 +2,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th ng-repeat="column in columns">{{ column | capitalize }}</th>
+                <th ng-repeat="column in columns" class="d2-data-table-header" column="column">{{ column.name | capitalize }}</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="item in items">
-                <td ng-repeat="column in columns">{{ item[column]}}</td>
+                <td ng-repeat="column in columns">{{ item[column.name]}}</td>
             </tr>
         </tbody>
     </table>
