@@ -56,12 +56,14 @@
              * Add a endpoint to the rest service
              * @param {string} endPointName The name of this endpoint
              * @param {boolean=} isObject If the result is a single object
+             *
+             * TODO: write tests for this;
              */
             this.addEndPoint = function (endPointName, isObject) {
                 if (isObject) {
-                    this[endPointName] = this.one('endPointName');
+                    this[endPointName] = this.one(endPointName);
                 } else {
-                    this[endPointName] = this.all('endPointName');
+                    this[endPointName] = this.all(endPointName);
                 }
             };
         };

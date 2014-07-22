@@ -533,6 +533,14 @@
             alert('API Sorting not yet implemented');
         };
 
+        this.getValuesForColumn = function (column) {
+            if ( ! column || ! column.name || ! angular.isString(column.name) ) { return [] };
+
+            return _.map($scope.items, function (item) {
+                return item[column.name];
+            });
+        };
+
         var timeout = false;
         $scope.$watch('columns', function (newValue, oldValue) {
             if (oldValue !== newValue) {
@@ -614,10 +622,16 @@
             scope: {
                 column: '='
             },
-            template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="search"></th>',
+            template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
             link: function (scope, element, attr, parentCtrl) {
                 scope.sortOrder = function (event) {
                     parentCtrl.setSortOrder(scope.column);
+                }
+
+                scope.getTypeAheadFor = function (column) {
+                    console.log('typehead values');
+                    console.log(parentCtrl.getValuesForColumn(column));
+                    return parentCtrl.getValuesForColumn(column);
                 }
             }
         };
@@ -1006,9 +1020,9 @@
              */
             this.addEndPoint = function (endPointName, isObject) {
                 if (isObject) {
-                    this[endPointName] = this.one('endPointName');
+                    this[endPointName] = this.one(endPointName);
                 } else {
-                    this[endPointName] = this.all('endPointName');
+                    this[endPointName] = this.all(endPointName);
                 }
             };
         };

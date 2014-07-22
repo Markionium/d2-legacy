@@ -41,10 +41,16 @@
             scope: {
                 column: '='
             },
-            template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="search"></th>',
+            template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
             link: function (scope, element, attr, parentCtrl) {
                 scope.sortOrder = function (event) {
                     parentCtrl.setSortOrder(scope.column);
+                }
+
+                scope.getTypeAheadFor = function (column) {
+                    console.log('typehead values');
+                    console.log(parentCtrl.getValuesForColumn(column));
+                    return parentCtrl.getValuesForColumn(column);
                 }
             }
         };

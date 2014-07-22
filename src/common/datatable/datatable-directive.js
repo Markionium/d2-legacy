@@ -209,6 +209,14 @@
             alert('API Sorting not yet implemented');
         };
 
+        this.getValuesForColumn = function (column) {
+            if ( ! column || ! column.name || ! angular.isString(column.name) ) { return [] };
+
+            return _.map($scope.items, function (item) {
+                return item[column.name];
+            });
+        };
+
         var timeout = false;
         $scope.$watch('columns', function (newValue, oldValue) {
             if (oldValue !== newValue) {

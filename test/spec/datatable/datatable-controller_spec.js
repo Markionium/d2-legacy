@@ -219,6 +219,42 @@ describe('Controller: Datatable', function () {
         expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
         expect(controller.getRemoteParams).toHaveBeenCalledOnce();
     }));
+
+    it('should return an array of values for a column', function () {
+        var expectedValues = ['Mark', 'Lars', 'Morten'],
+            actualValues;
+
+        controller.parseTableData();
+        applyScope(scope);
+
+        actualValues = controller.getValuesForColumn(scope.columns[0]);
+
+        expect(actualValues).toEqual(expectedValues);
+    });
+
+    it('should return an empty array when asking for a column that doesnt exist', function () {
+        var expectedValues = [],
+            actualValues;
+
+        controller.parseTableData();
+        applyScope(scope);
+
+        actualValues = controller.getValuesForColumn();
+
+        expect(actualValues).toEqual(expectedValues);
+    });
+
+    it('should return an empty array when asking for a column name that is not a string', function () {
+        var expectedValues = [],
+            actualValues;
+
+        controller.parseTableData();
+        applyScope(scope);
+
+        actualValues = controller.getValuesForColumn( { name: {} } );
+
+        expect(actualValues).toEqual(expectedValues);
+    });
 });
 
 describe('Controller: Datatable with remote data', function () {
@@ -375,3 +411,4 @@ describe('Controller: Datatable generation of headers', function () {
         expect(controller.getHeadersFromData).toHaveBeenCalledOnce();
     });
 });
+
