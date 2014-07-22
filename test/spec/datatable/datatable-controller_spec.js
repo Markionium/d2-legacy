@@ -264,4 +264,15 @@ describe('Controller: Datatable with remote data', function () {
 
         $httpBackend.flush();
     });
+
+    it('should have the filtered data on the scope', function () {
+        $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
+            .respond(200, fixtures.api.indicators.filteredOnAnc);
+
+        scope.columns[0].filter = 'anc';
+
+        $httpBackend.flush();
+
+        expect(scope.items.length).toBe(15);
+    });
 });

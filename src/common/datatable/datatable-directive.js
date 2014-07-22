@@ -146,7 +146,7 @@
             angular.forEach(this.getFilterObject(), function (filterValue, filterOn) {
                 filters.push(filterOn + ":like:" + filterValue);
             });
-            console.log(filters);
+
             return filters.length > 0 ? filters : undefined;
         };
 
