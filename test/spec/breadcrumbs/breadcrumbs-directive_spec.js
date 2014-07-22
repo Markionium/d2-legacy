@@ -101,7 +101,7 @@ describe('Breadcrumbs directive', function () {
         expectedValues = angular.copy(firstCrumb); //FIXME: Has to be called after spy else values don't line up
         firstCrumbElement.click();
 
-        expect(firstCrumb.click.callCount).toBe(1);
+        expect(firstCrumb.click).toHaveBeenCalledOnce();
         expect(firstCrumb.click).toHaveBeenCalledWith(expectedValues);
     });
 

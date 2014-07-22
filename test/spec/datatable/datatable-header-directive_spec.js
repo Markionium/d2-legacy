@@ -100,7 +100,7 @@ describe('Directive: DataTable Header', function () {
 
         element.find('th').first().find('a').click();
 
-        expect(controller.setSortOrder.callCount).toBe(1);
+        expect(controller.setSortOrder).toHaveBeenCalledOnce();
     }));
 
     it('should call the setSorting method with the column data', function () {
@@ -163,5 +163,23 @@ describe('Directive: DataTable Header', function () {
         scope.$digest();
 
         expect(element.find('th').first().find('input').length).toBe(1);
+    });
+
+    it('should call the change method when text is added to the search', function () {
+        var controller;
+
+        scope.tableConfig.columns = [
+            { name: 'HeaderColumnText', searchable: true }
+        ];
+
+        $compile(element)(scope);
+        scope.$digest();
+
+        controller = element.controller('d2DataTable');
+        spyOn(controller, 'doLocalFiltering');
+
+        element.find('th').first().find('input').change();
+
+        expect(controller.doLocalFiltering).toHaveBeenCalledOnce();
     });
 });

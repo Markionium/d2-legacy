@@ -87,7 +87,7 @@ describe('introlist-directive should create an introlist', function() {
 
         element.find('li').first().click();
 
-        expect(scope.clickFunction.callCount).toBe(1);
+        expect(scope.clickFunction).toHaveBeenCalledOnce();
     });
 
     it('should call the callback with the name of the first item', function () {
@@ -116,7 +116,7 @@ describe('introlist-directive should create an introlist', function() {
 
         element.find('li').last().click();
 
-        expect(scope.clickFunction.callCount).toBe(1);
+        expect(scope.clickFunction).toHaveBeenCalledOnce();
         expect(scope.clickFunction).toHaveBeenCalledWith(expectedItem);
     });
 });

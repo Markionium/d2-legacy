@@ -123,17 +123,89 @@ describe('Controller: Datatable', function () {
         expect(scope.items[2].name).toBe('Lars');
     });
 
-    it('should set localSort to true when the data is an array', function () {
+    it('should set localData to true when the data is an array', function () {
         controller.parseTableData(sampleData);
 
-        expect(controller.localSort).toBe(true);
+        expect(controller.localData).toBe(true);
     });
 
-    it('should set localSort to false when the data is a promise', inject(function ($q) {
+    it('should set localData to false when the data is a promise', inject(function ($q) {
         var promise = $q.defer().promise;
 
         controller.parseTableData(promise)
     }));
+
+    it('should filter the local data based on the filters given', function () {
+        scope.tableConfig.columns = [
+            { "name": "name", "searchable": true, "filter": "Ma" },
+            { "name": "desk", "searchable": true}
+        ];
+
+        controller.parseTableConfig();
+        controller.parseTableData();
+        scope.$apply();
+
+        controller.doLocalFiltering();
+
+        expect(scope.items.length).toBe(1);
+        expect(scope.items[0].name).toBe('Mark');
+    });
+
+    it('should save the original data in the origData property on the controller', function () {
+        controller.parseTableData();
+        scope.$apply();
+
+        expect(controller.origData).toEqual(scope.tableData);
+    });
+
+    it('should do local filtering when a filter is changed', function () {
+        spyOn(controller, 'doLocalFiltering');
+        spyOn(controller, 'getRemoteParams');
+
+        controller.parseTableData();
+        scope.$digest();
+
+        scope.columns[0].filter = 'M';
+        scope.$digest();
+
+        expect(controller.doLocalFiltering).toHaveBeenCalledOnce();
+        expect(controller.getRemoteParams).not.toHaveBeenCalled();
+    });
+
+    it('should call the remote filtering when data is not local', function () {
+        //Fake that the data is a d2-rest service
+        scope.tableData.getList = function () { return sampleData };
+
+        controller.parseTableData();
+        scope.$digest();
+
+        //Register spies after loading the data to get the right callcount
+        spyOn(controller, 'doLocalFiltering');
+        spyOn(controller, 'requestNewDataFromService').andCallThrough();
+
+        scope.columns[0].filter = 'M';
+        scope.$digest();
+
+        expect(controller.doLocalFiltering).not.toHaveBeenCalled();
+        expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
+    });
+
+    it('should request the remote params when a filter is changed', function () {
+        //Fake that the data is a d2-rest service
+        scope.tableData.getList = function () { return sampleData };
+        controller.parseTableData();
+        scope.$digest();
+
+        //Register spies after loading the data to get the right callcount
+        spyOn(controller, 'getRemoteParams');
+        spyOn(controller, 'requestNewDataFromService').andCallThrough();
+
+        scope.columns[0].filter = 'M';
+        scope.$digest();
+
+        expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
+        expect(controller.getRemoteParams).toHaveBeenCalledOnce();
+    });
 });
 
 describe('Controller: Datatable with remote data', function () {
@@ -181,5 +253,15 @@ describe('Controller: Datatable with remote data', function () {
         //controller.setSortOrder(scope.columns[0]);
 
         expect(scope.items[0].name).toBe('ANC 1 Coverage');
+    });
+
+
+
+    it('should call the service with the filters', function () {
+        $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc').respond(200, []);
+
+        scope.columns[0].filter = 'anc';
+
+        $httpBackend.flush();
     });
 });

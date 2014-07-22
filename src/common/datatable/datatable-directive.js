@@ -32,10 +32,14 @@
 !function (angular, undefined) {
     var dataTable = angular.module('d2-datatable');
 
-    dataTable.controller('DataTableController', function ($scope, $q) {
+    dataTable.controller('DataTableController', function ($scope, $q, $filter) {
         var self = this;
 
-        this.localSort = true;
+        this.localData = true;
+
+        this.origData = [];
+
+        $scope.items = [];
 
         /**
          * Generates the header names based on the data that is given to the table.
@@ -78,9 +82,9 @@
         this.parseTableData = function () {
             //If tableData is a d2 service
             if (angular.isArray($scope.tableData) && $scope.tableData.getList !== undefined) {
-                this.localSort = false;
+                this.localData = false;
                 $scope.d2Service = $scope.tableData;
-                $scope.tableData = $scope.d2Service.getList();
+                $scope.tableData = $scope.d2Service.getList(this.getRemoteParams());
             }
 
             $q.when($scope.tableData).then(this.processData.bind(this));
@@ -92,7 +96,7 @@
          * @param data
          */
         this.processData = function (data) {
-            $scope.items = data;
+            $scope.items = this.origData = data;
             $scope.columns = $scope.columns || this.getHeadersFromData();
 
             if ($scope.pageItems) {
@@ -118,15 +122,61 @@
             $scope.columns = columns;
         };
 
-        this.setSearchOnColumn = function (column) {
-            var columnsWithFilters = _.filter($scope.columns, 'filter'),
-                filters = _.map(columnsWithFilters, function (column) {
-                    return column.name + ":like:" + column.filter;
-                });
+        this.getColumnsWithFilters = function () {
+            return _.filter($scope.columns, 'filter');
         };
 
-        this.doLocalFiltering = function () {
+        this.getFilterObject = function () {
+            var filters = this.getColumnsWithFilters(),
+                filterObject = {};
 
+            if (filters.length === 0) return false;
+
+            angular.forEach(filters, function (column) {
+                filterObject[column.name] = column.filter;
+            });
+
+            return filterObject;
+        };
+
+        this.getRemoteFilters = function () {
+            var filters = [];
+
+            if ( ! this.getFilterObject()) return;
+            angular.forEach(this.getFilterObject(), function (filterValue, filterOn) {
+                filters.push(filterOn + ":like:" + filterValue);
+            });
+            console.log(filters);
+            return filters.length > 0 ? filters : undefined;
+        };
+
+        this.getRemoteParams = function () {
+            var remoteParams = {},
+                remoteFilters = this.getRemoteFilters();
+
+            if (remoteFilters) {
+                remoteParams.filter = remoteFilters;
+            }
+
+            if (remoteFilters) {
+                return remoteParams;
+            }
+            return undefined;
+        };
+
+        this.requestNewDataFromService = function () {
+            var remoteParams = this.getRemoteParams();
+
+            if ( ! remoteParams) { return; }
+
+            $scope.tableData = $scope.d2Service.getList(remoteParams);
+            $q.when($scope.tableData).then(this.processData.bind(this));
+        }
+
+        this.doLocalFiltering = function () {
+            if (this.getFilterObject()) {
+                $scope.items = $filter('filter')(this.origData, this.getFilterObject());
+            }
         };
 
         this.doLocalSorting = function () {
@@ -162,11 +212,12 @@
 
         $scope.$watch('columns', function (newValue, oldValue) {
             if (oldValue !== newValue && $scope.items.length > 0) {
-                if (self.localSort) {
+                if (self.localData) {
+                    self.doLocalFiltering();
                     self.doLocalSorting();
                 }
                 if ($scope.d2Service) {
-                    self.serviceSorting();
+                    self.requestNewDataFromService();
                 }
             };
         }, true);
