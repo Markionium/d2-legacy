@@ -32,7 +32,7 @@
 !function (angular, undefined) {
     var dataTable = angular.module('d2-datatable');
 
-    dataTable.controller('DataTableController', function ($scope, $q, $filter) {
+    dataTable.controller('DataTableController', function ($scope, $q, $filter, $timeout) {
         var self = this;
 
         this.localData = true;
@@ -123,7 +123,7 @@
         };
 
         this.getColumnsWithFilters = function () {
-            return _.filter($scope.columns, 'filter');
+            return _.filter($scope.columns, 'searchable');
         };
 
         this.getFilterObject = function () {
@@ -144,7 +144,9 @@
 
             if ( ! this.getFilterObject()) return;
             angular.forEach(this.getFilterObject(), function (filterValue, filterOn) {
-                filters.push(filterOn + ":like:" + filterValue);
+                if (filterValue) {
+                    filters.push(filterOn + ":like:" + filterValue);
+                }
             });
 
             return filters.length > 0 ? filters : undefined;
@@ -166,8 +168,6 @@
 
         this.requestNewDataFromService = function () {
             var remoteParams = this.getRemoteParams();
-
-            if ( ! remoteParams) { return; }
 
             $scope.tableData = $scope.d2Service.getList(remoteParams);
             $q.when($scope.tableData).then(this.processData.bind(this));
@@ -209,15 +209,21 @@
             alert('API Sorting not yet implemented');
         };
 
-
+        var timeout = false;
         $scope.$watch('columns', function (newValue, oldValue) {
-            if (oldValue !== newValue && $scope.items.length > 0) {
+            if (oldValue !== newValue) {
                 if (self.localData) {
                     self.doLocalFiltering();
                     self.doLocalSorting();
                 }
                 if ($scope.d2Service) {
-                    self.requestNewDataFromService();
+                    if ( ! timeout) {
+                        $timeout(function () {
+                            self.requestNewDataFromService();
+                            timeout = false;
+                        }, 300);
+                        timeout = true;
+                    }
                 }
             };
         }, true);

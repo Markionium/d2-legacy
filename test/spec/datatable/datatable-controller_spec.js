@@ -1,3 +1,16 @@
+function applyScope(scope, time) {
+    return inject(function ($timeout) {
+        scope.$apply();
+        $timeout.flush(time);
+    });
+}
+
+function flushTime(time) {
+    return inject(function ($timeout) {
+        $timeout.flush(time);
+    });
+}
+
 describe('Controller: Datatable', function () {
     var scope,
         controller,
@@ -177,35 +190,35 @@ describe('Controller: Datatable', function () {
         scope.tableData.getList = function () { return sampleData };
 
         controller.parseTableData();
-        scope.$digest();
+        applyScope(scope);
 
         //Register spies after loading the data to get the right callcount
         spyOn(controller, 'doLocalFiltering');
         spyOn(controller, 'requestNewDataFromService').andCallThrough();
 
         scope.columns[0].filter = 'M';
-        scope.$digest();
+        applyScope(scope);
 
         expect(controller.doLocalFiltering).not.toHaveBeenCalled();
         expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
     });
 
-    it('should request the remote params when a filter is changed', function () {
+    it('should request the remote params when a filter is changed', inject(function ($timeout) {
         //Fake that the data is a d2-rest service
         scope.tableData.getList = function () { return sampleData };
         controller.parseTableData();
-        scope.$digest();
+        applyScope(scope);
 
         //Register spies after loading the data to get the right callcount
         spyOn(controller, 'getRemoteParams');
         spyOn(controller, 'requestNewDataFromService').andCallThrough();
 
         scope.columns[0].filter = 'M';
-        scope.$digest();
+        applyScope(scope);
 
         expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
         expect(controller.getRemoteParams).toHaveBeenCalledOnce();
-    });
+    }));
 });
 
 describe('Controller: Datatable with remote data', function () {
@@ -216,14 +229,14 @@ describe('Controller: Datatable with remote data', function () {
     beforeEach(module('d2-rest'));
     beforeEach(module('d2-datatable'));
 
-    beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q) {
+    beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q, $timeout) {
         $httpBackend = _$httpBackend_;
         scope = $rootScope.$new();
 
         $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
         scope.columns = [
-                { name: 'name', sortable: true, sort: 'asc' },
+                { name: 'name', sortable: true, sort: 'asc', searchable: true },
                 { name: 'code', sortable: true },
                 { name: 'lastUpdated' }
         ];
@@ -236,6 +249,7 @@ describe('Controller: Datatable with remote data', function () {
         });
 
         controller.parseTableData();
+        $timeout.flush();
         $httpBackend.flush();
     }));
 
@@ -261,6 +275,7 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc').respond(200, []);
 
         scope.columns[0].filter = 'anc';
+        applyScope(scope);
 
         $httpBackend.flush();
     });
@@ -270,10 +285,55 @@ describe('Controller: Datatable with remote data', function () {
             .respond(200, fixtures.api.indicators.filteredOnAnc);
 
         scope.columns[0].filter = 'anc';
+        applyScope(scope);
 
         $httpBackend.flush();
 
         expect(scope.items.length).toBe(15);
+    });
+
+    it('should request data with empty string (box-cleared)', function () {
+        $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
+            .respond(200, fixtures.api.indicators.filteredOnAnc);
+
+        scope.columns[0].filter = 'anc';
+        applyScope(scope);
+        $httpBackend.flush();
+
+        expect(scope.items.length).toBe(15);
+
+        $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+        scope.columns[0].filter = '';
+        applyScope(scope);
+        $httpBackend.flush();
+
+        expect(scope.items.length).toBe(50);
+    });
+
+    describe('timer function', function () {
+        var $timeout;
+
+        beforeEach(inject(function (_$timeout_) {
+            $timeout = _$timeout_;
+        }));
+
+        it('should only call the service once if the user types', function () {
+            spyOn(controller, 'requestNewDataFromService').andCallThrough();
+
+            $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
+                .respond(200, fixtures.api.indicators.filteredOnAnc);
+
+            scope.columns[0].filter = 'a';
+            applyScope(scope, 0);
+            scope.columns[0].filter = 'an';
+            applyScope(scope, 150);
+            scope.columns[0].filter = 'anc';
+            applyScope(scope, 150);
+
+            $httpBackend.flush();
+
+            expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
+        });
     });
 });
 
@@ -306,7 +366,9 @@ describe('Controller: Datatable generation of headers', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
             .respond(200, fixtures.api.indicators.filteredOnAnc);
 
+        scope.columns[2].searchable = true;
         scope.columns[2].filter = 'anc';
+        flushTime();
 
         $httpBackend.flush();
 
