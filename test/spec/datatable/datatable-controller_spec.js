@@ -276,3 +276,40 @@ describe('Controller: Datatable with remote data', function () {
         expect(scope.items.length).toBe(15);
     });
 });
+
+describe('Controller: Datatable generation of headers', function () {
+    var scope, controller, $httpBackend;
+
+    beforeEach(module('d2-rest'));
+    beforeEach(module('d2-datatable'));
+
+    beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q) {
+        $httpBackend = _$httpBackend_;
+        scope = $rootScope.$new();
+
+        $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+
+        scope.tableData = d2Api.indicators;
+
+        controller = $controller('DataTableController', {
+            $scope: scope,
+            $q: $q
+        });
+    }));
+
+    it('should not reload the headers everytime data is recieved from the service', function () {
+        spyOn(controller, 'getHeadersFromData').andCallThrough();
+
+        controller.parseTableData();
+        $httpBackend.flush();
+
+        $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
+            .respond(200, fixtures.api.indicators.filteredOnAnc);
+
+        scope.columns[2].filter = 'anc';
+
+        $httpBackend.flush();
+
+        expect(controller.getHeadersFromData).toHaveBeenCalledOnce();
+    });
+});
