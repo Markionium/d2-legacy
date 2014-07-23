@@ -9,7 +9,6 @@ module.exports = function(config) {
   config = angularjsPackage(config);
   
   config.append('processing.processors', [
-    //require('./processors/git-data'),
     //require('./processors/error-docs'),
     require('./processors/keywords'),
     //require('./processors/versions-data'),

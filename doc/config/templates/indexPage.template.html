@@ -77,18 +77,32 @@
           <div class="row">
             <ul class="nav navbar-nav col-md-7">
               <li class="divider-vertical"></li>
-              <li><a href="api"><i class="icon-home icon-white"></i>API Reference</a></li>
+              <li><a href="api"><i class="glyphicon glyphicon-home icon-white"></i> D2 API Reference</a></li>
               <li class="divider-vertical"></li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  <i class="icon-comment icon-white"></i> Contribute <b class="caret"></b>
+                  <i class="glyphicon glyphicon-edit icon-white"></i> Contribute <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="https://github.com/Markionium/d2">GitHub</a></li>
-                  <li><a href="https://github.com/Markionium/d2/issues">Issue Tracker</a></li>
+                  <li><a href="https://github.com/{$ git.user $}/{$ git.repo $}">GitHub</a></li>
+                  <li><a href="https://github.com/{$ git.user $}/{$ git.repo $}/issues">Issue Tracker</a></li>
                 </ul>
               </li>
               <li class="divider-vertical"></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="glyphicon glyphicon-info-sign icon-white"></i> DHIS2 <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="https://www.dhis2.org">Homepage</a></li>
+                  <li><a href="https://www.dhis2.org/documentation">Documentation</a></li>
+                  <li role="presentation" class="divider"></li>
+                  <li role="presentation" class="dropdown-header">Demo applications</li>
+                  <li><a href="https://apps.dhis2.org/demo">Stable</a></li>
+                  <li><a href="https://apps.dhis2.org/dev">Demo</a></li>
+                </ul>
+              </li>
+
             </ul>
             <form ng-class="{focus:focus}" class="navbar-search col-md-3 docs-search" ng-submit="submit()">
               <span class="glyphicon glyphicon-search search-icon"></span>

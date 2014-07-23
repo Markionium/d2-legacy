@@ -57,7 +57,7 @@ var basePackage = require('./config');
 module.exports = function(config) {
 
     var version = '0.1.1'; //TODO: Get the version dynamically
-    var cdnUrl = "//d2.dhis2.org/" + version.cdn;
+    var cdnUrl = "//d2.dhis2.org/" + version;
 
     var getVersion = function(component, sourceFolder, packageFile) {
         sourceFolder = sourceFolder || './bower_components';
@@ -83,7 +83,7 @@ module.exports = function(config) {
     */
     config.set('rendering.outputFolder', basePath + '/build/docs');
 
-    config.set('logging.level', 'info');
+    config.set('logging.level', 'debug');
 
     config.merge('deployment', {
         environments: [{
@@ -175,6 +175,9 @@ module.exports = function(config) {
     });
 
     config.set('rendering.contentsFolder', 'docs');
+
+    config.set('git.user', 'Markionium');
+    config.set('git.repo', 'd2');
 
     return config;
 };

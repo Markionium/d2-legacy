@@ -11,12 +11,13 @@ var dgeni = require('dgeni');
 var merge = require('event-stream').merge;
 var path = require('canonical-path');
 var historyApiFallback = require('connect-history-api-fallback');
+var runSequence = require('run-sequence');
 
 // We indicate to gulp that tasks are async by returning the stream.
 // Gulp can then wait for the stream to close before starting dependent tasks.
 // See clean and bower for async tasks, and see assets and doc-gen for dependent tasks below
 
-var outputFolder = 'build/docs';
+var outputFolder = 'doc/build/docs';
 var bowerFolder = './bower_components';
 
 var copyComponent = function(component, pattern, sourceFolder, packageFile) {
@@ -47,7 +48,7 @@ gulp.task('doc-build-app', function() {
         .pipe(gulp.dest(outputFolder + '/js/'));
 });
 
-gulp.task('doc-assets', ['bower'], function() {
+gulp.task('doc-assets', function() {
     return merge(
         gulp.src(['app/assets/**/*']).pipe(gulp.dest(outputFolder)),
         copyComponent('bootstrap', '/dist/**/*'),
@@ -76,8 +77,10 @@ gulp.task('doc-gen', function() {
         });
 });
 
-// The default task that will be run if no task is supplied
-gulp.task('default', ['doc-assets', 'doc-gen', 'doc-build-app']);
+gulp.task('default', function () {
+    //First install the bower components, then run the rest in parallel
+    runSequence('bower', ['doc-assets', 'doc-gen', 'doc-build-app']);
+});
 
 // Run the doc server
 gulp.task('server', function() {
