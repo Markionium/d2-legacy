@@ -27,30 +27,20 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Created by Mark Polak on 21 Jul 2014.
+ * Created by Mark Polak on 23 Jul 2014.
  */
 !function (angular, undefined) {
-    var dataTable = angular.module('d2-datatable');
+    angular.module('d2-typeahead', []).service('d2TypeAheadService', function () {
+        this.add = function (id, values) {
+            if (! angular.isString(id)) { throw 'Only string identifiers are allowed'; }
+            if (id === 'get' || id === 'add') { throw 'Cannot override add or get methods'; }
+            if (values !== undefined && ! angular.isArray(values)) { throw 'Values should be an array'; }
 
-    dataTable.directive('d2DataTableHeader', function () {
-        return {
-            restrict: 'AC',
-            replace: true,
-            require: '^d2DataTable',
-            transclude: true,
-            scope: {
-                column: '='
-            },
-            template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort"></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
-            link: function (scope, element, attr, parentCtrl) {
-                scope.sortOrder = function (event) {
-                    parentCtrl.setSortOrder(scope.column);
-                }
+            this[id] = _.uniq((this[id] || []).concat(values));
+        };
 
-                scope.getTypeAheadFor = function (column) {
-                    return parentCtrl.typeAheadCache[column.name];
-                }
-            }
+        this.get = function (id) {
+            return this[id] || [];
         };
     });
 }(angular);

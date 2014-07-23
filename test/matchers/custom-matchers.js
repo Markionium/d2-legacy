@@ -46,6 +46,20 @@ beforeEach(function () {
                     ' times. Instead it was called ' + this.actual.callCount + ' times.';
             }
             return false;
+        },
+
+        toBeAnObject: function () {
+            this.message = function () {
+                return 'Expected ' + this.actual + ' to be an object';
+            }
+            return angular.isObject(this.actual);
+        },
+
+        toBeAnArray: function () {
+            this.message = function () {
+                return 'Expected ' + this.actual + ' to be an array';
+            }
+            return angular.isArray(this.actual);
         }
     });
 })

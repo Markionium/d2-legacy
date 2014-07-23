@@ -69,7 +69,7 @@
 
     angular.module('d2-filters', []);
 
-    angular.module('d2-datatable', ['d2-filters']);
+    angular.module('d2-datatable', ['d2-filters', 'd2-typeahead']);
 
     /**
      * @ngdoc module

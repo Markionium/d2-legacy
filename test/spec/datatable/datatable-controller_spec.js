@@ -371,6 +371,23 @@ describe('Controller: Datatable with remote data', function () {
             expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
         });
     });
+
+    it('should add typeahead values to the cache', function () {
+        expect(controller.typeAheadCache.name.length).toBe(50);
+    });
+
+    it('should not remove old values when the list is filtered', function () {
+        $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
+            .respond(200, []);
+
+        scope.columns[0].filter = 'anc';
+        applyScope(scope);
+
+        $httpBackend.flush();
+
+        expect(scope.items.length).toBe(0);
+        expect(controller.typeAheadCache.name.length).toBe(50);
+    });
 });
 
 describe('Controller: Datatable generation of headers', function () {

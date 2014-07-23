@@ -32,12 +32,13 @@
 !function (angular, undefined) {
     var dataTable = angular.module('d2-datatable');
 
-    dataTable.controller('DataTableController', function ($scope, $q, $filter, $timeout) {
+    dataTable.controller('DataTableController', function ($scope, $q, $filter, $timeout, d2TypeAheadService) {
         var self = this;
 
         this.localData = true;
 
         this.origData = [];
+        this.typeAheadCache = d2TypeAheadService;
 
         $scope.items = [];
 
@@ -102,6 +103,10 @@
             if ($scope.pageItems) {
                 $scope.items = $scope.items.slice(0, $scope.pageItems);
             }
+
+            angular.forEach($scope.columns, function (column) {
+                self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
+            });
         };
 
         this.setSortOrder = function (currentColumn) {
