@@ -16,7 +16,7 @@ var historyApiFallback = require('connect-history-api-fallback');
 // Gulp can then wait for the stream to close before starting dependent tasks.
 // See clean and bower for async tasks, and see assets and doc-gen for dependent tasks below
 
-var outputFolder = 'doc/build/docs';
+var outputFolder = 'build/docs';
 var bowerFolder = './bower_components';
 
 var copyComponent = function(component, pattern, sourceFolder, packageFile) {
