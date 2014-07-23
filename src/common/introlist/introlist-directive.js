@@ -38,13 +38,13 @@
      * @restrict E
      *
      * @param {Array} itemList The itemList passed in should be a array with objects of the following format
-     * <pre>
-     *     {
+     * <pre class="prettyprint">
+     *     <code class="language-js">{
      *       action: <string>       // Url of where the link should go to
      *       name: <string>         // Name of the item that will be displayed
      *       description: <string>  // Description of the menu items
      *       icon: <string>         // Icon that should be shown
-     *     }
+     * }</code>
      * </pre>
      *
      * @description

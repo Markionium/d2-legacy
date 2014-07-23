@@ -32,6 +32,26 @@
 !function (angular, undefined) {
     var dataTable = angular.module('d2-datatable');
 
+    /**
+     * @ngdoc directive
+     * @name d2DataTableHeader
+     *
+     * @restrict AC
+     * @scope
+     *
+     * @requires d2DataTable
+     *
+     * @description
+     *
+     * This directive represents the column headers as they are displayed by the {@link d2DataTable} directive.
+     *
+     * The directive adds the sort functionality and calls the setSortOrder function on {@link DataTableController}.
+     *
+     * An input box with be added to the column header when `column.searchable` is set to true.
+     *
+     * When typeahead is available it asks for the typeahead values on {@link DataTableController} through the `typeAheadCache` property.
+     *
+     */
     dataTable.directive('d2DataTableHeader', function () {
         return {
             restrict: 'AC',

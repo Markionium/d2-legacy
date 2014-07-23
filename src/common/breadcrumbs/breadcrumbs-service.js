@@ -50,8 +50,9 @@
          *
          * The array that holds the crumbs list and that can be used to in the crumbs directive.
          * This contains objects that represent the various crumbs. A crumb has the following format.
-         * <pre>
-         *    {
+         *
+         * <pre class="prettyprint">
+         *  <code class="language-js">{
          *       //Name of the breadcrumb
          *       name: "CrumbName",
          *
@@ -61,7 +62,7 @@
          *       // When a callback is provided when the crumb is added the click function
          *       // set to be used when the crumb is clicked.
          *       click: function () {}
-         *    }
+         * }</code>
          * </pre>
          */
         this.crumbsList = [];
@@ -98,7 +99,7 @@
          * @ngdoc method
          * @name d2BreadCrumbsService#resetCrumbs
          *
-         * @param {Integer=} id
+         * @param {number=} id
          *
          * @description
          *

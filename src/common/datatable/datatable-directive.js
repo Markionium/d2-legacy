@@ -32,6 +32,15 @@
 !function (angular, undefined) {
     var dataTable = angular.module('d2-datatable');
 
+    //TODO: create a controller ngdoc doctype
+    /**
+     * @ngdoc controller
+     * @name DataTableController
+     *
+     * @description
+     *
+     * TODO: Document the rest of this Controller.
+     */
     dataTable.controller('DataTableController', function ($scope, $q, $filter, $timeout, d2TypeAheadService) {
         var self = this;
 
@@ -43,9 +52,14 @@
         $scope.items = [];
 
         /**
-         * Generates the header names based on the data that is given to the table.
+         * @ngdoc method
+         * @name DataTableController#getHeadersFromData
          *
          * @returns {Array|*}
+         *
+         * @description
+         *
+         * Generates the header names based on the data that is given to the table.
          */
         this.getHeadersFromData = function () {
             var columns = [];
@@ -67,6 +81,13 @@
             return $scope.columns;
         };
         /**
+         * @ngdoc method
+         * @name DataTableController#parseTableConfig
+         *
+         * @returns {DataTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
          * Parses the tableData variable on the scope to extract
          * the data we need and puts it on the scope directly
          */
@@ -75,9 +96,18 @@
 
             $scope.pageItems = tableConfig.pageItems;
             $scope.columns = tableConfig.columns || undefined;
+
+            return this;
         };
 
         /**
+         * @ngdoc method
+         * @name DataTableController#parseTableData
+         *
+         * @returns {DataTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
          * Wraps the table data is a promise and adds the processData handler
          */
         this.parseTableData = function () {
@@ -89,12 +119,26 @@
             }
 
             $q.when($scope.tableData).then(this.processData.bind(this));
+
+            return this;
         };
 
         /**
-         * Takes the data and takes/generates needed meta data from it
+         * @ngdoc method
+         * @name DataTableController#processData
          *
-         * @param data
+         * @param {array} data The data that will be used for the table.
+         *
+         * @returns {DataTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
+         * Takes the data and takes/generates needed meta data from it. This method will generate
+         * the table headers if they are not already set.
+         * Additionally it will generate the typeahead values from the data for each of the columns.
+         *
+         * TODO: The typeahead data should only be generate for columns that actually use it
+         * TODO: The typeahead data should only be generated when typeahead is actually available.
          */
         this.processData = function (data) {
             $scope.items = this.origData = data;
@@ -107,8 +151,25 @@
             angular.forEach($scope.columns, function (column) {
                 self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
             });
+
+            return this;
         };
 
+        /**
+         * @ngdoc method
+         * @name DataTableController#setSortOrder
+         *
+         * @param {object} currentColumn The column that the sorting should be set for
+         *
+         * @returns {DataTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
+         * Method resets the sorting of all columns to undefined and sets the sort property
+         * of the passed in column to either `desc` or `asc`.
+         *
+         * `desc` and `asc` are toggled, with asc taking the first turn if there is no current sort.
+         */
         this.setSortOrder = function (currentColumn) {
             var columns = angular.copy($scope.columns);
 
@@ -127,6 +188,16 @@
             $scope.columns = columns;
         };
 
+        /**
+         * @ngdoc method
+         * @name DataTableController#getColumnsWithFilters
+         *
+         * @returns {Array} An array of columns that have the searchable property set to `true`.
+         *
+         * @description
+         *
+         * Filters out all the columns that have the `searchable` property set to true and returns them.
+         */
         this.getColumnsWithFilters = function () {
             return _.filter($scope.columns, 'searchable');
         };
@@ -242,6 +313,38 @@
         }, true);
     });
 
+    /**
+     * @ngdoc directive
+     * @name d2DataTable
+     *
+     * @restrict E
+     * @scope
+     *
+     * @description
+     *
+     * Flexible table directive to show data from an array of objects or a {@link d2-rest/d2Api} service.
+     *
+     * The table can be configured by setting the `tableConfig` attribute to an object on the `$scope`.
+     * The tableConfig object can contain a `columns` array with objects that describe the columns.
+     *
+     * An example of such a column config can look like
+        <pre class="prettyprint">
+         <code class="language-js">$scope.tableConfig = {
+            columns: [
+                { name: 'name', sortable: true, searchable: true },
+                { name: 'code', sortable: true, searchable: true },
+                { name: 'lastUpdated' }
+            ]
+        };</code>
+        </pre>
+     *
+     * The above example defines three columns. `name`, `code` and `lastUpdated`. The first two columns are
+     * marked to be sortable and searchable. Sortable will mean that the table can be sorted on the values
+     * in this column. (Sorting will be done in ASC and DESC order.
+     * Searchable means a input box will be added to the table column and the user can search through this table.
+     *
+     * When angular-ui is available the searchbox will also use the typeahead functionality.
+     */
     dataTable.directive('d2DataTable', function () {
         return {
             restrict: 'E',

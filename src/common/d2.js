@@ -69,6 +69,25 @@
 
     angular.module('d2-filters', []);
 
+    /**
+     * @ngdoc module
+     * @name d2-datatable
+     *
+     * @requires d2-filters, d2-typeahead
+     *
+     * @description
+     *
+     * # d2-datatable
+     *
+     * The datatable module contains the directives that are used to show a table that shows data.
+     * This table is configurable and can use both local and remote data sources as a base for the data.
+     *
+     * The datatable can be sortable and searchable. (Typeahead functionality is available when angular-ui
+     * is present.
+     *
+     * The datatable will use the paging that is set in the config or use the rest paging as provided by the
+     * dhis2 rest services.
+     */
     angular.module('d2-datatable', ['d2-filters', 'd2-typeahead']);
 
     /**
