@@ -46,9 +46,14 @@ var navGroupMappers = {
 
           .tap(function(docTypes) {
             log.debug(_.keys(docTypes));
-                //console.log(docTypes['directive'][0].moduleDoc);
+
             // Extract the module page from the collection
-            modulePage = docTypes['directive'][0].moduleDoc;
+            if (docTypes['directive'] && docTypes['directive'].length >= 1) {
+                modulePage = docTypes['directive'][0].moduleDoc;
+            } else {
+                modulePage = docTypes['service'][0].moduleDoc;
+                //log.info(_.keys(docTypes['service'][0]));
+            }
             delete docTypes.module;
           })
 
