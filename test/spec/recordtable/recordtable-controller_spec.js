@@ -23,14 +23,14 @@ describe('Controller: Datatable', function () {
             { name: "desk" }
         ];
 
-    beforeEach(module('d2-datatable'));
+    beforeEach(module('d2-recordtable'));
     beforeEach(inject(function($controller, $rootScope, $q) {
         scope = $rootScope.$new();
 
         scope.tableData = sampleData;
         scope.tableConfig = {};
 
-        controller = $controller('DataTableController', {
+        controller = $controller('RecordTableController', {
             $scope: scope,
             $q: $q
         });
@@ -263,7 +263,7 @@ describe('Controller: Datatable with remote data', function () {
         controller;
 
     beforeEach(module('d2-rest'));
-    beforeEach(module('d2-datatable'));
+    beforeEach(module('d2-recordtable'));
 
     beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q, $timeout) {
         $httpBackend = _$httpBackend_;
@@ -279,7 +279,7 @@ describe('Controller: Datatable with remote data', function () {
 
         scope.tableData = d2Api.indicators;
 
-        controller = $controller('DataTableController', {
+        controller = $controller('RecordTableController', {
             $scope: scope,
             $q: $q
         });
@@ -299,9 +299,6 @@ describe('Controller: Datatable with remote data', function () {
      * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
      */
     it('should call the sort method on the service when sorting is changed', function () {
-        //$httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
-        //controller.setSortOrder(scope.columns[0]);
-
         expect(scope.items[0].name).toBe('ANC 1 Coverage');
     });
 
@@ -394,7 +391,7 @@ describe('Controller: Datatable generation of headers', function () {
     var scope, controller, $httpBackend;
 
     beforeEach(module('d2-rest'));
-    beforeEach(module('d2-datatable'));
+    beforeEach(module('d2-recordtable'));
 
     beforeEach(inject(function (d2Api, _$httpBackend_, $rootScope, $controller, $q) {
         $httpBackend = _$httpBackend_;
@@ -404,13 +401,13 @@ describe('Controller: Datatable generation of headers', function () {
 
         scope.tableData = d2Api.indicators;
 
-        controller = $controller('DataTableController', {
+        controller = $controller('RecordTableController', {
             $scope: scope,
             $q: $q
         });
     }));
 
-    it('should not reload the headers everytime data is recieved from the service', function () {
+    it('should not reload the headers every time data is received from the service', function () {
         spyOn(controller, 'getHeadersFromData').andCallThrough();
 
         controller.parseTableData();

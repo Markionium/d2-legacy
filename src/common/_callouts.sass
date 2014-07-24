@@ -1,0 +1,41 @@
+@import variables
+
+.callout
+  padding: $spacing-double
+  margin: $spacing-double 0
+  border: 1px solid #eee
+  border-left-width: $spacing-half
+  border-radius: $border-radius-default
+
+.callout h4
+  margin: 0
+  padding: 0
+  margin-bottom: $spacing-half
+
+.callout p:last-child 
+  margin-bottom: 0
+
+.callout code,
+.callout .highlight 
+  background-color: $dhis-light-text-color
+
+.callout-danger 
+  background-color: $danger-color-lightest
+  border-color: $danger-color-lighter
+
+.callout-warning 
+  background-color: $warning-color-lightest
+  border-color: $warning-color-lighter
+
+.callout-info 
+  background-color: $info-color-lightest
+  border-color: $info-color-lighter
+
+.callout-info h4 
+  color: $info-color
+
+.callout-warning h4 
+  color: $warning-color
+
+.callout-danger h4
+  color: $danger-color

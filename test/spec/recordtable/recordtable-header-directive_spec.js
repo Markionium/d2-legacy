@@ -1,10 +1,10 @@
 "use strict";
 
-describe('Directive: DataTable Header', function () {
+describe('Directive: RecordTable Header', function () {
     var element, scope, $compile;
 
-    beforeEach(module('d2-datatable'));
-    beforeEach(module('common/datatable/datatable.html'));
+    beforeEach(module('d2-recordtable'));
+    beforeEach(module('common/recordtable/recordtable.html'));
 
     beforeEach(inject(function ($rootScope, _$compile_) {
         $compile = _$compile_;
@@ -21,7 +21,7 @@ describe('Directive: DataTable Header', function () {
             { name: "Morten", desk: 3 }
         ];
 
-        element = angular.element('<d2-data-table table-config="tableConfig" table-data="tableData" />');
+        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
     }));
 
     describe('without data', function () {
@@ -35,7 +35,7 @@ describe('Directive: DataTable Header', function () {
         });
 
         it('should add a class to the table header', function () {
-            expect(firstHeader.hasClass('table-header')).toBe(true);
+            expect(firstHeader).toHaveClass('table-header');
         });
 
         it('should display the content using transclude', function () {
@@ -95,7 +95,7 @@ describe('Directive: DataTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        controller = element.controller('d2DataTable');
+        controller = element.controller('recordTable');
         spyOn(controller, 'setSortOrder');
 
         element.find('th').first().find('a').click();
@@ -113,7 +113,7 @@ describe('Directive: DataTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        controller = element.controller('d2DataTable');
+        controller = element.controller('recordTable');
         spyOn(controller, 'setSortOrder');
 
         element.find('th').first().find('a').click();
@@ -122,36 +122,45 @@ describe('Directive: DataTable Header', function () {
     });
 
     it('should add the asc class when sorting is asc', function () {
+        var firstColumnLinkElement;
+
         scope.tableConfig.columns = [
             { name: 'HeaderColumnText', sortable: true, sort: 'asc' }
         ];
 
         $compile(element)(scope);
         scope.$digest();
+        firstColumnLinkElement = element.find('th').first().find('a');
 
-        expect(element.find('th').first().find('a').hasClass('sorting-asc')).toBe(true);
+        expect(firstColumnLinkElement).toHaveClass('sorting-asc');
     });
 
     it('should add the desc class when sorting is desc', function () {
+        var firstColumnLinkElement;
+
         scope.tableConfig.columns = [
             { name: 'HeaderColumnText', sortable: true, sort: 'desc' }
         ];
 
         $compile(element)(scope);
         scope.$digest();
+        firstColumnLinkElement = element.find('th').first().find('a');
 
-        expect(element.find('th').first().find('a').hasClass('sorting-desc')).toBe(true);
+        expect(firstColumnLinkElement).toHaveClass('sorting-desc');
     });
 
     it('should add the desc class when sorting is desc', function () {
+        var firstColumnLinkElement;
+
         scope.tableConfig.columns = [
             { name: 'HeaderColumnText', sortable: true, sort: 'desc' }
         ];
 
         $compile(element)(scope);
         scope.$digest();
+        firstColumnLinkElement = element.find('th').first().find('a');
 
-        expect(element.find('th').first().find('a').hasClass('sorting-desc')).toBe(true);
+        expect(firstColumnLinkElement).toHaveClass('sorting-desc');
     });
 
     it('should display a searchbox if searchable is on', function () {
@@ -175,7 +184,7 @@ describe('Directive: DataTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        controller = element.controller('d2DataTable');
+        controller = element.controller('recordTable');
         spyOn(controller, 'doLocalFiltering');
 
         element.find('th').first().find('input').change();

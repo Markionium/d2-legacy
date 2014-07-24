@@ -60,6 +60,13 @@ beforeEach(function () {
                 return 'Expected ' + this.actual + ' to be an array';
             }
             return angular.isArray(this.actual);
+        },
+
+        toHaveClass: function (className) {
+            this.message = function () {
+                return 'Expected ' + this.actual + ' to have class "' + className + '"';
+            }
+            return this.actual.hasClass(className);
         }
     });
 })

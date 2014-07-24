@@ -10,11 +10,15 @@ describe('d2-header-bar directive', function () {
         beforeEach(inject(function( $compile, $rootScope ) {
             scope = $rootScope.$new();
 
-            element = angular.element('<d2-header-bar title="DHIS 2 Demo - Sierra Leone" link="../dhis-web-dashboard-integration/index.action" />');
+            element = angular.element('<header-bar title="DHIS 2 Demo - Sierra Leone" link="../dhis-web-dashboard-integration/index.action" />');
 
             $compile(element)(scope);
             scope.$digest();
         }));
+
+        it('should compile and add the header-bar class', function () {
+            expect(element).toHaveClass('header-bar');
+        });
 
         it('should take the title from the title attribute', function () {
             var title = element.find('.header-text').html().trim();
@@ -47,12 +51,12 @@ describe('d2-header-bar directive', function () {
 
         it('should add the header-logo class to the img tag', function () {
             var imageElement = element.find('img');
-            expect(imageElement.hasClass('header-logo')).toBe(true);
+            expect(imageElement).toHaveClass('header-logo')
         });
 
         it('should add the header-text class to the span tag', function () {
             var textElement = element.find('span');
-            expect(textElement.hasClass('header-text')).toBe(true);
+            expect(textElement).toHaveClass('header-text')
         });
     });
 
@@ -61,7 +65,7 @@ describe('d2-header-bar directive', function () {
         beforeEach(inject(function( $compile, $rootScope ) {
             scope = $rootScope.$new();
 
-            element = angular.element('<d2-header-bar />');
+            element = angular.element('<header-bar />');
 
             $compile(element)(scope);
             scope.$digest();
@@ -92,7 +96,7 @@ describe('d2-header-bar directive', function () {
         beforeEach(inject(function( $compile, $rootScope ) {
             scope = $rootScope.$new();
 
-            element = angular.element('<d2-header-bar><p>Some text</p></d2-header-bar>');
+            element = angular.element('<header-bar><p>Some text</p></header-bar>');
 
             $compile(element)(scope);
             scope.$digest();

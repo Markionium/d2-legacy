@@ -30,33 +30,33 @@
  * Created by Mark Polak on 21 Jul 2014.
  */
 !function (angular, undefined) {
-    var dataTable = angular.module('d2-datatable');
+    var recordTable = angular.module('d2-recordtable');
 
     /**
      * @ngdoc directive
-     * @name d2DataTableHeader
+     * @name recordTableHeader
      *
      * @restrict AC
      * @scope
      *
-     * @requires d2DataTable
+     * @requires recordTable
      *
      * @description
      *
-     * This directive represents the column headers as they are displayed by the {@link d2DataTable} directive.
+     * This directive represents the column headers as they are displayed by the {@link recordTable} directive.
      *
-     * The directive adds the sort functionality and calls the setSortOrder function on {@link DataTableController}.
+     * The directive adds the sort functionality and calls the setSortOrder function on {@link RecordTableController}.
      *
      * An input box with be added to the column header when `column.searchable` is set to true.
      *
-     * When typeahead is available it asks for the typeahead values on {@link DataTableController} through the `typeAheadCache` property.
+     * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
      *
      */
-    dataTable.directive('d2DataTableHeader', function () {
+    recordTable.directive('recordTableHeader', function () {
         return {
             restrict: 'AC',
             replace: true,
-            require: '^d2DataTable',
+            require: '^recordTable',
             transclude: true,
             scope: {
                 column: '='

@@ -32,7 +32,7 @@
 !function(angular, undefined) {
     /**
      * @ngdoc directive
-     * @name d2IntroList
+     * @name introList
      *
      * @scope
      * @restrict E
@@ -53,7 +53,7 @@
      *
      * TODO: ADD Picture
      */
-    angular.module('d2-introlist').directive('d2IntroList', function() {
+    angular.module('d2-introlist').directive('introList', function() {
         return {
             restrict: 'E',
             replace: true,

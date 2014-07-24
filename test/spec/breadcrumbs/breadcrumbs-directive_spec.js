@@ -5,10 +5,10 @@ describe('Breadcrumbs directive', function () {
     beforeEach(module('d2-breadcrumbs'));
     beforeEach(module('common/breadcrumbs/breadcrumbs.html'));
 
-    beforeEach(inject(function( $compile, $rootScope, d2BreadCrumbsService ) {
+    beforeEach(inject(function( $compile, $rootScope, breadCrumbsService ) {
         scope = $rootScope.$new();
 
-        crumbsService = d2BreadCrumbsService;
+        crumbsService = breadCrumbsService;
         crumbsService.crumbsList = [{
                 id: 0,
                 name: 'Data Element',
@@ -20,14 +20,14 @@ describe('Breadcrumbs directive', function () {
             }
         ];
 
-        element = angular.element('<d2-bread-crumbs />');
+        element = angular.element('<bread-crumbs />');
 
         $compile(element)(scope);
         scope.$digest();
     }));
 
-    it('should replace the element with a div that has a class d2-breadcrumbs', function () {
-        expect(element.hasClass('d2-breadcrumbs')).toBe(true);
+    it('should replace the element with a div that has a class breadcrumbs', function () {
+        expect(element).toHaveClass('breadcrumbs');
     });
 
     it('should have a ul element to place the crumbs in', function () {
@@ -43,13 +43,13 @@ describe('Breadcrumbs directive', function () {
     it('should give the last crumb a "last" class', function () {
         var lastCrumb = element.find('li').last();
 
-        expect(lastCrumb.hasClass('last')).toBe(true);
+        expect(lastCrumb).toHaveClass('last');
     });
 
     it('should give all the breadcrumbs a crumb class', function () {
         var crumbs = element.find('li');
 
-        expect(crumbs.hasClass('crumb')).toBe(true);
+        expect(crumbs).toHaveClass('crumb');
     });
 
     it('should display the name for the crumbs as html of the span', function () {
@@ -69,8 +69,8 @@ describe('Breadcrumbs directive', function () {
     it('should add the classes fa and fa-caret-right to the crumb separators', function () {
         var crumbSeparators = element.find('span.crumb-separator');
 
-        expect(crumbSeparators.hasClass('fa')).toBe(true);
-        expect(crumbSeparators.hasClass('fa-caret-right')).toBe(true);
+        expect(crumbSeparators).toHaveClass('fa');
+        expect(crumbSeparators).toHaveClass('fa-caret-right');
     });
 
     it('should add a separator element to the first item', function () {

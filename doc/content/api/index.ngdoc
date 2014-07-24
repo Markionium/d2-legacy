@@ -7,3 +7,34 @@
 D2 is the javascript library build on top of AngularJS <a title="AngularJs" href="http://www.angularjs.org">http://www.angularjs.org</a>.
 
 We have included several directives, services and other angular objects to help you build your dhis2 apps.
+
+## Use D2JS in your project
+
+To use D2 in your project simply follow the following steps.
+
+Step 1:
+Install d2js to your project
+
+```bower install d2js --save```
+
+Step 2:
+Include the files installed into your project
+<pre class="prettyprint">
+  <code class="lang-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;!-- In the head place the d2 stylehsheet --&gt;
+    &lt;link rel="stylesheet" type="text/css" href="bower_components/d2js/js/d2.css" /&gt;
+    &lt;span class="nocode">...&lt;/span&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;span class="nocode"&gt;...&lt;/span&gt;
+    &lt;!-- Either in the head or in the body place the d2 stylesheet --&gt;
+    &lt;script src="bower_components/d2js/js/d2.min.js"&gt;&lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code>
+</pre>
+
+<div class="bs-callout bs-callout-info">
+  <h4>Using minifiers</h4>
+  <p>You could ofcourse also use the css and js files with your minification tools to optimize the pageload of your application.</p>
+<div>

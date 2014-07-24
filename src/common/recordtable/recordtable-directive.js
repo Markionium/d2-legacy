@@ -30,30 +30,30 @@
  * Created by Mark Polak on 07 Jul 2014.
  */
 !function (angular, undefined) {
-    var dataTable = angular.module('d2-datatable');
+    var recordTable = angular.module('d2-recordtable');
 
     //TODO: create a controller ngdoc doctype
     /**
      * @ngdoc controller
-     * @name DataTableController
+     * @name RecordTableController
      *
      * @description
      *
      * TODO: Document the rest of this Controller.
      */
-    dataTable.controller('DataTableController', function ($scope, $q, $filter, $timeout, d2TypeAheadService) {
+    recordTable.controller('RecordTableController', function ($scope, $q, $filter, $timeout, typeAheadService) {
         var self = this;
 
         this.localData = true;
 
         this.origData = [];
-        this.typeAheadCache = d2TypeAheadService;
+        this.typeAheadCache = typeAheadService;
 
         $scope.items = [];
 
         /**
          * @ngdoc method
-         * @name DataTableController#getHeadersFromData
+         * @name RecordTableController#getHeadersFromData
          *
          * @returns {Array|*}
          *
@@ -82,9 +82,9 @@
         };
         /**
          * @ngdoc method
-         * @name DataTableController#parseTableConfig
+         * @name RecordTableController#parseTableConfig
          *
-         * @returns {DataTableController} Returns itself for chaining purposes
+         * @returns {RecordTableController} Returns itself for chaining purposes
          *
          * @description
          *
@@ -102,9 +102,9 @@
 
         /**
          * @ngdoc method
-         * @name DataTableController#parseTableData
+         * @name RecordTableController#parseTableData
          *
-         * @returns {DataTableController} Returns itself for chaining purposes
+         * @returns {RecordTableController} Returns itself for chaining purposes
          *
          * @description
          *
@@ -125,11 +125,11 @@
 
         /**
          * @ngdoc method
-         * @name DataTableController#processData
+         * @name RecordTableController#processData
          *
          * @param {array} data The data that will be used for the table.
          *
-         * @returns {DataTableController} Returns itself for chaining purposes
+         * @returns {RecordTableController} Returns itself for chaining purposes
          *
          * @description
          *
@@ -157,11 +157,11 @@
 
         /**
          * @ngdoc method
-         * @name DataTableController#setSortOrder
+         * @name RecordTableController#setSortOrder
          *
          * @param {object} currentColumn The column that the sorting should be set for
          *
-         * @returns {DataTableController} Returns itself for chaining purposes
+         * @returns {RecordTableController} Returns itself for chaining purposes
          *
          * @description
          *
@@ -190,7 +190,7 @@
 
         /**
          * @ngdoc method
-         * @name DataTableController#getColumnsWithFilters
+         * @name RecordTableController#getColumnsWithFilters
          *
          * @returns {Array} An array of columns that have the searchable property set to `true`.
          *
@@ -315,7 +315,7 @@
 
     /**
      * @ngdoc directive
-     * @name d2DataTable
+     * @name recordTable
      *
      * @restrict E
      * @scope
@@ -345,7 +345,7 @@
      *
      * When angular-ui is available the searchbox will also use the typeahead functionality.
      */
-    dataTable.directive('d2DataTable', function () {
+    recordTable.directive('recordTable', function () {
         return {
             restrict: 'E',
             replace: true,
@@ -353,8 +353,8 @@
                 tableConfig: '=',
                 tableData: '='
             },
-            templateUrl: d2.utils.scriptPath() + 'common/datatable/datatable.html',
-            controller: 'DataTableController',
+            templateUrl: d2.utils.scriptPath() + 'common/recordtable/recordtable.html',
+            controller: 'RecordTableController',
             link: function (scope, element, attrs, controller) {
                 controller.parseTableConfig();
                 controller.parseTableData();

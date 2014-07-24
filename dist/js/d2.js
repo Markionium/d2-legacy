@@ -69,7 +69,26 @@
 
     angular.module('d2-filters', []);
 
-    angular.module('d2-datatable', ['d2-filters', 'd2-typeahead']);
+    /**
+     * @ngdoc module
+     * @name d2-recordtable
+     *
+     * @requires d2-filters, d2-typeahead
+     *
+     * @description
+     *
+     * # d2-recordtable
+     *
+     * The recordtable module contains the directives that are used to show a table that shows data.
+     * This table is configurable and can use both local and remote data sources as a base for the data.
+     *
+     * The recordtable can be sortable and searchable. (Typeahead functionality is available when angular-ui
+     * is present.
+     *
+     * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
+     * dhis2 rest services.
+     */
+    angular.module('d2-recordtable', ['d2-filters', 'd2-typeahead']);
 
     /**
      * @ngdoc module
@@ -114,7 +133,7 @@
      * directive currently in this module.
      */
     angular.module('d2-headerbar', []);
-    angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-datatable']);
+    angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable']);
 
     angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 }(angular, window.d2 = window.d2 || {});
@@ -153,33 +172,33 @@
 !function (angular, undefined) {
     /**
      * @ngdoc directive
-     * @name d2BreadCrumbs
+     * @name breadCrumbs
      *
-     * @requires d2BreadCrumbsService
+     * @requires breadCrumbsService
      *
      * @restrict E
      * @scope
      *
-     * @param {Object} crumbsList A instance of {@link d2BreadCrumbsService}
+     * @param {Object} crumbsList A instance of {@link breadCrumbsService}
      *
      * @description
      *
      * Directive to show a list of breadcrumbs at the place where the directive is inserted.
-     * The breadcrumbs crumbs can be modified by using the {@link d2BreadCrumbsService}
+     * The breadcrumbs crumbs can be modified by using the {@link breadCrumbsService}
      */
-    angular.module('d2-breadcrumbs').directive('d2BreadCrumbs', function () {
+    angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
         return {
             restrict: 'E',
             replace: true,
             scope: true,
             //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
             templateUrl: d2.utils.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
-            controller: ["$scope", "d2BreadCrumbsService", function ($scope, d2BreadCrumbsService) {
-                $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
+            controller: ["$scope", "breadCrumbsService", function ($scope, breadCrumbsService) {
+                $scope.crumbsList = breadCrumbsService.getCrumbsList();
 
                 $scope.crumbClick = function (crumb) {
-                    d2BreadCrumbsService.resetCrumbs(crumb.id);
-                    $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
+                    breadCrumbsService.resetCrumbs(crumb.id);
+                    $scope.crumbsList = breadCrumbsService.getCrumbsList();
 
                     if (crumb.click) {
                         crumb.click(angular.copy(crumb));
@@ -224,17 +243,17 @@
 !function (angular, undefined) {
     /**
      * @ngdoc service
-     * @name d2BreadCrumbsService
+     * @name breadCrumbsService
      *
      * @description
      *
      * Service that manages the breadcrumbs list. Use this service throughout your app to
      * modify the breadcrumbs list.
      */
-    angular.module('d2-breadcrumbs').service('d2BreadCrumbsService', function () {
+    angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
         /**
          * @ngdoc property
-         * @name d2BreadCrumbsService#crumbsList
+         * @name breadCrumbsService#crumbsList
          *
          * @kind array
          *
@@ -242,8 +261,9 @@
          *
          * The array that holds the crumbs list and that can be used to in the crumbs directive.
          * This contains objects that represent the various crumbs. A crumb has the following format.
-         * <pre>
-         *    {
+         *
+         * <pre class="prettyprint">
+         *  <code class="language-js">{
          *       //Name of the breadcrumb
          *       name: "CrumbName",
          *
@@ -253,14 +273,14 @@
          *       // When a callback is provided when the crumb is added the click function
          *       // set to be used when the crumb is clicked.
          *       click: function () {}
-         *    }
+         * }</code>
          * </pre>
          */
         this.crumbsList = [];
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#addCrumb
+         * @name breadCrumbsService#addCrumb
          *
          * @param {string} name Name of the breadcrumb
          * @param {function=} callback Callback that should be called when the breadcrumb is clicked
@@ -288,9 +308,9 @@
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#resetCrumbs
+         * @name breadCrumbsService#resetCrumbs
          *
-         * @param {Integer=} id
+         * @param {number=} id
          *
          * @description
          *
@@ -308,7 +328,7 @@
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#getCrumbsList
+         * @name breadCrumbsService#getCrumbsList
          *
          * @returns {Array}
          *
@@ -351,25 +371,224 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
+ * Created by Mark Polak on 09 Jul 2014.
+ */
+!function (angular, undefined) {
+    angular.module('d2-filters').filter('capitalize', function () {
+        return function(input) {
+            if (angular.isString(input)) {
+                return input.charAt(0).toUpperCase() + input.slice(1);
+            }
+            return input;
+        };
+    });
+}(angular);
+
+"use strict";
+/*
+ * Copyright (c) 2004-2014, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
+ * Created by Mark Polak on 2014-54-27.
+ */
+!function(angular, undefined) {
+    var d2HeaderBar = angular.module('d2-headerbar');
+    /**
+     * @ngdoc directive
+     * @name headerBar
+     *
+     * @restrict E
+     * @scope
+     *
+     * @description
+     *
+     * This directive represents the headerbar in dhis
+     *
+     * @example
+     *
+     * <d2-header-bar></d2-header-bar>
+     */
+    d2HeaderBar.directive('headerBar', function () {
+        return {
+            restrict: 'E',
+            replace: true,
+            transclude: true,
+            scope: {
+                title: '@',
+                link: '@',
+                logo: '@',
+                hasContent: '@'
+            },
+            templateUrl: d2.utils.scriptPath() + 'common/headerbar/headerbar.html',
+            compile: function (element, attrs) {
+                attrs.title = attrs.title || 'District Health Information Software 2';
+                attrs.link = attrs.link || '../dhis-web-dashboard-integration/index.action';
+                attrs.logo = attrs.logo || '../dhis-web-commons/css/light_blue/logo_banner.png';
+            }
+        };
+    });
+}(angular);
+
+"use strict";
+/*
+ * Copyright (c) 2004-2014, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
+ * Created by Mark Polak on 19/06/14.
+ */
+!function(angular, undefined) {
+    /**
+     * @ngdoc directive
+     * @name introList
+     *
+     * @scope
+     * @restrict E
+     *
+     * @param {Array} itemList The itemList passed in should be a array with objects of the following format
+     * <pre class="prettyprint">
+     *     <code class="language-js">{
+     *       action: <string>       // Url of where the link should go to
+     *       name: <string>         // Name of the item that will be displayed
+     *       description: <string>  // Description of the menu items
+     *       icon: <string>         // Icon that should be shown
+     * }</code>
+     * </pre>
+     *
+     * @description
+     *
+     * Directive to create a list menu items with a small intro text and an icon.
+     *
+     * TODO: ADD Picture
+     */
+    angular.module('d2-introlist').directive('introList', function() {
+        return {
+            restrict: 'E',
+            replace: true,
+            scope: {
+                itemList: '=',
+                itemClick: '&'
+            },
+            templateUrl: d2.utils.scriptPath() + 'common/introlist/introlist.html',
+            link: function (scope) {
+                scope.clickFunction = function (item) {
+                    var itemToPass = {item: angular.copy(item)};
+                    scope.itemClick(itemToPass);
+                };
+            }
+        };
+    });
+}(angular);
+
+"use strict";
+/*
+ * Copyright (c) 2004-2014, University of Oslo
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ *
+ * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * Neither the name of the HISP project nor the names of its contributors may
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+/**
  * Created by Mark Polak on 07 Jul 2014.
  */
 !function (angular, undefined) {
-    var dataTable = angular.module('d2-datatable');
+    var recordTable = angular.module('d2-recordtable');
 
-    dataTable.controller('DataTableController', ["$scope", "$q", "$filter", "$timeout", "d2TypeAheadService", function ($scope, $q, $filter, $timeout, d2TypeAheadService) {
+    //TODO: create a controller ngdoc doctype
+    /**
+     * @ngdoc controller
+     * @name RecordTableController
+     *
+     * @description
+     *
+     * TODO: Document the rest of this Controller.
+     */
+    recordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$timeout", "typeAheadService", function ($scope, $q, $filter, $timeout, typeAheadService) {
         var self = this;
 
         this.localData = true;
 
         this.origData = [];
-        this.typeAheadCache = d2TypeAheadService;
+        this.typeAheadCache = typeAheadService;
 
         $scope.items = [];
 
         /**
-         * Generates the header names based on the data that is given to the table.
+         * @ngdoc method
+         * @name RecordTableController#getHeadersFromData
          *
          * @returns {Array|*}
+         *
+         * @description
+         *
+         * Generates the header names based on the data that is given to the table.
          */
         this.getHeadersFromData = function () {
             var columns = [];
@@ -391,6 +610,13 @@
             return $scope.columns;
         };
         /**
+         * @ngdoc method
+         * @name RecordTableController#parseTableConfig
+         *
+         * @returns {RecordTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
          * Parses the tableData variable on the scope to extract
          * the data we need and puts it on the scope directly
          */
@@ -399,9 +625,18 @@
 
             $scope.pageItems = tableConfig.pageItems;
             $scope.columns = tableConfig.columns || undefined;
+
+            return this;
         };
 
         /**
+         * @ngdoc method
+         * @name RecordTableController#parseTableData
+         *
+         * @returns {RecordTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
          * Wraps the table data is a promise and adds the processData handler
          */
         this.parseTableData = function () {
@@ -413,12 +648,26 @@
             }
 
             $q.when($scope.tableData).then(this.processData.bind(this));
+
+            return this;
         };
 
         /**
-         * Takes the data and takes/generates needed meta data from it
+         * @ngdoc method
+         * @name RecordTableController#processData
          *
-         * @param data
+         * @param {array} data The data that will be used for the table.
+         *
+         * @returns {RecordTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
+         * Takes the data and takes/generates needed meta data from it. This method will generate
+         * the table headers if they are not already set.
+         * Additionally it will generate the typeahead values from the data for each of the columns.
+         *
+         * TODO: The typeahead data should only be generate for columns that actually use it
+         * TODO: The typeahead data should only be generated when typeahead is actually available.
          */
         this.processData = function (data) {
             $scope.items = this.origData = data;
@@ -431,8 +680,25 @@
             angular.forEach($scope.columns, function (column) {
                 self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
             });
+
+            return this;
         };
 
+        /**
+         * @ngdoc method
+         * @name RecordTableController#setSortOrder
+         *
+         * @param {object} currentColumn The column that the sorting should be set for
+         *
+         * @returns {RecordTableController} Returns itself for chaining purposes
+         *
+         * @description
+         *
+         * Method resets the sorting of all columns to undefined and sets the sort property
+         * of the passed in column to either `desc` or `asc`.
+         *
+         * `desc` and `asc` are toggled, with asc taking the first turn if there is no current sort.
+         */
         this.setSortOrder = function (currentColumn) {
             var columns = angular.copy($scope.columns);
 
@@ -451,6 +717,16 @@
             $scope.columns = columns;
         };
 
+        /**
+         * @ngdoc method
+         * @name RecordTableController#getColumnsWithFilters
+         *
+         * @returns {Array} An array of columns that have the searchable property set to `true`.
+         *
+         * @description
+         *
+         * Filters out all the columns that have the `searchable` property set to true and returns them.
+         */
         this.getColumnsWithFilters = function () {
             return _.filter($scope.columns, 'searchable');
         };
@@ -566,7 +842,39 @@
         }, true);
     }]);
 
-    dataTable.directive('d2DataTable', function () {
+    /**
+     * @ngdoc directive
+     * @name recordTable
+     *
+     * @restrict E
+     * @scope
+     *
+     * @description
+     *
+     * Flexible table directive to show data from an array of objects or a {@link d2-rest/d2Api} service.
+     *
+     * The table can be configured by setting the `tableConfig` attribute to an object on the `$scope`.
+     * The tableConfig object can contain a `columns` array with objects that describe the columns.
+     *
+     * An example of such a column config can look like
+        <pre class="prettyprint">
+         <code class="language-js">$scope.tableConfig = {
+            columns: [
+                { name: 'name', sortable: true, searchable: true },
+                { name: 'code', sortable: true, searchable: true },
+                { name: 'lastUpdated' }
+            ]
+        };</code>
+        </pre>
+     *
+     * The above example defines three columns. `name`, `code` and `lastUpdated`. The first two columns are
+     * marked to be sortable and searchable. Sortable will mean that the table can be sorted on the values
+     * in this column. (Sorting will be done in ASC and DESC order.
+     * Searchable means a input box will be added to the table column and the user can search through this table.
+     *
+     * When angular-ui is available the searchbox will also use the typeahead functionality.
+     */
+    recordTable.directive('recordTable', function () {
         return {
             restrict: 'E',
             replace: true,
@@ -574,8 +882,8 @@
                 tableConfig: '=',
                 tableData: '='
             },
-            templateUrl: d2.utils.scriptPath() + 'common/datatable/datatable.html',
-            controller: 'DataTableController',
+            templateUrl: d2.utils.scriptPath() + 'common/recordtable/recordtable.html',
+            controller: 'RecordTableController',
             link: function (scope, element, attrs, controller) {
                 controller.parseTableConfig();
                 controller.parseTableData();
@@ -616,13 +924,33 @@
  * Created by Mark Polak on 21 Jul 2014.
  */
 !function (angular, undefined) {
-    var dataTable = angular.module('d2-datatable');
+    var recordTable = angular.module('d2-recordtable');
 
-    dataTable.directive('d2DataTableHeader', function () {
+    /**
+     * @ngdoc directive
+     * @name recordTableHeader
+     *
+     * @restrict AC
+     * @scope
+     *
+     * @requires recordTable
+     *
+     * @description
+     *
+     * This directive represents the column headers as they are displayed by the {@link recordTable} directive.
+     *
+     * The directive adds the sort functionality and calls the setSortOrder function on {@link RecordTableController}.
+     *
+     * An input box with be added to the column header when `column.searchable` is set to true.
+     *
+     * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
+     *
+     */
+    recordTable.directive('recordTableHeader', function () {
         return {
             restrict: 'AC',
             replace: true,
-            require: '^d2DataTable',
+            require: '^recordTable',
             transclude: true,
             scope: {
                 column: '='
@@ -641,265 +969,6 @@
     });
 }(angular);
 
-"use strict";
-/*
- * Copyright (c) 2004-2014, University of Oslo
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * Created by Mark Polak on 07 Jul 2014.
- */
-!function (angular, undefined) {
-    angular.module('d2-datatable').provider('d2DataTableCreator', function () {
-/*        var defaults;
-
-        defaults = {
-            count: 25,
-            page: 1,
-            columns: [
-                { title: 'Name', field: 'name', visible: true, filter: { 'name': 'text' } }
-            ]
-        };
-
-        return {
-            $get: function () {
-                return function (options) {
-                    var tableParams, params;
-
-                    options = angular.extend(defaults, options || {});
-                    tableParams = {
-                        total: function (value) {
-                            if (typeof value === 'number') {
-                                return value;
-                            } else {
-                                return params.total;
-                            }
-                        }
-                    };
-                    tableParams = angular.extend(options, tableParams);
-
-                    return tableParams;
-                };
-            }
-        };*/
-        return {
-            $get: function () {
-                return function () {
-                    return {};
-                };
-            }
-        }
-    });
-}(angular);
-
-
-"use strict";
-/*
- * Copyright (c) 2004-2014, University of Oslo
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * Created by Mark Polak on 09 Jul 2014.
- */
-!function (angular, undefined) {
-    angular.module('d2-filters').filter('capitalize', function () {
-        return function(input) {
-            if (angular.isString(input)) {
-                return input.charAt(0).toUpperCase() + input.slice(1);
-            }
-            return input;
-        };
-    });
-}(angular);
-
-"use strict";
-/*
- * Copyright (c) 2004-2014, University of Oslo
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * Created by Mark Polak on 2014-54-27.
- */
-!function(angular, undefined) {
-    var d2HeaderBar = angular.module('d2-headerbar');
-    /**
-     * @ngdoc directive
-     * @name d2HeaderBar
-     *
-     * @restrict E
-     * @scope
-     *
-     * @description
-     *
-     * This directive represents the headerbar in dhis
-     *
-     * @example
-     *
-     * <d2-header-bar></d2-header-bar>
-     */
-    d2HeaderBar.directive('d2HeaderBar', function () {
-        return {
-            restrict: 'E',
-            replace: true,
-            transclude: true,
-            scope: {
-                title: '@',
-                link: '@',
-                logo: '@',
-                hasContent: '@'
-            },
-            templateUrl: d2.utils.scriptPath() + 'common/headerbar/headerbar.html',
-            compile: function (element, attrs) {
-                attrs.title = attrs.title || 'District Health Information Software 2';
-                attrs.link = attrs.link || '../dhis-web-dashboard-integration/index.action';
-                attrs.logo = attrs.logo || '../dhis-web-commons/css/light_blue/logo_banner.png';
-            }
-        };
-    });
-}(angular);
-
-"use strict";
-/*
- * Copyright (c) 2004-2014, University of Oslo
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
-/**
- * Created by Mark Polak on 19/06/14.
- */
-!function(angular, undefined) {
-    /**
-     * @ngdoc directive
-     * @name d2IntroList
-     *
-     * @scope
-     * @restrict E
-     *
-     * @param {Array} itemList The itemList passed in should be a array with objects of the following format
-     * <pre>
-     *     {
-     *       action: <string>       // Url of where the link should go to
-     *       name: <string>         // Name of the item that will be displayed
-     *       description: <string>  // Description of the menu items
-     *       icon: <string>         // Icon that should be shown
-     *     }
-     * </pre>
-     *
-     * @description
-     *
-     * Directive to create a list menu items with a small intro text and an icon.
-     *
-     * TODO: ADD Picture
-     */
-    angular.module('d2-introlist').directive('d2IntroList', function() {
-        return {
-            restrict: 'E',
-            replace: true,
-            scope: {
-                itemList: '=',
-                itemClick: '&'
-            },
-            templateUrl: d2.utils.scriptPath() + 'common/introlist/introlist.html',
-            link: function (scope) {
-                scope.clickFunction = function (item) {
-                    var itemToPass = {item: angular.copy(item)};
-                    scope.itemClick(itemToPass);
-                };
-            }
-        };
-    });
-}(angular);
 
 "use strict";
 /*
@@ -1280,7 +1349,7 @@
  * Created by Mark Polak on 23 Jul 2014.
  */
 !function (angular, undefined) {
-    angular.module('d2-typeahead', []).service('d2TypeAheadService', function () {
+    angular.module('d2-typeahead', []).service('typeAheadService', function () {
         this.add = function (id, values) {
             if (! angular.isString(id)) { throw 'Only string identifiers are allowed'; }
             if (id === 'get' || id === 'add') { throw 'Cannot override add or get methods'; }

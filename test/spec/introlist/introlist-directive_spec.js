@@ -26,14 +26,14 @@ describe('introlist-directive should create an introlist', function() {
             console.log(name);
         };
 
-        element = angular.element('<d2-intro-list item-list="itemList" item-click="clickFunction(item)" />');
+        element = angular.element('<intro-list item-list="itemList" item-click="clickFunction(item)" />');
 
         $compile(element)(scope);
         scope.$digest();
     }));
 
     it('should add a div with a d2-intro-list class to the DOM', function() {
-        expect(element.hasClass('d2-intro-list')).toBe(true);
+        expect(element).toHaveClass('d2-intro-list');
     });
 
     it('should add an li element for each of the passed values', function () {
@@ -45,7 +45,7 @@ describe('introlist-directive should create an introlist', function() {
     it('should give the class "intro-list-item" to each of the item elements', function () {
         var listElements = element.find('li');
 
-        expect(listElements.hasClass('intro-list-item')).toBe(true);
+        expect(listElements).toHaveClass('intro-list-item');
     });
 
     it('should display the name of the item in a element with class intro-list-title', function () {

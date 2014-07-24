@@ -33,7 +33,7 @@
     var d2HeaderBar = angular.module('d2-headerbar');
     /**
      * @ngdoc directive
-     * @name d2HeaderBar
+     * @name headerBar
      *
      * @restrict E
      * @scope
@@ -46,7 +46,7 @@
      *
      * <d2-header-bar></d2-header-bar>
      */
-    d2HeaderBar.directive('d2HeaderBar', function () {
+    d2HeaderBar.directive('headerBar', function () {
         return {
             restrict: 'E',
             replace: true,

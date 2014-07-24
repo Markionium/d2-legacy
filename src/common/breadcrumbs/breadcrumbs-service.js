@@ -32,17 +32,17 @@
 !function (angular, undefined) {
     /**
      * @ngdoc service
-     * @name d2BreadCrumbsService
+     * @name breadCrumbsService
      *
      * @description
      *
      * Service that manages the breadcrumbs list. Use this service throughout your app to
      * modify the breadcrumbs list.
      */
-    angular.module('d2-breadcrumbs').service('d2BreadCrumbsService', function () {
+    angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
         /**
          * @ngdoc property
-         * @name d2BreadCrumbsService#crumbsList
+         * @name breadCrumbsService#crumbsList
          *
          * @kind array
          *
@@ -69,7 +69,7 @@
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#addCrumb
+         * @name breadCrumbsService#addCrumb
          *
          * @param {string} name Name of the breadcrumb
          * @param {function=} callback Callback that should be called when the breadcrumb is clicked
@@ -97,7 +97,7 @@
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#resetCrumbs
+         * @name breadCrumbsService#resetCrumbs
          *
          * @param {number=} id
          *
@@ -117,7 +117,7 @@
 
         /**
          * @ngdoc method
-         * @name d2BreadCrumbsService#getCrumbsList
+         * @name breadCrumbsService#getCrumbsList
          *
          * @returns {Array}
          *

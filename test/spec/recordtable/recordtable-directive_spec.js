@@ -1,10 +1,10 @@
 "use strict";
-describe('Directive: datatable', function () {
+describe('Directive: recordtable', function () {
     var element, scope;
 
-    beforeEach(module('d2-datatable'));
+    beforeEach(module('d2-recordtable'));
     beforeEach(module('d2-rest'));
-    beforeEach(module('common/datatable/datatable.html'));
+    beforeEach(module('common/recordtable/recordtable.html'));
 
     beforeEach(inject(function ($rootScope) {
         var tableConfig = {},
@@ -19,7 +19,7 @@ describe('Directive: datatable', function () {
         scope.tableConfig = tableConfig;
         scope.tableData = tableData;
 
-        element = angular.element('<d2-data-table table-config="tableConfig" table-data="tableData" />');
+        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
     }));
 
     describe('structure', function () {
@@ -29,7 +29,7 @@ describe('Directive: datatable', function () {
         }));
 
         it('should compile', function () {
-            expect(element.hasClass('d2-data-table')).toBe(true);
+            expect(element).toHaveClass('record-table');
         });
 
         it('should create an isolate scope', function () {

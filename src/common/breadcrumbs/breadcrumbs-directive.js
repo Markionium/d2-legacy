@@ -32,33 +32,33 @@
 !function (angular, undefined) {
     /**
      * @ngdoc directive
-     * @name d2BreadCrumbs
+     * @name breadCrumbs
      *
-     * @requires d2BreadCrumbsService
+     * @requires breadCrumbsService
      *
      * @restrict E
      * @scope
      *
-     * @param {Object} crumbsList A instance of {@link d2BreadCrumbsService}
+     * @param {Object} crumbsList A instance of {@link breadCrumbsService}
      *
      * @description
      *
      * Directive to show a list of breadcrumbs at the place where the directive is inserted.
-     * The breadcrumbs crumbs can be modified by using the {@link d2BreadCrumbsService}
+     * The breadcrumbs crumbs can be modified by using the {@link breadCrumbsService}
      */
-    angular.module('d2-breadcrumbs').directive('d2BreadCrumbs', function () {
+    angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
         return {
             restrict: 'E',
             replace: true,
             scope: true,
             //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
             templateUrl: d2.utils.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
-            controller: function ($scope, d2BreadCrumbsService) {
-                $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
+            controller: function ($scope, breadCrumbsService) {
+                $scope.crumbsList = breadCrumbsService.getCrumbsList();
 
                 $scope.crumbClick = function (crumb) {
-                    d2BreadCrumbsService.resetCrumbs(crumb.id);
-                    $scope.crumbsList = d2BreadCrumbsService.getCrumbsList();
+                    breadCrumbsService.resetCrumbs(crumb.id);
+                    $scope.crumbsList = breadCrumbsService.getCrumbsList();
 
                     if (crumb.click) {
                         crumb.click(angular.copy(crumb));

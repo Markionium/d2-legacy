@@ -30,7 +30,7 @@
  * Created by Mark Polak on 23 Jul 2014.
  */
 !function (angular, undefined) {
-    angular.module('d2-typeahead', []).service('d2TypeAheadService', function () {
+    angular.module('d2-typeahead', []).service('typeAheadService', function () {
         this.add = function (id, values) {
             if (! angular.isString(id)) { throw 'Only string identifiers are allowed'; }
             if (id === 'get' || id === 'add') { throw 'Cannot override add or get methods'; }

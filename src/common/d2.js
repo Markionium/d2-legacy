@@ -71,24 +71,24 @@
 
     /**
      * @ngdoc module
-     * @name d2-datatable
+     * @name d2-recordtable
      *
      * @requires d2-filters, d2-typeahead
      *
      * @description
      *
-     * # d2-datatable
+     * # d2-recordtable
      *
-     * The datatable module contains the directives that are used to show a table that shows data.
+     * The recordtable module contains the directives that are used to show a table that shows data.
      * This table is configurable and can use both local and remote data sources as a base for the data.
      *
-     * The datatable can be sortable and searchable. (Typeahead functionality is available when angular-ui
+     * The recordtable can be sortable and searchable. (Typeahead functionality is available when angular-ui
      * is present.
      *
-     * The datatable will use the paging that is set in the config or use the rest paging as provided by the
+     * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
      * dhis2 rest services.
      */
-    angular.module('d2-datatable', ['d2-filters', 'd2-typeahead']);
+    angular.module('d2-recordtable', ['d2-filters', 'd2-typeahead']);
 
     /**
      * @ngdoc module
@@ -133,7 +133,7 @@
      * directive currently in this module.
      */
     angular.module('d2-headerbar', []);
-    angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-datatable']);
+    angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable']);
 
     angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 }(angular, window.d2 = window.d2 || {});

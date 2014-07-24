@@ -5,8 +5,8 @@ describe('Service: TypeAhead', function () {
     typeAheadValues = ['Mark', 'Polak', 'Lars', 'Helge', 'Abyot'];
 
     beforeEach(module('d2-typeahead'));
-    beforeEach(inject(function (_d2TypeAheadService_) {
-        typeAheadService = _d2TypeAheadService_;
+    beforeEach(inject(function (_typeAheadService_) {
+        typeAheadService = _typeAheadService_;
     }));
 
     it('should add an array to the cache when calling the add method', function () {

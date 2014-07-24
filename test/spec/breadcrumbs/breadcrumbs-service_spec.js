@@ -4,8 +4,8 @@ describe('BreadCrumbsService', function () {
 
 
     beforeEach(module('d2-breadcrumbs'));
-    beforeEach(inject(function (d2BreadCrumbsService) {
-        breadCrumbsService = d2BreadCrumbsService;
+    beforeEach(inject(function (_breadCrumbsService_) {
+        breadCrumbsService = _breadCrumbsService_;
     }));
 
 
