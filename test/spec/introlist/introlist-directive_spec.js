@@ -33,7 +33,7 @@ describe('introlist-directive should create an introlist', function() {
     }));
 
     it('should add a div with a d2-intro-list class to the DOM', function() {
-        expect(element).toHaveClass('d2-intro-list');
+        expect(element).toHaveClass('intro-list');
     });
 
     it('should add an li element for each of the passed values', function () {
