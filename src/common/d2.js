@@ -44,11 +44,13 @@
             return function () {
                 var scripts,
                     currentScriptPath,
-                    d2ScriptTag = angular.element('<script src=""></script>');
+                    d2ScriptTag;
 
                 if (d2ScriptPath) {
                     return d2ScriptPath;
                 }
+
+                d2ScriptTag = angular.element('<script src=""></script>');
 
                 scripts = document.getElementsByTagName('script');
 
