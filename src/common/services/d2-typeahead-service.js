@@ -1,46 +1,81 @@
 "use strict";
-/*
- * Copyright (c) 2004-2014, University of Oslo
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice, this
- * list of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation
- * and/or other materials provided with the distribution.
- * Neither the name of the HISP project nor the names of its contributors may
- * be used to endorse or promote products derived from this software without
- * specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 /**
- * Created by Mark Polak on 23 Jul 2014.
+ * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
  */
-!function (angular, undefined) {
-    angular.module('d2-typeahead', []).service('typeAheadService', function () {
-        this.add = function (id, values) {
-            if (! angular.isString(id)) { throw 'Only string identifiers are allowed'; }
-            if (id === 'get' || id === 'add') { throw 'Cannot override add or get methods'; }
-            if (values !== undefined && ! angular.isArray(values)) { throw 'Values should be an array'; }
+var d2TypeAhead = angular.module('d2-typeahead', []);
 
-            this[id] = _.uniq((this[id] || []).concat(values));
-        };
+/**
+ * @ngdoc service
+ * @name typeAheadService
+ *
+ * @description
+ *
+ * The typeahead services lets you store and retrieve typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ *
+ * This service was created to easily keep track of typeahead values for REST searchable tables.
+ * The typeahead service keeps new names that are added to it.
+ *
+ * This is used for example in the {@link d2-recordtable#recordTable} directive. When searching fields that are loaded
+ * by a rest service. When searching and new values get pulled in these get added to the typeahead service.
+ */
+d2TypeAhead.service('typeAheadService', function () {
+    /**
+     * @ngdoc method
+     * @name typeAheadService#add
+     *
+     * @param {String} id The identifier of what typeahead these values belong to.
+     * @param {Array=} [values] The values that should be added to the typeahead for the given id.
+     *
+     * @description
+     *
+     * Allows you to add values to the typeAheadService. When the method is called with an identifier only
+     * it will create an empty values list.
+     *
+     * Whenever a list for the given identifier already exists it will append the
+     * new given values to the already existing list of values.
+     *
+     * throws {Error} Only string identifiers are allowed
+     * throws {Error} Cannot override add or get methods
+     * throws {Error} Values should be an array
+     */
+    this.add = function (id, values) {
+        if (!angular.isString(id)) {
+            throw 'Only string identifiers are allowed';
+        }
+        if (id === 'get' || id === 'add') {
+            throw 'Cannot override add or get methods';
+        }
+        if (values !== undefined && !angular.isArray(values)) {
+            throw 'Values should be an array';
+        }
 
-        this.get = function (id) {
-            return this[id] || [];
-        };
-    });
-}(angular);
+        this[id] = _.uniq((this[id] || []).concat(values));
+    };
+
+    /**
+     * @ngdoc method
+     * @name typeAheadService#get
+     *
+     * @param {String} id The identifier of the typeAhead value list to retrieve
+     * @returns {Array}
+     *
+     * @description
+     *
+     * Returns the values of for the given identifier.
+     *
+     * {@note When the identifier does not exist
+     * And empty list will be returned. }
+     */
+    this.get = function (id) {
+        return this[id] || [];
+    };
+});

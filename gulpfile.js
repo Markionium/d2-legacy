@@ -44,6 +44,8 @@ var rev = require('gulp-rev');
 var concat = require('gulp-concat');
 var flatten = require('gulp-flatten');
 
+var wrap = require('gulp-wrap');
+
 /***********************************************************************************************************************
  * Settings
  **********************************************************************************************************************/
@@ -68,7 +70,7 @@ var files = [
     'test/utils/phantomjs-bind-fix.js',
     'test/matchers/**/*.js',
     'test/fixtures/**/*.js',
-    'test/spec/**/*.js',
+    'test/spec/**/*.js'
 ];
 
 var karma_config = 'test/karma.conf.js'
@@ -116,6 +118,7 @@ gulp.task('src-js', function () {
     return gulp.src('./src/common/**/*.js')
         .pipe(ngannotate())
         .pipe(concat('d2.js'))
+        .pipe(wrap({ src: './src/common/d2.wrap' }))
         .pipe(gulp.dest(destFold + '/js'))
 });
 
@@ -124,6 +127,7 @@ gulp.task('min-js', function () {
         .pipe(ngannotate())
         .pipe(uglify())
         .pipe(concat('d2.min.js'))
+        .pipe(wrap({ src: './src/common/d2.wrap' }))
         .pipe(gulp.dest(destFold + '/js'));
 });
 
