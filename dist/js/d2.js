@@ -148,6 +148,35 @@ d2Services = angular.module('d2-services', ['d2-auth']);
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 
+"use strict";
+
+d2Auth.service('currentUser', ["d2Api", function (d2Api) {
+    var self = this,
+        permissionPromise,
+        permissions;
+
+    this.userLoaded = false;
+    this.permissionsLoaded = false;
+
+    this.getPermissions = function () {
+        return permissionPromise;
+    };
+
+    this.hasPermission = function (permissionToCheck) {
+        return permissions.indexOf(permissionToCheck) > 0 ? true : false;
+    };
+
+    d2Api.currentUser.get().then(function (response) {
+        angular.extend(self, response.getDataOnly());
+    });
+
+    permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
+        self.permissionsLoaded = true;
+        permissions = response.getDataOnly();
+        return permissions;
+    });
+}]);
+
 /**
  * @ngdoc directive
  * @name breadCrumbs
@@ -749,35 +778,6 @@ d2RecordTable.directive('recordTableHeader', function () {
 });
 
 
-
-"use strict";
-
-d2Auth.service('currentUser', ["d2Api", function (d2Api) {
-    var self = this,
-        permissionPromise,
-        permissions;
-
-    this.userLoaded = false;
-    this.permissionsLoaded = false;
-
-    this.getPermissions = function () {
-        return permissionPromise;
-    };
-
-    this.hasPermission = function (permissionToCheck) {
-        return permissions.indexOf(permissionToCheck) > 0 ? true : false;
-    };
-
-    d2Api.currentUser.get().then(function (response) {
-        angular.extend(self, response.getDataOnly());
-    });
-
-    permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
-        self.permissionsLoaded = true;
-        permissions = response.getDataOnly();
-        return permissions;
-    });
-}]);
 
 "use strict";
     d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) {
