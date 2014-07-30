@@ -38,6 +38,20 @@ describe('BreadCrumbsService', function () {
         expect(secondCrumbId).toEqual(1);
     });
 
+    it('should not add the new crumb if the name is undefined', function () {
+        breadCrumbsService.addCrumb();
+
+        expect(breadCrumbsService.crumbsList.length).toBe(0);
+    });
+
+    it('should not add the new crumb if the name is an empty string', function () {
+        breadCrumbsService.addCrumb('');
+
+        expect(breadCrumbsService.crumbsList.length).toBe(0);
+    });
+
+
+
     it('reset crumbs should reset the crumbs list to the initial start', function () {
         breadCrumbsService.addCrumb('root');
         breadCrumbsService.addCrumb('dataelement');
