@@ -105,6 +105,12 @@
             if (isCollection || element.getDataOnly) {
                 return element;
             }
+
+            //TODO: In chrome canary we cannot extend strings (30-Jul-2014)?
+            if (angular.isString(element) ) {
+                return element;
+            }
+
             element.getDataOnly = function () {
                 var result = angular.copy(element);
                 result = Restangular.stripRestangular(result);

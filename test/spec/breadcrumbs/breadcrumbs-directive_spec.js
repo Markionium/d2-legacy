@@ -141,4 +141,17 @@ describe('Breadcrumbs directive', function () {
         expect(crumbCountBeforeClick).toBe(3);
         expect(crumbCountAfterClick).toBe(2);
     });
+
+    it('should display the right amount of crumbs after resetCrumbs has been called', function () {
+        element.controller('breadCrumbs').cool = true;
+        //expect(crumbsService.crumbsList.length).toBe(2);
+        crumbsService.addCrumb('blah');
+        crumbsService.addCrumb('blah');
+        //crumbsService.resetCrumbs();
+
+        //expect(crumbsService.crumbsList.length).toBe(1);
+        scope.$apply();
+
+        //expect(element.find('li').length).toBe(1);
+    });
 });

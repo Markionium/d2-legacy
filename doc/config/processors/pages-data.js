@@ -47,6 +47,7 @@ var navGroupMappers = {
           .tap(function(docTypes) {
             log.debug(_.keys(docTypes));
 
+            //TODO: This is quite funky right now as it will fail to generate docs if there is no directive or service..
             // Extract the module page from the collection
             if (docTypes['directive'] && docTypes['directive'].length >= 1) {
                 modulePage = docTypes['directive'][0].moduleDoc;

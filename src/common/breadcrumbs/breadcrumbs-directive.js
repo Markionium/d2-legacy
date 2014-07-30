@@ -22,16 +22,19 @@ d2BreadCrumbs.directive('breadCrumbs', function () {
         //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controller: function ($scope, breadCrumbsService) {
-            $scope.crumbsList = breadCrumbsService.getCrumbsList();
-
             $scope.crumbClick = function (crumb) {
                 breadCrumbsService.resetCrumbs(crumb.id);
-                $scope.crumbsList = breadCrumbsService.getCrumbsList();
 
                 if (crumb.click) {
                     crumb.click(angular.copy(crumb));
                 }
             };
+
+            $scope.$watchCollection(function () {
+                return breadCrumbsService.getCrumbsList();
+            }, function (newValue) {
+                $scope.crumbsList = newValue;
+            });
         }
     };
 });
