@@ -273,6 +273,10 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
     this.addCrumb = function (name, callback) {
         var crumb = {};
 
+        if ( ! angular.isString(name) || name === '') {
+            return;
+        }
+
         crumb.name = name;
         crumb.id = this.crumbsList.length;
 
