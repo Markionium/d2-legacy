@@ -143,15 +143,30 @@ describe('Breadcrumbs directive', function () {
     });
 
     it('should display the right amount of crumbs after resetCrumbs has been called', function () {
-        element.controller('breadCrumbs').cool = true;
-        //expect(crumbsService.crumbsList.length).toBe(2);
-        crumbsService.addCrumb('blah');
-        crumbsService.addCrumb('blah');
-        //crumbsService.resetCrumbs();
+        expect(crumbsService.crumbsList.length).toBe(2);
 
-        //expect(crumbsService.crumbsList.length).toBe(1);
+        crumbsService.resetCrumbs();
         scope.$apply();
 
-        //expect(element.find('li').length).toBe(1);
+        expect(crumbsService.crumbsList.length).toBe(0);
+        expect(element.find('li').length).toBe(0);
+    });
+
+    it('should display the homecrumb object when it is available', function () {
+        crumbsService.addHomeCrumb('Home');
+
+        scope.$apply();
+
+        expect(element.find('li').length).toBe(3);
+        expect(element.find('li').first().text()).toBe('Home');
+    });
+
+    it('should reset the crumbs list after the homecrumb is clicked', function () {
+        crumbsService.addHomeCrumb('Home');
+
+        scope.$apply();
+        element.find('li').first().click();
+
+        expect(element.find('li').length).toBe(1);
     });
 });

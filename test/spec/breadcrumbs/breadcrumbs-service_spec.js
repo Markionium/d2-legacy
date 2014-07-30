@@ -45,6 +45,16 @@ describe('BreadCrumbsService', function () {
 
         breadCrumbsService.resetCrumbs();
 
+        expect(breadCrumbsService.crumbsList.length).toBe(0);
+    });
+
+    it('reset crumbs should reset to the first element when called with 0', function () {
+        breadCrumbsService.addCrumb('root');
+        breadCrumbsService.addCrumb('dataelement');
+        breadCrumbsService.addCrumb('mark');
+
+        breadCrumbsService.resetCrumbs(0);
+
         expect(breadCrumbsService.crumbsList.length).toBe(1);
         expect(breadCrumbsService.crumbsList[0].name).toBe('root');
     });
@@ -59,5 +69,40 @@ describe('BreadCrumbsService', function () {
         expect(breadCrumbsService.crumbsList.length).toBe(2);
         expect(breadCrumbsService.crumbsList[0].name).toBe('root');
         expect(breadCrumbsService.crumbsList[1].name).toBe('dataelement');
+    });
+
+    it('should allow a home crumb to be set', function () {
+        breadCrumbsService.addCrumb('dataelement');
+        breadCrumbsService.addHomeCrumb('Home');
+
+        expect(breadCrumbsService.getCrumbsList().length).toBe(2);
+    });
+
+    it('should always put the home crumb as the first', function () {
+        breadCrumbsService.addCrumb('dataelement');
+        breadCrumbsService.addHomeCrumb('Home');
+
+        expect(breadCrumbsService.getCrumbsList()[0].name).toBe('Home');
+        expect(breadCrumbsService.getCrumbsList()[1].name).toBe('dataelement');
+    });
+
+    it('should keep the home crumb after a reset', function () {
+        breadCrumbsService.addHomeCrumb('Home');
+        breadCrumbsService.addCrumb('First');
+        breadCrumbsService.addCrumb('Second');
+
+        breadCrumbsService.resetCrumbs();
+
+        expect(breadCrumbsService.getCrumbsList().length).toBe(1);
+    });
+
+    it('should remove all the items but home when home is "clicked"', function () {
+        var homeCrumb = breadCrumbsService.addHomeCrumb('Home');
+        breadCrumbsService.addCrumb('First');
+        breadCrumbsService.addCrumb('Second');
+
+        homeCrumb.click();
+
+        expect(breadCrumbsService.getCrumbsList().length).toBe(1);
     });
 });

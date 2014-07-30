@@ -8,6 +8,7 @@
  * modify the breadcrumbs list.
  */
 d2BreadCrumbs.service('breadCrumbsService', function () {
+    var homeCrumb = [];
     /**
      * @ngdoc property
      * @name breadCrumbsService#crumbsList
@@ -54,9 +55,7 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
         crumb.id = this.crumbsList.length;
 
         if (callback && angular.isFunction(callback)) {
-            //var resetCrumbs = this.resetCrumbs.bind(this);
             crumb.click = function () {
-                //resetCrumbs(crumb.id);
                 return callback();
             };
         }
@@ -75,7 +74,7 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
      */
     this.resetCrumbs = function (id) {
         if (id === undefined) {
-            id = 0;
+            this.crumbsList = [];
         }
 
         this.crumbsList = _.filter(this.crumbsList, function (crumb) {
@@ -94,6 +93,35 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
      * Return the current crumbs list
      */
     this.getCrumbsList = function () {
-        return this.crumbsList;
+        return homeCrumb.concat(this.crumbsList);
     };
+
+    /**
+     * @ndgoc method
+     * @name breadCrumbService#homeCrumb
+     *
+     * @param {String} crumbName The name of the home crumb to be displayed
+     * @param {Function=} [clickCallback] Click function that should be called when the homeCrumb is clickec
+     *
+     * @returns {Object} returns the homecrumb object
+     *
+     * @description
+     *
+     * Allows you to add a root crumb that will always be the first one.
+     */
+    this.addHomeCrumb = function (crumbName, clickCallback) {
+        var self = this;
+
+        homeCrumb = [];
+        homeCrumb.push({
+            name: crumbName,
+            click:  function () {
+                self.crumbsList = [];
+                if (angular.isFunction(clickCallback)) {
+                    clickCallback();
+                }
+            }
+        });
+        return homeCrumb[0];
+    }
 });

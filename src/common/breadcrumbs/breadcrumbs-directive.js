@@ -18,10 +18,12 @@ d2BreadCrumbs.directive('breadCrumbs', function () {
     return {
         restrict: 'E',
         replace: true,
-        scope: true,
+        scope: {
+            homeCrumb: "="
+        },
         //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
-        controller: function ($scope, breadCrumbsService) {
+        controller: function ($scope, $location, breadCrumbsService) {
             $scope.crumbClick = function (crumb) {
                 breadCrumbsService.resetCrumbs(crumb.id);
 
