@@ -51,6 +51,7 @@ var wrap = require('gulp-wrap');
  **********************************************************************************************************************/
 
 var destFold = "dev";
+var benchMarkTests = true;
 
 var files = [
     //Vendor
@@ -72,6 +73,10 @@ var files = [
     'test/fixtures/**/*.js',
     'test/spec/**/*.js'
 ];
+
+if (benchMarkTests) {
+    files = files.concat(['test/utils/bench.js']);
+}
 
 var karma_config = 'test/karma.conf.js'
 

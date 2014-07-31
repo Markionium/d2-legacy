@@ -69,4 +69,4 @@ beforeEach(function () {
             return this.actual.hasClass(className);
         }
     });
-})
+});
