@@ -178,6 +178,12 @@ describe('D2 Rest Interface', function () {
             expect(api.testEndPoint).toHaveMethod('save');
             expect(api.testEndPoint).toHaveMethod('getList');
         });
+
+        it('should strip the starting slash when trying to add an endPoint', function () {
+            api.addEndPoint('/testEndPoint');
+
+            expect(api.testEndPoint).toBeDefined();
+        });
     });
 
     /**

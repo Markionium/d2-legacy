@@ -24,9 +24,12 @@
              * @param {string} endPointName The name of this endpoint
              * @param {boolean=} isObject If the result is a single object
              *
-             * TODO: write tests for this;
              */
             this.addEndPoint = function (endPointName, isObject) {
+
+                //Remove the first character if it's a /
+                endPointName = endPointName.replace(/^\//, '');
+
                 if (isObject) {
                     this[endPointName] = this.one(endPointName);
                 } else {
