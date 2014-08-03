@@ -179,10 +179,54 @@ describe('D2 Rest Interface', function () {
             expect(api.testEndPoint).toHaveMethod('getList');
         });
 
-        it('should strip the starting slash when trying to add an endPoint', function () {
-            api.addEndPoint('/testEndPoint');
+        it('should throw an error when trying to add a endPoint with a leading slash', function () {
+            function addEndPointwithSlash() {
+                api.addEndPoint('/testEndPoint');
+            }
 
-            expect(api.testEndPoint).toBeDefined();
+            expect(addEndPointwithSlash).toThrow('D2Api Error: EndPoint should not have a leading slash');
+        });
+
+        it('should return the endpoint after adding it', function () {
+            var endPoint = api.addEndPoint('testEndPoint');
+
+            expect(endPoint).toBe(api.testEndPoint);
+        });
+
+        it('should return an error when trying to add an endPoint that already exists', function () {
+            function addEndPointTwice() {
+                api.addEndPoint('testEndPoint');
+                api.addEndPoint('testEndPoint');
+            }
+
+            expect(addEndPointTwice).toThrow('D2Api Error: EndPoint "testEndPoint" already exists');
+        });
+
+        it('should return an endpoint when calling the getEndPoint method', function () {
+            var endPoint;
+
+            api.addEndPoint('testEndPoint');
+            endPoint = api.getEndPoint('testEndPoint');
+
+            expect(endPoint).toBe(api['testEndPoint']);
+        });
+
+        it('should throw an error when the endpoint does not exist', function () {
+            function gettingUnknownEndPoint() {
+                api.getEndPoint('testEndPoint');
+            }
+
+            expect(gettingUnknownEndPoint).toThrow('D2Api Error: Endpoint does not exist');
+        });
+
+        it('should return true when calling hasEndPoint with a valid endpoint name', function () {
+            api.addEndPoint('testEndPoint');
+
+            expect(api.hasEndPoint('testEndPoint')).toBe(true);
+        });
+
+        it('should return false when calling hasEndPoint with a non existing endpoint', function () {
+            expect(api.hasEndPoint('testEndPoint')).toBe(false);
         });
     });
 

@@ -28,13 +28,35 @@
             this.addEndPoint = function (endPointName, isObject) {
 
                 //Remove the first character if it's a /
-                endPointName = endPointName.replace(/^\//, '');
+                if (endPointName.match(/^\//)) {
+                    throw 'D2Api Error: EndPoint should not have a leading slash';
+                }
+
+                if (this[endPointName]) {
+                    throw 'D2Api Error: EndPoint "' + endPointName + '" already exists';
+                }
 
                 if (isObject) {
                     this[endPointName] = this.one(endPointName);
                 } else {
                     this[endPointName] = this.all(endPointName);
                 }
+
+                return this[endPointName];
+            };
+
+            this.getEndPoint = function (endPointName) {
+                if (this[endPointName] === undefined) {
+                    throw 'D2Api Error: Endpoint does not exist';
+                }
+                return this[endPointName];
+            };
+
+            this.hasEndPoint = function (endPointName) {
+                if (this[endPointName]) {
+                    return true;
+                }
+                return false;
             };
         };
 
