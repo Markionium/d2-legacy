@@ -63,6 +63,8 @@ var files = [
 
     'test/vendor/restangular/dist/restangular.js',
 
+    'test/vendor/angular-translate/angular-translate.js',
+
     // Source files
     'src/**/*.js',
     'src/**/*.html',

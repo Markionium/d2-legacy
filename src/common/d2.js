@@ -8,7 +8,9 @@ var d2,
     d2BreadCrumbs,
     d2IntroList,
     d2HeaderBar,
-    d2Directives;
+    d2Directives,
+    d2Translate,
+    d2Config;
 
 d2 = {
     scriptPath: (function () {
@@ -40,8 +42,10 @@ d2 = {
     })()
 };
 
+d2Config = angular.module('d2-config', []);
 d2Rest = angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
+d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 /**
  * @ngdoc module
