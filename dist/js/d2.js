@@ -37,7 +37,9 @@ var d2,
     d2BreadCrumbs,
     d2IntroList,
     d2HeaderBar,
-    d2Directives;
+    d2Directives,
+    d2Translate,
+    d2Config;
 
 d2 = {
     scriptPath: (function () {
@@ -69,8 +71,10 @@ d2 = {
     })()
 };
 
+d2Config = angular.module('d2-config', []);
 d2Rest = angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
+d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 /**
  * @ngdoc module
@@ -351,6 +355,21 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
         return homeCrumb[0];
     }
 });
+
+d2Config.constant('API_ENDPOINT', '/dhis/api');
+d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
+    return {
+        getUrl: function (resource) {
+            if ( ! angular.isString(resource)) {
+                throw 'Api Config Error: Resource URL should be a string';
+            }
+            if (resource[0] === '/') {
+                resource = resource.substr(1);
+            }
+            return [API_ENDPOINT, resource].join('/');
+        }
+    }
+}]);
 
 d2Filters.filter('capitalize', function () {
     return function (input) {
@@ -1068,6 +1087,89 @@ d2Services.factory('schemaProcessor', function () {
     };
 });
 
+d2Translate.factory('d2LanguageLoader', ["$q", "$http", "translateApi", function ($q, $http, translateApi) {
+    var loadedValues = {};
+
+    return function (options, $uses) {
+        var deferred = $q.defer();
+
+        if (loadedValues[options.key]) {
+            loadedValues[options.key] = angular.extend(translateApi.apiTranslations, loadedValues[options.key]);
+            deferred.resolve(angular.extend(translateApi.apiTranslations, loadedValues[options.key]));
+        } else {
+            $http.get('common/i18n/' + options.key + '.json').success(function (data) {
+                loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
+                deferred.resolve(loadedValues[options.key]);
+            }).error(function (data) {
+                    deferred.reject(options.key);
+                });
+        }
+        return deferred.promise;
+    };
+}]);
+
+d2Translate.factory('d2MissingTranslationHandler', ["$translate", "translateApi", function ($translate, translateApi) {
+    return function (translationId, $uses) {
+        translateApi.add(translationId);
+        translateApi.translateThroughApi($uses)
+    }
+}]);
+
+d2Translate.service('translateApi', ["$q", "$translate", "apiConfig", "$timeout", "$http", function ($q, $translate, apiConfig, $timeout, $http) {
+    var self = this;
+    var timeOutSet = false;
+    var translateKeys = [];
+
+    this.apiTranslations = {};
+    this.add = function (translationId) {
+        if (angular.isString(translationId) && translationId.trim() !== '') {
+            translateKeys.push(translationId.trim());
+            translateKeys = _.uniq(translateKeys);
+        }
+    };
+
+    this.getTranslationKeys = function () {
+        var result = translateKeys;
+        translateKeys = [];
+        return result;
+    };
+
+    this.getTranslationsFromApi = function (languageCode) {
+        var deferred = $q.defer();
+
+        if (timeOutSet) {
+            deferred.reject('waiting');
+        }
+        timeOutSet = true;
+        $timeout(function () {
+            var translations = self.getTranslationKeys();
+            $http.post(apiConfig.getUrl('i18n'), translations).success(function (data) {
+                deferred.resolve(data);
+            }).error(function (data) {
+                deferred.reject(data);
+            });
+            $translate.refresh(languageCode);
+            timeOutSet = false;
+        }, 100, false);
+
+        return deferred.promise;
+    }
+
+    this.translateThroughApi = function (languageCode) {
+        if (timeOutSet === false) {
+            this.getTranslationsFromApi(languageCode).then(function (data) {
+                self.apiTranslations = data;
+                $translate.refresh();
+            });
+        }
+    }
+}]);
+
+d2Translate.config(["$translateProvider", function ($translateProvider) {
+    $translateProvider.useLoader('d2LanguageLoader');
+    $translateProvider.preferredLanguage('en');
+    $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
+}]);
 "use strict";
 /**
  * @ngdoc module

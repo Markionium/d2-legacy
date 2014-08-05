@@ -1,59 +1,37 @@
-d2Translate.factory('d2LanguageLoader', function ($q, $http, apiConfig, translateApi) {
+d2Translate.factory('d2LanguageLoader', function ($q, $http, translateApi) {
     var loadedValues = {};
 
-    function getStaticFiles(key) {
-        var deferred = $q.defer();
-
-        if (loadedValues[key]) {
-            deferred.resolve(loadedValues[key]);
-        } else {
-            $http.get('common/i18n/' + key + '.json').success(function (data) {
-                loadedValues[key] = data;
-                deferred.resolve(data);
-            }).error(function (data) {
-                deferred.reject(key);
-            });
-        }
-        return deferred.promise;
-    }
-
-    function getTranslationsFromApi(translationKeys) {
-        var deferred = $q.defer();
-        $http.post(apiConfig.getUrl('i18n'), translationKeys).success(function (data) {
-            deferred.resolve(data);
-        }).error(function (data) {
-            deferred.reject(data);
-        });
-        return deferred.promise;
-    }
-
     return function (options, $uses) {
-        var translationKeys = translateApi.getTranslationKeys(),
-            promises = [];
-        promises.push(getStaticFiles(options.key));
+        var deferred = $q.defer();
 
-        if (translationKeys.length > 0) {
-            promises.push(getTranslationsFromApi(translationKeys));
+        if (loadedValues[options.key]) {
+            loadedValues[options.key] = angular.extend(translateApi.apiTranslations, loadedValues[options.key]);
+            deferred.resolve(angular.extend(translateApi.apiTranslations, loadedValues[options.key]));
+        } else {
+            $http.get('common/i18n/' + options.key + '.json').success(function (data) {
+                loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
+                deferred.resolve(loadedValues[options.key]);
+            }).error(function (data) {
+                    deferred.reject(options.key);
+                });
         }
-        return $q.all(promises).then(function (data) {
-            var result = {};
-            _.map(data, function (item) {
-                _.merge(result, item);
-            });
-            return _.merge(result);
-        });
+        return deferred.promise;
     };
 });
 
 d2Translate.factory('d2MissingTranslationHandler', function ($translate, translateApi) {
     return function (translationId, $uses) {
-        translateApi.add('translationId');
-        $translate.refresh();
+        translateApi.add(translationId);
+        translateApi.translateThroughApi($uses)
     }
 });
 
-d2Translate.service('translateApi', function () {
+d2Translate.service('translateApi', function ($q, $translate, apiConfig, $timeout, $http) {
+    var self = this;
+    var timeOutSet = false;
     var translateKeys = [];
+
+    this.apiTranslations = {};
     this.add = function (translationId) {
         if (angular.isString(translationId) && translationId.trim() !== '') {
             translateKeys.push(translationId.trim());
@@ -62,8 +40,40 @@ d2Translate.service('translateApi', function () {
     };
 
     this.getTranslationKeys = function () {
-        return translateKeys;
+        var result = translateKeys;
+        translateKeys = [];
+        return result;
     };
+
+    this.getTranslationsFromApi = function (languageCode) {
+        var deferred = $q.defer();
+
+        if (timeOutSet) {
+            deferred.reject('waiting');
+        }
+        timeOutSet = true;
+        $timeout(function () {
+            var translations = self.getTranslationKeys();
+            $http.post(apiConfig.getUrl('i18n'), translations).success(function (data) {
+                deferred.resolve(data);
+            }).error(function (data) {
+                deferred.reject(data);
+            });
+            $translate.refresh(languageCode);
+            timeOutSet = false;
+        }, 100, false);
+
+        return deferred.promise;
+    }
+
+    this.translateThroughApi = function (languageCode) {
+        if (timeOutSet === false) {
+            this.getTranslationsFromApi(languageCode).then(function (data) {
+                self.apiTranslations = data;
+                $translate.refresh();
+            });
+        }
+    }
 });
 
 d2Translate.config(function ($translateProvider) {
