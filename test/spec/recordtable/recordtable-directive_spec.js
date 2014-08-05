@@ -82,7 +82,7 @@ describe('Directive: recordtable', function () {
                 headers = tableHead.children(),
                 firstHeader = headers.first().children().first();
 
-            expect(firstHeader.text()).toBe('Name');
+            expect(firstHeader.text()).toBe('name');
         });
 
         it('should add a column header for each of the keys in the data objects', function () {
