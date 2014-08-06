@@ -60,7 +60,7 @@ describe('Directive: RecordTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        expect(element.find('a').length).toBe(1);
+        expect(element.find('thead a').length).toBe(1);
     });
 
     it('should place the header text in the clickable header', function () {
@@ -71,7 +71,7 @@ describe('Directive: RecordTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        expect(element.find('a').text()).toBe('HeaderColumnText');
+        expect(element.find('thead a').text()).toBe('HeaderColumnText');
     });
 
     it('should only have one child when sortable', function () {

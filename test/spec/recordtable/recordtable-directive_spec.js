@@ -2,6 +2,8 @@
 describe('Directive: recordtable', function () {
     var element, scope;
 
+    beforeEach(module('ui.bootstrap.tpls'));
+    beforeEach(module('ui.bootstrap.pagination'));
     beforeEach(module('d2-recordtable'));
     beforeEach(module('d2-rest'));
     beforeEach(module('common/recordtable/recordtable.html'));
@@ -112,6 +114,22 @@ describe('Directive: recordtable', function () {
             expect(firstTableBodyRowValues.first().text()).toBe('Mark');
             expect(firstTableBodyRowValues.last().text()).toBe('1');
         });
+
+        describe('table footer', function () {
+            var tableFoot;
+
+            beforeEach(function () {
+                tableFoot = element.find('table tfoot');
+            });
+
+            it('should have a section tfoot', function () {
+                expect(tableFoot.length).toBe(1);
+            });
+
+            it('should have one td', function () {
+                expect(tableFoot.find('td').length).toBe(1);
+            });
+        });
     });
 
     describe('configuration', function () {
@@ -198,4 +216,78 @@ describe('Directive: recordtable', function () {
             expect(headers.length).toBe(5);
         });
     });
+
+    describe('pagination', function () {
+        var scope,
+            $httpBackend,
+            $rootScope,
+            paginationElement,
+            controller;
+
+        beforeEach(inject(function (d2Api, _$httpBackend_, _$rootScope_, $compile) {
+            $httpBackend = _$httpBackend_;
+            $rootScope =  _$rootScope_;
+            scope = $rootScope.$new();
+
+            $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+
+            scope.tableConfig = {};
+            scope.tableData = d2Api.indicators;
+
+            $compile(element)(scope);
+            scope.$digest();
+
+            paginationElement = element.find('table tfoot td').children().first();
+            controller = element.controller('recordTable');
+
+            $httpBackend.flush();
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation ();
+            $httpBackend.verifyNoOutstandingRequest ();
+        });
+
+        it('should display the pagination in the footer', function () {
+            expect(paginationElement.prop('tagName')).toBe('UL');
+        });
+
+        it('should add two page links', function () {
+            expect(paginationElement.find('li').length).toBe(6);
+        });
+    });
+});
+
+describe('Directive: recordtable', function () {
+    var element, scope, d2Api;
+
+    beforeEach(module('ui.bootstrap.tpls'));
+    beforeEach(module('ui.bootstrap.pagination'));
+    beforeEach(module('d2-recordtable'));
+    beforeEach(module('d2-rest'));
+    beforeEach(module('common/recordtable/recordtable.html'));
+
+    beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+        var tableConfig = {};
+
+        d2Api = _d2Api_;
+        scope = $rootScope.$new();
+
+        scope.tableConfig = tableConfig;
+
+        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+
+        $compile(element)(scope);
+        scope.$digest();
+    }));
+
+    it('should add the data when it becomes available', inject(function ($httpBackend) {
+        $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+        expect(element.find('tbody tr').length).toBe(0);
+
+        scope.tableData = d2Api.indicators;
+        scope.$apply();
+
+        //expect(element.find('tbody tr').length).toBe(50);
+    }));
 });

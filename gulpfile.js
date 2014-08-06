@@ -56,14 +56,14 @@ var benchMarkTests = true;
 var files = [
     //Vendor
     'test/vendor/jquery/jquery.js',
+    'test/vendor/lodash/dist/lodash.js',
+
     'test/vendor/angular/angular.js',
     'test/vendor/angular-mocks/angular-mocks.js',
 
-    'test/vendor/lodash/dist/lodash.js',
-
     'test/vendor/restangular/dist/restangular.js',
-
     'test/vendor/angular-translate/angular-translate.js',
+    'test/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
 
     // Source files
     'src/**/*.js',

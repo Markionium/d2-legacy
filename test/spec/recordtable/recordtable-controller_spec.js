@@ -284,6 +284,8 @@ describe('Controller: Datatable with remote data', function () {
             $q: $q
         });
 
+        spyOn(controller, 'processMetaData').andCallThrough();
+
         controller.parseTableData();
         $timeout.flush();
         $httpBackend.flush();
@@ -341,6 +343,64 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.flush();
 
         expect(scope.items.length).toBe(50);
+    });
+
+    describe('meta data', function () {
+        it('should put the meta data on the scope after loading the remote data', function () {
+            expect(scope.meta).toBeDefined();
+        });
+
+        it('should call process meta data when the meta data is available', function () {
+            expect(controller.processMetaData).toHaveBeenCalledOnce();
+        });
+
+        it('should parse the pager data', function () {
+            expect(scope.pager).toBeDefined();
+        });
+
+        it('should set the pages number onto the pager', function () {
+            expect(scope.pager.pageCount).toBe(2);
+        });
+
+        it('should set the current page onto the pager', function () {
+            expect(scope.pager.currentPage).toBe(1);
+        });
+
+        it('should set the result total onto the pager', function () {
+            expect(scope.pager.resultTotal).toBe(53);
+        });
+
+        it('should set the amount of items per page onto the pager', function () {
+            expect(scope.pager.itemsPerPage).toBe(50);
+        });
+
+        it('should call the switchPage method when currentPage is changed', function () {
+            spyOn(controller, 'switchPage');
+
+            scope.pager.currentPage = 2;
+            scope.$apply();
+
+            expect(controller.switchPage).toHaveBeenCalledOnce();
+        });
+    });
+
+    describe('page switcher', function () {
+        it('should do a call to the api when a page is switched', function () {
+            $httpBackend.expectGET('/dhis/api/indicators?page=2').respond(200, fixtures.api.indicators.page2);
+            scope.pager.currentPage = 2;
+            scope.$apply();
+            $httpBackend.flush();
+        });
+
+        it('should not add the page param on the first page', function () {
+            $httpBackend.expectGET('/dhis/api/indicators?page=2').respond(200, fixtures.api.indicators.page2);
+            scope.pager.currentPage = 2;
+            $httpBackend.flush();
+
+            $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
+            scope.pager.currentPage = 1;
+            $httpBackend.flush();
+        });
     });
 
     describe('timer function', function () {
@@ -425,4 +485,3 @@ describe('Controller: Datatable generation of headers', function () {
         expect(controller.getHeadersFromData).toHaveBeenCalledOnce();
     });
 });
-

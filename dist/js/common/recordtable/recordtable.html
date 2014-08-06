@@ -10,5 +10,12 @@
                 <td ng-repeat="column in columns">{{ item[column.name]}}</td>
             </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <td>
+                    <pagination boundary-links="true" items-per-page="pager.itemsPerPage" total-items="pager.resultTotal" ng-model="pager.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>

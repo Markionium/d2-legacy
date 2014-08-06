@@ -80,7 +80,7 @@ d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-conf
  * @ngdoc module
  * @name d2-recordtable
  *
- * @requires d2-filters, d2-typeahead
+ * @requires d2-filters, d2-typeahead, ui.bootstrap.tpls, ui.bootstrap.pagination
  *
  * @description
  *
@@ -95,7 +95,12 @@ d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-conf
  * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
  * dhis2 rest services.
  */
-d2RecordTable = angular.module('d2-recordtable', ['d2-filters', 'd2-typeahead']);
+d2RecordTable = angular.module('d2-recordtable', [
+    'd2-filters',
+    'd2-typeahead',
+    'ui.bootstrap.tpls',
+    'ui.bootstrap.pagination'
+]);
 
 /**
  * @ngdoc module
@@ -465,7 +470,8 @@ d2IntroList.directive('introList', function () {
  * TODO: Document the rest of this Controller.
  */
 d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$timeout", "typeAheadService", function ($scope, $q, $filter, $timeout, typeAheadService) {
-    var self = this;
+    var self = this,
+        timeout = false;
 
     this.localData = true;
 
@@ -473,6 +479,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
     this.typeAheadCache = typeAheadService;
 
     $scope.items = [];
+    $scope.pager = {};
 
     /**
      * @ngdoc method
@@ -534,14 +541,17 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      * Wraps the table data is a promise and adds the processData handler
      */
     this.parseTableData = function () {
+        var promise;
         //If tableData is a d2 service
         if (angular.isArray($scope.tableData) && $scope.tableData.getList !== undefined) {
             this.localData = false;
             $scope.d2Service = $scope.tableData;
-            $scope.tableData = $scope.d2Service.getList(this.getRemoteParams());
+            promise = $scope.d2Service.getList(this.getRemoteParams());
+        } else {
+            promise = $scope.tableData;
         }
 
-        $q.when($scope.tableData).then(this.processData.bind(this));
+        $q.when(promise).then(this.processData.bind(this));
 
         return this;
     };
@@ -570,6 +580,10 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
         if ($scope.pageItems) {
             $scope.items = $scope.items.slice(0, $scope.pageItems);
         }
+        if (data && data.meta) {
+            $scope.meta = data.meta;
+            this.processMetaData();
+        }
 
         angular.forEach($scope.columns, function (column) {
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
@@ -577,6 +591,33 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
 
         return this;
     };
+
+    //TODO: Document
+    this.processMetaData = function () {
+        this.setUpPager();
+    }
+
+    this.setUpPager = function () {
+        var self = this;
+
+        if (! $scope.pager.pageCount) {
+            $scope.pager.pageCount = $scope.meta.pager.pageCount;
+            $scope.pager.itemsPerPage = $scope.items.length;
+            $scope.pager.resultTotal = $scope.meta.pager.total;
+        }
+
+        $scope.pager.currentPage = $scope.meta.pager.page;
+    }
+
+    this.getCurrentPageParams = function () {
+        if ($scope.pager.currentPage > 1) {
+            return $scope.pager.currentPage;
+        }
+    }
+
+    this.switchPage = function () {
+        this.requestNewDataFromService();
+    }
 
     /**
      * @ngdoc method
@@ -653,23 +694,23 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
 
     this.getRemoteParams = function () {
         var remoteParams = {},
-            remoteFilters = this.getRemoteFilters();
+            remoteFilters = this.getRemoteFilters(),
+            pagerParam = this.getCurrentPageParams();
 
         if (remoteFilters) {
             remoteParams.filter = remoteFilters;
         }
 
-        if (remoteFilters) {
-            return remoteParams;
+        if (pagerParam) {
+            remoteParams.page = pagerParam;
         }
-        return undefined;
+        return remoteParams;
     };
 
     this.requestNewDataFromService = function () {
         var remoteParams = this.getRemoteParams();
 
-        $scope.tableData = $scope.d2Service.getList(remoteParams);
-        $q.when($scope.tableData).then(this.processData.bind(this));
+        $q.when($scope.d2Service.getList(remoteParams)).then(this.processData.bind(this));
     }
 
     this.doLocalFiltering = function () {
@@ -712,14 +753,12 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
         if (!column || !column.name || !angular.isString(column.name)) {
             return []
         }
-        ;
 
         return _.map($scope.items, function (item) {
             return item[column.name];
         });
     };
 
-    var timeout = false;
     $scope.$watch('columns', function (newValue, oldValue) {
         if (oldValue !== newValue) {
             if (self.localData) {
@@ -736,8 +775,19 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
                 }
             }
         }
-        ;
     }, true);
+
+    $scope.$watch('pager.currentPage', function (newVal, oldVal) {
+        if (oldVal && newVal !== oldVal) {
+            self.switchPage();
+        }
+    });
+
+    $scope.$watch('tableData', function (newValue, oldValue) {
+        if (newValue !== oldValue) {
+            self.parseTableData();
+        }
+    })
 }]);
 
 /**

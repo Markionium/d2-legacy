@@ -51,7 +51,7 @@ d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-conf
  * @ngdoc module
  * @name d2-recordtable
  *
- * @requires d2-filters, d2-typeahead
+ * @requires d2-filters, d2-typeahead, ui.bootstrap.tpls, ui.bootstrap.pagination
  *
  * @description
  *
@@ -66,7 +66,12 @@ d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-conf
  * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
  * dhis2 rest services.
  */
-d2RecordTable = angular.module('d2-recordtable', ['d2-filters', 'd2-typeahead']);
+d2RecordTable = angular.module('d2-recordtable', [
+    'd2-filters',
+    'd2-typeahead',
+    'ui.bootstrap.tpls',
+    'ui.bootstrap.pagination'
+]);
 
 /**
  * @ngdoc module
