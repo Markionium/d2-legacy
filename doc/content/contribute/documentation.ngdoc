@@ -86,6 +86,29 @@ In line code can be specified by enclosing the code in back-ticks (\`).
 A block of multi-line code can be enclosed in triple back-ticks (\`\`\`) but it is formatted better if
 it is enclosed in &lt;pre&gt;...&lt;/pre&gt; tags and the code lines themselves are indented.
 
+## Notes
+One special thing we have implemented that is different from the standard ngdoc tags is the inline `@note` tag.
+The note tag can be used to add notes to the documentation pages.
+
+To add notes use the note tag in the following format.
+```{@note <type/level> <title>
+          <content>
+   }```
+
+The `<type/level>` variable will take the first word after `@note` and can contain `danger`, `warning` or `info`.
+The `<title>` will take up the rest of the line and be used for the title.
+`<content>` will be the rest of the lines until the end of the note at `}`. This will be used
+for the content of the message box.
+
+A note like this:
+<pre>
+&lcub;@note warning This is the title
+Here you can write some content for this warning. and use stuff like `code`.&rcub;
+</pre>
+
+This note will look like:
+{@note warning This is the title
+Here you can write some content for this warning. and use stuff like `code`.}
 
 ## Example taken from the library
 <pre class="prettyprint">
