@@ -99,7 +99,7 @@ angular.module('docsApp', [
     if ( currentPage ) {
       $scope.currentArea = currentPage && NG_NAVIGATION[currentPage.area];
       var pathParts = currentPage.path.split('/');
-      var breadcrumb = $scope.breadcrumb = [];
+      var breadcrumb = $scope.breadcrumb = [{name: 'Home', url: "/home"}];
       var breadcrumbPath = '';
       angular.forEach(pathParts, function(part) {
         breadcrumbPath += part;
@@ -127,7 +127,7 @@ angular.module('docsApp', [
   $cookies.platformPreference = $cookies.platformPreference || 'gitUnix';
 
   if (!$location.path() || INDEX_PATH.test($location.path())) {
-    $location.path('/api').replace();
+    $location.path('/home').replace();
   }
 
   // bind escape to hash reset callback

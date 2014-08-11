@@ -129,11 +129,32 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         return this;
     };
 
-    //TODO: Document
+    /**
+     * @ngdoc method
+     * @name RecordTableController#processMetaData
+     *
+     * @description
+     *
+     * Method that calls all the meta data processing for the record table
+     * Currently this sets up the pager for the data table.
+     */
     this.processMetaData = function () {
         this.setUpPager();
-    }
+    };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#setUpPager
+     *
+     * @description
+     *
+     * Sets pager data onto the $scope.pager.
+     * It will only set the pager data when no $scope.pager.pageCount is available.
+     *
+     * Additionally it updates the $scope.pager.currentPage to the current page.
+     *
+     * TODO: perhaps we should have separate calls for setting this data?
+     */
     this.setUpPager = function () {
         var self = this;
 
@@ -144,17 +165,35 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         }
 
         $scope.pager.currentPage = $scope.meta.pager.page;
-    }
+    };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#getCurrentPageParams
+     *
+     * @returns {Number|undefined}
+     *
+     * @description
+     *
+     * Return the currentpage number or undefined when no page number is available.
+     */
     this.getCurrentPageParams = function () {
         if ($scope.pager.currentPage > 1) {
             return $scope.pager.currentPage;
         }
-    }
+    };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#switchPage
+     *
+     * @description
+     *
+     * Method to call when switching a page. It will call the {Link: RecordTableController#requestNewDataFromService} method.
+     */
     this.switchPage = function () {
         this.requestNewDataFromService();
-    }
+    };
 
     /**
      * @ngdoc method
@@ -203,6 +242,22 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         return _.filter($scope.columns, 'searchable');
     };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#getFilterObject
+     * @returns {Object|False}
+     *
+     * @description
+     *
+     * Returns an object with the filters that are set. For example:
+     * <pre><code>
+     *     {
+     *       "name": "ANC"
+     *     }
+     * </code></pre>
+     *
+     * When no filters are set it will return false.
+     */
     this.getFilterObject = function () {
         var filters = this.getColumnsWithFilters(),
             filterObject = {};
@@ -216,6 +271,28 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         return filterObject;
     };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#getRemoteFilters
+     *
+     * @returns {Array|False} Returns an array of filter strings or false if no filters are set.
+     *
+     * @description
+     *
+     * The method takes the filters that are returned from {Link: RecordTableController#getRemoteFilters}
+     * and puts them in a format used for the dhis2 web api.
+     *
+     * Example:
+     * <pre><code>
+     *     //This filter structure
+     *     {
+     *      "name": "ANC"
+     *     }
+     *
+     *     //Would be translated to
+     *     ["name:like:ANC"]
+     * </code></pre>
+     */
     this.getRemoteFilters = function () {
         var filters = [];
 
@@ -229,6 +306,18 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         return filters.length > 0 ? filters : undefined;
     };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#getRemoteParams
+     *
+     * @returns {{}} An object with remote parameters.
+     *
+     * @description
+     *
+     * Returns an object with remote parameters. Currently this object will contain
+     * a `filter` and/or a `page` properties.
+     *
+     */
     this.getRemoteParams = function () {
         var remoteParams = {},
             remoteFilters = this.getRemoteFilters(),
@@ -244,18 +333,49 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         return remoteParams;
     };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#requestNewDataFromService
+     *
+     * @description
+     *
+     * It calls the {Link: RecordTableController#requestNewDataFromService} and asks the
+     * the api service for a new dataset for the table.
+     */
     this.requestNewDataFromService = function () {
         var remoteParams = this.getRemoteParams();
 
         $q.when($scope.d2Service.getList(remoteParams)).then(this.processData.bind(this));
-    }
+    };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#doLocalFiltering
+     *
+     * @description
+     *
+     * Filter the `$scope.items` items by the filters that are set.
+     *
+     * Note: Local data
+     * This will be used for local data.
+     */
     this.doLocalFiltering = function () {
         if (this.getFilterObject()) {
             $scope.items = $filter('filter')(this.origData, this.getFilterObject());
         }
     };
 
+    /**
+     * @ngdoc
+     * @name RecordTableController#doLocalSorting
+     *
+     * @description
+     *
+     * Sort the local data in `$scope.items` based on the sorting set on the columns.
+     *
+     * Note: Local data
+     * This will be used for local data.
+     */
     this.doLocalSorting = function () {
         var sorting = _.filter($scope.columns, 'sort'),
             sortBy = _.pluck(sorting, 'name'),
