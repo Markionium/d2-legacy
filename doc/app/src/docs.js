@@ -99,9 +99,14 @@ angular.module('docsApp', [
     if ( currentPage ) {
       $scope.currentArea = currentPage && NG_NAVIGATION[currentPage.area];
       var pathParts = currentPage.path.split('/');
-      var breadcrumb = $scope.breadcrumb = [{name: 'Home', url: "/home"}];
+      var breadcrumb = $scope.breadcrumb = [
+          { name: 'Home', url: "/home" }
+      ];
       var breadcrumbPath = '';
       angular.forEach(pathParts, function(part) {
+          if (part === 'home') {
+              return;
+          }
         breadcrumbPath += part;
         breadcrumb.push({ name: (NG_PAGES[breadcrumbPath]&&NG_PAGES[breadcrumbPath].name) || part, url: breadcrumbPath });
         breadcrumbPath += '/';

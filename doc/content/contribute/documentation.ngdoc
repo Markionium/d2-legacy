@@ -1,0 +1,124 @@
+@ngdoc overview
+@name Documentation
+@description
+
+# Writing documentation for D2JS
+
+Documentation blocks for D2JS use the angular doctype. This is basically
+jsdoc with some additions. To indicate that you want to write a piece of documentation
+for D2JS. Start your comment block with `@ngdoc`.
+
+Like so:
+<pre class="prettyprint">
+  <code class="lang-js">/**
+ * @ngdoc
+ */</code>
+</pre>
+
+## The following comment annotations are supported.
+The AngularJS project uses a form of [jsdoc](http://usejsdoc.org/) for all of its documentation.
+
+This means that all the docs are stored inline in the source code and so is kept in sync as the code changes.
+
+*Note: ngdoc and its processing utility is only related to the documentation of the AngularJS project and is not part of the AngularJS distribution JavaScript files.*
+
+### Standard supported jsdoc directives
+The ngdoc utility has basic support for many of the standard jsdoc directives.  But in particular it is
+interested in the following directives:
+
+* `@name name` - the name of the ngdoc document
+* `@param {type} name description` - describes a parameter of a function
+* `@returns {type} description` - describes what a function returns
+* `@requires` - normally indicates that a JavaScript module is required; in an Angular service it is used to describe what other services this service relies on
+* `@property` - describes a property of an object
+* `@description` - used to provide a description of a component in markdown
+* `@link` - specifies a link to a URL or a type in the API reference. **NOTE**: to link to `ng.$rootScope.Scope#$on` insert `methods_` between `#` and the actual method name. Same goes for properties and events.
+* `@example` - specifies an example that will be formatted as a code block
+* `@deprecated` - specifies that the following code is deprecated and should not be used
+* `@this` - specifies what `this` refers to in the context of a documented function
+
+
+The `type` must be wrapped in `{}` curly braces; e.g. {Object|Array}
+Parameters can be made optional by putting the `[name]` in square brackets; e.g. `@param {boolean} [ownPropsOnly=false]`
+Descriptions can contain markdown formatting
+
+### AngularJS specific ngdoc directives
+In addition to the standard jsdoc directives, there are a number that are specific to the Angular
+code-base:
+
+* `@ngdoc` - specifies the type of thing being documented. See below for more detail.
+* `@scope` - specifies that the documented directive will create a new scope
+* `@priority` - specifies the documented directive's priority
+* `@animations` - specifies the animations that the documented directive supports
+* `@restrict` - specifies how directives should be shown in the usage section. For example, for [E]lement, [A]ttribute, and [C]lass, use `@restrict ECA`
+* `@methodOf type` - links a method to the object/service where it is defined
+* `@propertyOf type` - links a property to the object/service where it is defined
+* `@eventOf type` - links a method to the object/service where it is defined
+* `@eventType emit|broadcast` - specifies whether the event is emitted or broadcast
+
+### The `@ngdoc` Directive
+This directive helps to specify the template used to render the item being documented.  For instance,
+a directive would have different properties to a filter and so would be documented differently.  The
+commonly used types are:
+
+* `overview` - Give an overview of the file/module being documented
+* `interface` - Describe the interface of an object or service, specified by the `@name` directive.   *(abstract: use `@object` or `@service` instead)*
+  * `service` - Describe an AngularJS service, such as `$compile` or `$http`, for instance.
+  * `object` - Describe a well defined object (often exposed as a service)
+    * `function` - Describe a function that will be available to other methods *(such as a helper function within the ng module)*
+    * `method` - Describe a method on an object/service
+    * `property` - Describe a property on an object/service
+    * `event` - Describe an AngularJS event that will propagate through the `$scope` tree.
+* `directive` - Describe an AngularJS  directive
+* `filter` - Describe an AngularJS filter
+* `inputType` - Describe a specific type of AngularJS input directive (such as `text`, `email` or `checkbox`)
+* `error` - Describe a minErr error message
+
+In addition there is support for the following `@ngdoc` types. But they do not seem to appear in the
+current documentation:
+* `parameters`
+* `returns`
+* `this`
+* `directiveInfo`
+
+## Code blocks
+In line code can be specified by enclosing the code in back-ticks (\`).
+A block of multi-line code can be enclosed in triple back-ticks (\`\`\`) but it is formatted better if
+it is enclosed in &lt;pre&gt;...&lt;/pre&gt; tags and the code lines themselves are indented.
+
+
+## Example taken from the library
+<pre class="prettyprint">
+  <code class="lang-js">/**
+ * &commat;ngdoc directive
+ * &commat;name recordTable
+ *
+ * &commat;restrict E
+ * &commat;scope
+ *
+ * &commat;description
+ *
+ * Flexible table directive to show data from an array of objects or a {@link d2-rest/d2Api} service.
+ *
+ * The table can be configured by setting the `tableConfig` attribute to an object on the `$scope`.
+ * The tableConfig object can contain a `columns` array with objects that describe the columns.
+ *
+ * An example of such a column config can look like
+ &lt;pre class="prettyprint"&gt;
+ &lt;code class="language-js"&gt;$scope.tableConfig = {
+            columns: [
+                { name: 'name', sortable: true, searchable: true },
+                { name: 'code', sortable: true, searchable: true },
+                { name: 'lastUpdated' }
+            ]
+        };&lt;/code&gt;
+ &lt;/pre&gt;
+ *
+ * The above example defines three columns. `name`, `code` and `lastUpdated`. The first two columns are
+ * marked to be sortable and searchable. Sortable will mean that the table can be sorted on the values
+ * in this column. (Sorting will be done in ASC and DESC order.
+ * Searchable means a input box will be added to the table column and the user can search through this table.
+ *
+ * When angular-ui is available the searchbox will also use the typeahead functionality.
+ */</code>
+</pre>
