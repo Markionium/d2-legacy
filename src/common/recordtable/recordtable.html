@@ -13,7 +13,7 @@
         <tfoot>
             <tr>
                 <td>
-                    <pagination boundary-links="true" items-per-page="pager.itemsPerPage" total-items="pager.resultTotal" ng-model="pager.currentPage" class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+                    <pagination boundary-links="true" items-per-page="pager.itemsPerPage" total-items="pager.resultTotal" ng-model="pager.currentPage" class="pagination-sm" previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate }}" first-text="{{ 'first' | translate }}" last-text="{{ 'last' | translate }}"></pagination>
                 </td>
             </tr>
         </tfoot>

@@ -49,6 +49,19 @@ d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-conf
 
 /**
  * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ */
+var d2TypeAhead = angular.module('d2-typeahead', []);
+
+/**
+ * @ngdoc module
  * @name d2-recordtable
  *
  * @requires d2-filters, d2-typeahead, ui.bootstrap.tpls, ui.bootstrap.pagination
@@ -98,7 +111,7 @@ d2BreadCrumbs = angular.module('d2-breadcrumbs', []);
  * # d2-introlist
  *
  * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
- * <a src="https://www.google.no/images/srpr/logo11w.png">
+ *
  */
 d2IntroList = angular.module('d2-introlist', []);
 
@@ -118,6 +131,15 @@ d2IntroList = angular.module('d2-introlist', []);
 d2HeaderBar = angular.module('d2-headerbar', []);
 
 //TODO: Filters has a too general name maybe?
+/**
+ * @ngdoc module
+ * @name d2-filters
+ *
+ * @description
+ *
+ * This module contains the basic filters that are supported in D2JS. A lot of these filters are general filters and
+ * they are used by the components in the library.
+ */
 d2Filters = angular.module('d2-filters', []);
 
 // Combine modules into a wrapper directive for easy inclusion

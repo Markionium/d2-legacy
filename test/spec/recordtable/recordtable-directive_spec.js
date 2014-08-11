@@ -6,6 +6,7 @@ describe('Directive: recordtable', function () {
     beforeEach(module('ui.bootstrap.pagination'));
     beforeEach(module('d2-recordtable'));
     beforeEach(module('d2-rest'));
+    beforeEach(module('d2-filters'));
     beforeEach(module('common/recordtable/recordtable.html'));
 
     beforeEach(inject(function ($rootScope) {
