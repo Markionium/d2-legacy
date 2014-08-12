@@ -21,7 +21,6 @@ d2BreadCrumbs.directive('breadCrumbs', function () {
         scope: {
             homeCrumb: "="
         },
-        //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controller: function ($scope, $location, breadCrumbsService) {
             $scope.crumbClick = function (crumb) {

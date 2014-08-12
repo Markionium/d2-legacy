@@ -39,6 +39,8 @@ var d2,
     d2HeaderBar,
     d2Directives,
     d2Translate,
+    d2ContextMenu,
+    d2DetailsBox,
     d2Config;
 
 d2 = {
@@ -75,6 +77,9 @@ d2Config = angular.module('d2-config', []);
 d2Rest = angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
 d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
+
+d2ContextMenu = angular.module('d2-contextmenu', []);
+d2DetailsBox =  angular.module('d2-detailsbox', []);
 
 /**
  * @ngdoc module
@@ -173,7 +178,7 @@ d2Filters = angular.module('d2-filters', []);
 
 // Combine modules into a wrapper directive for easy inclusion
 // TODO: look at if this is useful or not
-angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable']);
+angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox']);
 d2Services = angular.module('d2-services', ['d2-auth']);
 
 // Create the final d2 module that can be used when all functionality is required
@@ -231,7 +236,6 @@ d2BreadCrumbs.directive('breadCrumbs', function () {
         scope: {
             homeCrumb: "="
         },
-        //For testing this resolves to 'common/breadcrumbs/breadcrumbs.html'
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controller: ["$scope", "$location", "breadCrumbsService", function ($scope, $location, breadCrumbsService) {
             $scope.crumbClick = function (crumb) {
@@ -397,6 +401,54 @@ d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
         }
     }
 }]);
+
+d2ContextMenu.directive('contextMenu', function () {
+
+});
+/**
+ * @ngdoc directive
+ * @name detailsBox
+ *
+ * @restrict EA
+ * @scope
+ *
+ * @param {Array|Function} details
+ *
+ * @describe
+ *
+ * Displays a list of details that are passed in as
+ */
+d2DetailsBox.directive('detailsBox', function () {
+    return {
+        restrict: 'EA',
+        replace: true,
+        scope: {
+            details: "="
+        },
+        templateUrl: d2.scriptPath() + 'common/detailsbox/detailsbox.html',
+        controller: ["$scope", function ($scope) {
+            var self = this;
+
+            $scope.valueList = [];
+
+            this.parseDetailsToArray = function () {
+                $scope.valueList = [];
+                angular.forEach($scope.details, function (value, key) {
+                    this.push({
+                        "key": key,
+                        "value": value
+                    });
+                }, $scope.valueList);
+            };
+            this.parseDetailsToArray();
+
+            $scope.$watch('details', function (newVal, oldVal) {
+                if (newVal === oldVal) return;
+                self.parseDetailsToArray();
+            });
+        }]
+    };
+});
 
 d2Filters.filter('capitalize', function () {
     return function (input) {
