@@ -298,3 +298,47 @@ describe('Directive: recordtable', function () {
         expect(element.find('tbody tr').length).toBe(50);
     }));
 });
+
+describe('Directive: record interaction', function () {
+    var element, scope, d2Api;
+
+    beforeEach(module('ui.bootstrap.tpls'));
+    beforeEach(module('ui.bootstrap.pagination'));
+    beforeEach(module('d2-recordtable'));
+    beforeEach(module('d2-rest'));
+    beforeEach(module('common/recordtable/recordtable.html'));
+
+    beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+        var tableConfig = {
+            rowClick: jasmine.createSpy()
+        };
+
+        d2Api = _d2Api_;
+        scope = $rootScope.$new();
+
+        scope.tableConfig = tableConfig;
+        scope.tableData = [
+                { name: "Mark", desk: 1 },
+                { name: "Lars", desk: 2 },
+                { name: "Morten", desk: 3 }
+            ];
+
+
+        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+
+        $compile(element)(scope);
+        scope.$digest();
+    }));
+
+    it('should call rowClick function on the config when clicking a row', function () {
+        element.find('tbody tr').first().click();
+
+        expect(scope.tableConfig.rowClick).toHaveBeenCalledOnce();
+    });
+
+    it('should pass the item to the rowclick function', function () {
+        element.find('tbody tr').first().click();
+
+        expect(scope.tableConfig.rowClick).toHaveBeenCalledWith(scope.tableData[0]);
+    });
+});

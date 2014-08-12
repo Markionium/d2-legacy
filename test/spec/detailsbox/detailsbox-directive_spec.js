@@ -80,3 +80,42 @@ describe('Details box', function () {
         expect(detailsElements.children('.details-box-content').first().text()).toBe('ANC 2nd visit');
     });
 });
+
+describe('Details box', function () {
+    var element,
+        scope;
+
+    beforeEach(module('d2-detailsbox'));
+    beforeEach(module('common/detailsbox/detailsbox.html'));
+
+    beforeEach(inject(function ($rootScope, $compile) {
+        scope = $rootScope.$new();
+
+        scope.headerList = ['shortName', 'domainType'];
+        scope.details = {
+            name: "ANC 1st visit",
+            "shortName": "ANC 1st",
+            "domainType": "AGGREGATE",
+            "numberType": "number"
+        };
+        scope.getDetails = function () {
+            return scope.details;
+        };
+
+        element = angular.element('<details-box details="getDetails()" headers="headerList" />');
+
+        $compile(element)(scope);
+        scope.$digest();
+    }));
+
+    it('should only show the items that are listed in the headerList', function () {
+        var detailsElements = element.children();
+
+        expect(detailsElements.length).toBe(2);
+        expect(detailsElements.children('.details-box-header').first().text()).toBe('shortName');
+        expect(detailsElements.children('.details-box-content').first().text()).toBe('ANC 1st');
+
+        expect(detailsElements.children('.details-box-header').last().text()).toBe('domainType');
+        expect(detailsElements.children('.details-box-content').last().text()).toBe('AGGREGATE');
+    });
+});

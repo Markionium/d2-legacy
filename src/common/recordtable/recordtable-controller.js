@@ -63,6 +63,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
 
         $scope.pageItems = tableConfig.pageItems;
         $scope.columns = tableConfig.columns || undefined;
+        $scope.rowClick = tableConfig.rowClick;
 
         return this;
     };
