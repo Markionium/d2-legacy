@@ -256,6 +256,12 @@ describe('Directive: recordtable', function () {
         it('should add two page links', function () {
             expect(paginationElement.find('li').length).toBe(6);
         });
+
+        it('should display the next button correctly', function () {
+            var nextButton = $(paginationElement.find('li')[4]);
+
+            expect(nextButton.text()).toBe('Next');
+        });
     });
 });
 
@@ -287,8 +293,8 @@ describe('Directive: recordtable', function () {
         expect(element.find('tbody tr').length).toBe(0);
 
         scope.tableData = d2Api.indicators;
-        scope.$apply();
+        $httpBackend.flush();
 
-        //expect(element.find('tbody tr').length).toBe(50);
+        expect(element.find('tbody tr').length).toBe(50);
     }));
 });

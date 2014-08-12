@@ -1,16 +1,3 @@
-function applyScope(scope, time) {
-    return inject(function ($timeout) {
-        scope.$apply();
-        $timeout.flush(time);
-    });
-}
-
-function flushTime(time) {
-    return inject(function ($timeout) {
-        $timeout.flush(time);
-    });
-}
-
 describe('Controller: Datatable', function () {
     var scope,
         controller,
@@ -24,7 +11,7 @@ describe('Controller: Datatable', function () {
         ];
 
     beforeEach(module('d2-recordtable'));
-    beforeEach(inject(function($controller, $rootScope, $q) {
+    beforeEach(inject(function ($controller, $rootScope, $q) {
         scope = $rootScope.$new();
 
         scope.tableData = sampleData;
@@ -187,7 +174,9 @@ describe('Controller: Datatable', function () {
 
     it('should call the remote filtering when data is not local', function () {
         //Fake that the data is a d2-rest service
-        scope.tableData.getList = function () { return sampleData };
+        scope.tableData.getList = function () {
+            return sampleData
+        };
 
         controller.parseTableData();
         applyScope(scope);
@@ -205,7 +194,9 @@ describe('Controller: Datatable', function () {
 
     it('should request the remote params when a filter is changed', inject(function ($timeout) {
         //Fake that the data is a d2-rest service
-        scope.tableData.getList = function () { return sampleData };
+        scope.tableData.getList = function () {
+            return sampleData
+        };
         controller.parseTableData();
         applyScope(scope);
 
@@ -251,7 +242,7 @@ describe('Controller: Datatable', function () {
         controller.parseTableData();
         applyScope(scope);
 
-        actualValues = controller.getValuesForColumn( { name: {} } );
+        actualValues = controller.getValuesForColumn({ name: {} });
 
         expect(actualValues).toEqual(expectedValues);
     });
@@ -272,9 +263,9 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
         scope.columns = [
-                { name: 'name', sortable: true, sort: 'asc', searchable: true },
-                { name: 'code', sortable: true },
-                { name: 'lastUpdated' }
+            { name: 'name', sortable: true, sort: 'asc', searchable: true },
+            { name: 'code', sortable: true },
+            { name: 'lastUpdated' }
         ];
 
         scope.tableData = d2Api.indicators;
@@ -292,8 +283,8 @@ describe('Controller: Datatable with remote data', function () {
     }));
 
     afterEach(function () {
-        $httpBackend.verifyNoOutstandingExpectation ();
-        $httpBackend.verifyNoOutstandingRequest ();
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
     });
 
     /**
@@ -303,7 +294,6 @@ describe('Controller: Datatable with remote data', function () {
     it('should call the sort method on the service when sorting is changed', function () {
         expect(scope.items[0].name).toBe('ANC 1 Coverage');
     });
-
 
 
     it('should call the service with the filters', function () {
@@ -343,45 +333,6 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.flush();
 
         expect(scope.items.length).toBe(50);
-    });
-
-    describe('meta data', function () {
-        it('should put the meta data on the scope after loading the remote data', function () {
-            expect(scope.meta).toBeDefined();
-        });
-
-        it('should call process meta data when the meta data is available', function () {
-            expect(controller.processMetaData).toHaveBeenCalledOnce();
-        });
-
-        it('should parse the pager data', function () {
-            expect(scope.pager).toBeDefined();
-        });
-
-        it('should set the pages number onto the pager', function () {
-            expect(scope.pager.pageCount).toBe(2);
-        });
-
-        it('should set the current page onto the pager', function () {
-            expect(scope.pager.currentPage).toBe(1);
-        });
-
-        it('should set the result total onto the pager', function () {
-            expect(scope.pager.resultTotal).toBe(53);
-        });
-
-        it('should set the amount of items per page onto the pager', function () {
-            expect(scope.pager.itemsPerPage).toBe(50);
-        });
-
-        it('should call the switchPage method when currentPage is changed', function () {
-            spyOn(controller, 'switchPage');
-
-            scope.pager.currentPage = 2;
-            scope.$apply();
-
-            expect(controller.switchPage).toHaveBeenCalledOnce();
-        });
     });
 
     describe('page switcher', function () {

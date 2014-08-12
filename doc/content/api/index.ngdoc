@@ -24,10 +24,10 @@ Include the files installed into your project
   &lt;head&gt;
     &lt;!-- In the head place the d2 stylehsheet --&gt;
     &lt;link rel="stylesheet" type="text/css" href="bower_components/d2js/js/d2.css" /&gt;
-    &lt;span class="nocode">...&lt;/span&gt;
+    <span class="nocode">...</span>
   &lt;/head&gt;
   &lt;body&gt;
-    &lt;span class="nocode"&gt;...&lt;/span&gt;
+    <span class="nocode">...</span>
     &lt;!-- Either in the head or in the body place the d2 stylesheet --&gt;
     &lt;script src="bower_components/d2js/js/d2.min.js"&gt;&lt;/script&gt;
   &lt;/body&gt;

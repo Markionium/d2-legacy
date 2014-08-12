@@ -71,6 +71,7 @@ var files = [
 
     // Test related
     'test/utils/phantomjs-bind-fix.js',
+    'test/utils/testing.js',
     'test/matchers/**/*.js',
     'test/fixtures/**/*.js',
     'test/spec/**/*.js'
