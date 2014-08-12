@@ -88,6 +88,13 @@ module.exports = function(config) {
     config.merge('deployment', {
         environments: [{
             name: 'debug',
+            examples: {
+                commonFiles: {
+                    scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
+                    stylesheets: ['../deps/d2.css']
+                },
+                dependencyPath: '../deps/'
+            },
             scripts: [
                 '../angular.js',
                 '../angular-resource.js',
@@ -116,6 +123,13 @@ module.exports = function(config) {
         },
             {
                 name: 'default',
+                examples: {
+                    commonFiles: {
+                        scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
+                        stylesheets: ['../deps/d2.css']
+                    },
+                    dependencyPath: '../deps/'
+                },
                 scripts: [
                     'components/angular-' + getVersion('angular') + '/angular.js',
                     'components/angular-route-' + getVersion('angular-route') + '/angular-route.js',
@@ -145,6 +159,13 @@ module.exports = function(config) {
             },
             {
                 name: 'production',
+                examples: {
+                    commonFiles: {
+                        scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
+                        stylesheets: ['../deps/d2.css']
+                    },
+                    dependencyPath: '../deps/'
+                },
                 scripts: [
                     cdnUrl + '/angular.min.js',
                     cdnUrl + '/angular-resource.min.js',

@@ -1,5 +1,5 @@
 /* Set default settings for d2 directives */
-.d2, .breadcrumbs, .intro-list, .header-bar {
+.d2, .breadcrumbs, .intro-list, .header-bar, .details-box {
   box-sizing: border-box; }
 
 /* d2 directive style imports */
@@ -49,6 +49,14 @@
     font-size: 16px;
     position: relative;
     left: 50px; }
+
+/* Message colors */
+.details-box .details-box-header {
+  font-weight: bold;
+  color: #276696; }
+.details-box .details-box-content {
+  color: black;
+  margin-bottom: 10px; }
 
 /* Style utilities */
 /* Message colors */

@@ -3,10 +3,12 @@ var path = require('canonical-path');
 var packagePath = __dirname;
 
 var angularjsPackage = require('d2doc-dgeni-packages/d2doc');
+var examplesPackage = require('d2doc-dgeni-packages/examples');
 
 module.exports = function(config) {
 
   config = angularjsPackage(config);
+  config = examplesPackage(config);
   
   config.append('processing.processors', [
     //require('./processors/error-docs'),

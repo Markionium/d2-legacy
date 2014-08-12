@@ -37,7 +37,6 @@ var d2,
     d2BreadCrumbs,
     d2IntroList,
     d2HeaderBar,
-    d2Directives,
     d2Translate,
     d2ContextMenu,
     d2DetailsBox,
@@ -79,6 +78,16 @@ d2Auth = angular.module('d2-auth', ['d2-rest']);
 d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 d2ContextMenu = angular.module('d2-contextmenu', []);
+
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
 d2DetailsBox =  angular.module('d2-detailsbox', []);
 
 /**
@@ -416,10 +425,44 @@ d2ContextMenu.directive('contextMenu', function () {
  * The keys (property names) will become the headers and the values for those will become the content.
  * @param {Array=} headers This will have a list of the items that should be shown.
  *
- * @describe
+ * @description
  *
  * Displays a list of details that are passed in as an object. It will create a div for each of the properties.
  * Each of these will get a `header` and a `content` field.
+ *
+ * @example
+ This example specifies the most basic usage of the detailsbox. It passes an object and displays it's properties.
+
+ <example module="d2-detailsbox">
+ <file name="index.html">
+    <div ng-init="details = {
+            'name': 'ANC 1st visit',
+            'shortName': 'ANC 1st',
+            'domainType': 'AGGREGATE',
+            'numberType': 'number'
+        }">
+        <details-box details="details"></details-box>
+    </div>
+ </file>
+ </example>
+
+ @example
+ This example specifies a list of headers to be displayed. This will filter the detail object and omit any keys not
+ present in the headerList.
+
+ <example module="d2-detailsbox">
+ <file name="index.html">
+     <div ng-init="details = {
+                'name': 'ANC 1st visit',
+                'shortName': 'ANC 1st',
+                'domainType': 'AGGREGATE',
+                'numberType': 'number'
+            };
+            headerList=['shortName', 'numberType']">
+     <details-box details="details" headers="headerList"></details-box>
+     </div>
+ </file>
+ </example>
  */
 d2DetailsBox.directive('detailsBox', function () {
     return {

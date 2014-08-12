@@ -8,7 +8,6 @@ var d2,
     d2BreadCrumbs,
     d2IntroList,
     d2HeaderBar,
-    d2Directives,
     d2Translate,
     d2ContextMenu,
     d2DetailsBox,
@@ -50,6 +49,16 @@ d2Auth = angular.module('d2-auth', ['d2-rest']);
 d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 d2ContextMenu = angular.module('d2-contextmenu', []);
+
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
 d2DetailsBox =  angular.module('d2-detailsbox', []);
 
 /**

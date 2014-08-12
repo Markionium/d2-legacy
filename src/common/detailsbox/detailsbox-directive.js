@@ -9,10 +9,44 @@
  * The keys (property names) will become the headers and the values for those will become the content.
  * @param {Array=} headers This will have a list of the items that should be shown.
  *
- * @describe
+ * @description
  *
  * Displays a list of details that are passed in as an object. It will create a div for each of the properties.
  * Each of these will get a `header` and a `content` field.
+ *
+ * @example
+ This example specifies the most basic usage of the detailsbox. It passes an object and displays it's properties.
+
+ <example module="d2-detailsbox">
+ <file name="index.html">
+    <div ng-init="details = {
+            'name': 'ANC 1st visit',
+            'shortName': 'ANC 1st',
+            'domainType': 'AGGREGATE',
+            'numberType': 'number'
+        }">
+        <details-box details="details"></details-box>
+    </div>
+ </file>
+ </example>
+
+ @example
+ This example specifies a list of headers to be displayed. This will filter the detail object and omit any keys not
+ present in the headerList.
+
+ <example module="d2-detailsbox">
+ <file name="index.html">
+     <div ng-init="details = {
+                'name': 'ANC 1st visit',
+                'shortName': 'ANC 1st',
+                'domainType': 'AGGREGATE',
+                'numberType': 'number'
+            };
+            headerList=['shortName', 'numberType']">
+     <details-box details="details" headers="headerList"></details-box>
+     </div>
+ </file>
+ </example>
  */
 d2DetailsBox.directive('detailsBox', function () {
     return {

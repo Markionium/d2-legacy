@@ -30,6 +30,13 @@ var copyComponent = function(component, pattern, sourceFolder, packageFile) {
         .pipe(gulp.dest(outputFolder + '/components/' + component + '-' + version));
 };
 
+var copyExampleComponent = function(component, pattern, sourceFolder) {
+    pattern = pattern || '/**/*';
+    sourceFolder = sourceFolder || bowerFolder + '/' + component;
+    return gulp.src(sourceFolder + pattern)
+               .pipe(gulp.dest(outputFolder + '/examples/deps/'));
+};
+
 /***********************************************************************************************************************
  * General tasks
  **********************************************************************************************************************/
@@ -46,6 +53,11 @@ gulp.task('doc-build-app', function() {
     gulp.src('app/src/**/*.js')
         .pipe(concat('docs.js'))
         .pipe(gulp.dest(outputFolder + '/js/'));
+
+    copyExampleComponent('lodash', '/**/lodash.js', bowerFolder + '/lodash/dist');
+    copyExampleComponent('angular', '/**/*.js');
+    copyExampleComponent('d2js', '/js/**/*', '../dist/');
+    copyExampleComponent('d2js', '/css/**/*', '../dist/');
 });
 
 gulp.task('doc-assets', function() {
