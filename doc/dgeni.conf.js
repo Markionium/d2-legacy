@@ -91,7 +91,7 @@ module.exports = function(config) {
             examples: {
                 commonFiles: {
                     scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
-                    stylesheets: ['../deps/d2.css']
+                    stylesheets: ['../deps/bootstrap.css', '../deps/d2.css']
                 },
                 dependencyPath: '../deps/'
             },
@@ -126,7 +126,7 @@ module.exports = function(config) {
                 examples: {
                     commonFiles: {
                         scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
-                        stylesheets: ['../deps/d2.css']
+                        stylesheets: ['../deps/bootstrap.css', '../deps/d2.css']
                     },
                     dependencyPath: '../deps/'
                 },
@@ -162,7 +162,7 @@ module.exports = function(config) {
                 examples: {
                     commonFiles: {
                         scripts: [ '../deps/lodash.js', '../deps/angular.js', '../deps/d2.js' ],
-                        stylesheets: ['../deps/d2.css']
+                        stylesheets: ['../deps/bootstrap.css', '../deps/d2.css']
                     },
                     dependencyPath: '../deps/'
                 },

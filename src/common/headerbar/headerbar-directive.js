@@ -10,8 +10,13 @@
  * This directive represents the headerbar in dhis
  *
  * @example
- *
- * <d2-header-bar></d2-header-bar>
+ This example specifies the most basic usage of the detailsbox. It passes an object and displays it's properties.
+
+ <example module="d2-headerbar">
+ <file name="index.html">
+    <header-bar logo="https://www.dhis2.org/sites/all/themes/dhis/logo.png"></header-bar>
+ </file>
+ </example>
  */
 d2HeaderBar.directive('headerBar', function () {
     return {
