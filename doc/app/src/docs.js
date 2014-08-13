@@ -93,7 +93,6 @@ angular.module('docsApp', [
       // Strip off index from the end
       path = path.substr(0, path.length - 6);
     }
-      console.log(path);
 
     currentPage = $scope.currentPage = NG_PAGES[path];
     if ( currentPage ) {
