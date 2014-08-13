@@ -13,6 +13,30 @@
  *
  * Directive to show a list of breadcrumbs at the place where the directive is inserted.
  * The breadcrumbs crumbs can be modified by using the {@link breadCrumbsService}
+ *
+ * @example
+    <example name="bread-crumbs" module="bread">
+        <file name="index.html">
+            <div ng-controller="appCtrl">
+                <bread-crumbs></bread-crumbs>
+            </div>
+        </file>
+        <file name="appController.js">
+            var app = angular.module('bread', ['d2-breadcrumbs'])
+
+            app.controller('appCtrl', function (breadCrumbsService) {
+                 breadCrumbsService.addCrumb('Home');
+                 breadCrumbsService.addCrumb('Data Indicators', function () {
+                     alert('Data Indicators');
+                 });
+            });
+        </file>
+        <file name="styles.css">
+            .crumb:after {
+                content: " > "
+            }
+        </file>
+    </example>
  */
 d2BreadCrumbs.directive('breadCrumbs', function () {
     return {

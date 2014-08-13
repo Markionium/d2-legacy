@@ -55,6 +55,7 @@ gulp.task('doc-build-app', function() {
         .pipe(gulp.dest(outputFolder + '/js/'));
 
     copyExampleComponent('bootstrap', '/**/bootstrap.css', bowerFolder + '/bootstrap/dist/css');
+    copyExampleComponent('angular-bootstrap', '/**/ui-bootstrap-tpls.js');
     copyExampleComponent('lodash', '/**/lodash.js', bowerFolder + '/lodash/dist');
     copyExampleComponent('angular', '/**/*.js');
     copyExampleComponent('d2js', '/js/**/*', '../dist/');
