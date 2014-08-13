@@ -127,6 +127,14 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
         });
 
+        if(data && this.localData) {
+            $scope.pager = {
+                currentPage: 1,
+                resultTotal: data.length,
+                itemsPerPage: $scope.pageItems
+            };
+        }
+
         return this;
     };
 
@@ -188,7 +196,15 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
      * Method to call when switching a page. It will call the {Link: RecordTableController#requestNewDataFromService} method.
      */
     this.switchPage = function () {
-        this.requestNewDataFromService();
+        if (this.localData === true) {
+            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) return;
+            $scope.items = this.origData.slice(
+                $scope.pageItems * ($scope.pager.currentPage - 1),
+                $scope.pageItems * $scope.pager.currentPage
+            );
+        } else {
+            this.requestNewDataFromService();
+        }
     };
 
     /**

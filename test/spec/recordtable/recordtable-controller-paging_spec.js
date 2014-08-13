@@ -1,4 +1,4 @@
-describe('Meta data', function () {
+describe('Paging with remote data', function () {
     var scope,
         $httpBackend,
         controller;
@@ -127,5 +127,87 @@ describe('Meta data', function () {
         $httpBackend.flush();
 
         expect(scope.pager.itemsPerPage).toBe(50);
+    });
+});
+
+describe('Paging with local data', function () {
+    var scope,
+        controller;
+
+    beforeEach(module('d2-recordtable'));
+
+    beforeEach(inject(function ($rootScope, $controller, $q) {
+        scope = $rootScope.$new();
+
+        scope.tableConfig = {
+            pageItems: 2
+        };
+
+        scope.tableData = [
+            {
+                "name": "ANC 1st visit",
+                "code": "DE_359596"
+            },
+            {
+                "name": "ANC 2nd visit",
+                "code": "DE_359597"
+            },
+            {
+                "name": "ANC 3rd visit",
+                "code": "DE_359598"
+            },
+            {
+                "name": "ANC 4th or more visits",
+                "code": "DE_359599"
+            },
+            {
+                "name": "Albendazole given at ANC (2nd trimester)",
+                "code": "DE_359602"
+            },
+            {
+                "name": "Expected pregnancies",
+                "code": "DE_20899"
+            }
+        ];
+
+        controller = $controller('RecordTableController', {
+            $scope: scope,
+            $q: $q
+        });
+
+        spyOn(controller, 'processMetaData').andCallThrough();
+
+        controller.parseTableConfig();
+        controller.parseTableData();
+        scope.$apply();
+    }));
+
+    afterEach(function () {
+    });
+
+    it('should put only set amount of pageItems into the items array', function () {
+        var expectedItems = [{
+                "name": "ANC 1st visit",
+                "code": "DE_359596"
+            }, {
+                "name": "ANC 2nd visit",
+                "code": "DE_359597"
+            }];
+
+        expect(scope.items).toEqual(expectedItems);
+    });
+
+    it('should change the items when the page is changed', function () {
+        var expectedItems = [{
+                "name": "ANC 3rd visit",
+                "code": "DE_359598"
+            }, {
+                "name": "ANC 4th or more visits",
+                "code": "DE_359599"
+            }];
+        scope.pager.currentPage = 2;
+        scope.$apply();
+
+        expect(scope.items).toEqual(expectedItems);
     });
 });

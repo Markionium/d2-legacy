@@ -237,6 +237,30 @@ d2Auth.service('currentUser', ["d2Api", function (d2Api) {
  *
  * Directive to show a list of breadcrumbs at the place where the directive is inserted.
  * The breadcrumbs crumbs can be modified by using the {@link breadCrumbsService}
+ *
+ * @example
+    <example name="bread-crumbs" module="bread">
+        <file name="index.html">
+            <div ng-controller="appCtrl">
+                <bread-crumbs></bread-crumbs>
+            </div>
+        </file>
+        <file name="appController.js">
+            var app = angular.module('bread', ['d2-breadcrumbs'])
+
+            app.controller('appCtrl', function (breadCrumbsService) {
+                 breadCrumbsService.addCrumb('Home');
+                 breadCrumbsService.addCrumb('Data Indicators', function () {
+                     alert('Data Indicators');
+                 });
+            });
+        </file>
+        <file name="styles.css">
+            .crumb:after {
+                content: " > "
+            }
+        </file>
+    </example>
  */
 d2BreadCrumbs.directive('breadCrumbs', function () {
     return {
@@ -543,8 +567,13 @@ d2Filters.filter('translate', ["capitalizeFilter", function (capitalizeFilter) {
  * This directive represents the headerbar in dhis
  *
  * @example
- *
- * <d2-header-bar></d2-header-bar>
+ This example specifies the most basic usage of the detailsbox. It passes an object and displays it's properties.
+
+ <example module="d2-headerbar">
+ <file name="index.html">
+    <header-bar logo="https://www.dhis2.org/sites/all/themes/dhis/logo.png"></header-bar>
+ </file>
+ </example>
  */
 d2HeaderBar.directive('headerBar', function () {
     return {
@@ -736,6 +765,14 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
         });
 
+        if(data && this.localData) {
+            $scope.pager = {
+                currentPage: 1,
+                resultTotal: data.length,
+                itemsPerPage: $scope.pageItems
+            };
+        }
+
         return this;
     };
 
@@ -797,7 +834,15 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      * Method to call when switching a page. It will call the {Link: RecordTableController#requestNewDataFromService} method.
      */
     this.switchPage = function () {
-        this.requestNewDataFromService();
+        if (this.localData === true) {
+            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) return;
+            $scope.items = this.origData.slice(
+                $scope.pageItems * ($scope.pager.currentPage - 1),
+                $scope.pageItems * $scope.pager.currentPage
+            );
+        } else {
+            this.requestNewDataFromService();
+        }
     };
 
     /**
@@ -1083,6 +1128,91 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
  * Searchable means a input box will be added to the table column and the user can search through this table.
  *
  * When angular-ui is available the searchbox will also use the typeahead functionality.
+ *
+ * @example
+ <example name="recordTable" deps="ui-bootstrap-tpls.js" module="table">
+    <file name="index.html">
+        <div ng-controller="appCtrl">
+            <record-Table table-data="someData"></record-table>
+        </div>
+    </file>
+    <file name="app.js">
+        var app = angular.module('table', ['d2-recordtable']);
+
+        app.controller('appCtrl', function ($scope) {
+             $scope.someData = [
+                {
+                    "name": "ANC 1st visit",
+                    "code": "DE_359596"
+                },
+                {
+                    "name": "ANC 2nd visit",
+                    "code": "DE_359597"
+                },
+                {
+                    "name": "ANC 3rd visit",
+                    "code": "DE_359598"
+                },
+                {
+                    "name": "ANC 4th or more visits",
+                    "code": "DE_359599"
+                },
+                {
+                    "name": "Albendazole given at ANC (2nd trimester)",
+                    "code": "DE_359602"
+                },
+                {
+                    "name": "Expected pregnancies",
+                    "code": "DE_20899"
+                }
+            ];
+        });
+    </file>
+ </example>
+
+ <example name="recordTable" deps="ui-bootstrap-tpls.js" module="table">
+     <file name="index.html">
+         <div ng-controller="appCtrl">
+             <record-Table table-config="someConfig" table-data="someData"></record-table>
+         </div>
+     </file>
+     <file name="app.js">
+         var app = angular.module('table', ['d2-recordtable']);
+
+        app.controller('appCtrl', function ($scope) {
+            $scope.someConfig = {
+                pageItems: 2
+            };
+
+            $scope.someData = [
+                {
+                    "name": "ANC 1st visit",
+                    "code": "DE_359596"
+                },
+                {
+                    "name": "ANC 2nd visit",
+                    "code": "DE_359597"
+                },
+                {
+                    "name": "ANC 3rd visit",
+                    "code": "DE_359598"
+                },
+                {
+                    "name": "ANC 4th or more visits",
+                    "code": "DE_359599"
+                },
+                {
+                    "name": "Albendazole given at ANC (2nd trimester)",
+                    "code": "DE_359602"
+                },
+                {
+                    "name": "Expected pregnancies",
+                    "code": "DE_20899"
+                }
+            ];
+        });
+     </file>
+ </example>
  */
 d2RecordTable.directive('recordTable', function () {
     return {
