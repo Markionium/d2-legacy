@@ -74,7 +74,7 @@ describe('Directive: RecordTable Header', function () {
         expect(element.find('thead a').text()).toBe('HeaderColumnText');
     });
 
-    it('should only have one child when sortable', function () {
+    it('should only have one table element when sortable', function () {
         scope.column = {
             sortable: true
         };
@@ -82,7 +82,7 @@ describe('Directive: RecordTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        expect(element.children().length).toBe(1);
+        expect(element.children('table').length).toBe(1);
     });
 
     it('should call the setSorting method on the parent controller', inject(function () {

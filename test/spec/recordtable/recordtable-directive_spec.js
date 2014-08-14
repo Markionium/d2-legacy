@@ -116,19 +116,19 @@ describe('Directive: recordtable', function () {
             expect(firstTableBodyRowValues.last().text()).toBe('1');
         });
 
-        describe('table footer', function () {
-            var tableFoot;
+        describe('table should add a div for pagination', function () {
+            var paginationWrap;
 
             beforeEach(function () {
-                tableFoot = element.find('table tfoot');
+                paginationWrap = element.find('.record-table-pagination');
             });
 
-            it('should have a section tfoot', function () {
-                expect(tableFoot.length).toBe(1);
+            it('should only have one element for pagination', function () {
+                expect(paginationWrap.length).toBe(1);
             });
 
-            it('should have one td', function () {
-                expect(tableFoot.find('td').length).toBe(1);
+            it('should have one ul element for the pagination', function () {
+                expect(paginationWrap.find('ul').length).toBe(1);
             });
         });
     });
@@ -238,7 +238,7 @@ describe('Directive: recordtable', function () {
             $compile(element)(scope);
             scope.$digest();
 
-            paginationElement = element.find('table tfoot td').children().first();
+            paginationElement = element.find('table').next().first();
             controller = element.controller('recordTable');
 
             $httpBackend.flush();
@@ -249,8 +249,12 @@ describe('Directive: recordtable', function () {
             $httpBackend.verifyNoOutstandingRequest ();
         });
 
+        it('should wrap the pagination in a div with a class record-table-pagination', function () {
+            expect(paginationElement).toHaveClass('record-table-pagination')
+        });
+
         it('should display the pagination in the footer', function () {
-            expect(paginationElement.prop('tagName')).toBe('UL');
+            expect(paginationElement.children().first().prop('tagName')).toBe('UL');
         });
 
         it('should add two page links', function () {
@@ -262,6 +266,8 @@ describe('Directive: recordtable', function () {
 
             expect(nextButton.text()).toBe('Next');
         });
+
+        it('should add colspan for the ')
     });
 });
 
