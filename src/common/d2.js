@@ -44,6 +44,21 @@ d2 = {
 };
 
 d2Config = angular.module('d2-config', []);
+
+/**
+ * @ngdoc module
+ * @name d2-rest
+ *
+ * @description
+ *
+ * #d2-rest
+ *
+ * The `d2-rest` module is the module we use that contains the code to communicate with the dhis2 webapi.
+ * This will provide you with an easy way to retrieve data from the api.
+ *
+ * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
+ * and easy and convenient way to create and resuse your own endpoints.
+ */
 d2Rest = angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
 d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);

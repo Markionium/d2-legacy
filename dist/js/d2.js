@@ -73,6 +73,21 @@ d2 = {
 };
 
 d2Config = angular.module('d2-config', []);
+
+/**
+ * @ngdoc module
+ * @name d2-rest
+ *
+ * @description
+ *
+ * #d2-rest
+ *
+ * The `d2-rest` module is the module we use that contains the code to communicate with the dhis2 webapi.
+ * This will provide you with an easy way to retrieve data from the api.
+ *
+ * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
+ * and easy and convenient way to create and resuse your own endpoints.
+ */
 d2Rest = angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
 d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
@@ -1280,6 +1295,19 @@ d2RecordTable.directive('recordTableHeader', function () {
 
 
 
+/**
+ * @ngdoc provider
+ * @name d2ApiProvider
+ *
+ * @description
+ *
+ * This is the d2Api "provider" that can be used to configure the d2Api. The provider will expose
+ * the restangularProvider through the `config` property.
+ *
+ * When the provider is called by angular it will do some default configuration specific for the
+ * dhis2 api. This should make it more convenient for you to use the d2Api to get data from the
+ * dhis2 api.
+ */
 d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) {
 
     /*****************************************************************************
@@ -1287,6 +1315,14 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
      */
 
     /**
+     * @ngdoc service
+     * @name d2Api
+     *
+     * @description
+     *
+     * This service will be used to communicate with the dhis2-api.
+     *
+     * ##Detailed description
      * Extend Restangular with a set of predefined endpoints
      * This allows us to still have all the restangular functionality
      * available on our own api. But the predefined endpoints make it
@@ -1301,10 +1337,35 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
         this.schemas = this.all('schemas');
 
         /**
-         * Add a endpoint to the rest service
+         * @ngdoc method
+         * @name d2Api#addEndPoint
+         *
          * @param {string} endPointName The name of this endpoint
          * @param {boolean=} isObject If the result is a single object
          *
+         * @description
+         *
+         * This allows you to add an endpoint to the rest service. The endpoint takes a name that
+         * is used for the endpoint and a boolean that respresents if the response is an object
+         * instead of a list of objects.
+         *
+         * ###Errors
+         *
+         * The `addEndPoint` method will throw the following errors
+         *
+         * #### D2Api Error: EndPoint should not have a leading slash
+         * When the endpoint is passed in with a leading slash.
+         * Like `addEndPoint('/dataElement')` would throw this error.
+         *
+         * #### D2Api Error: EndPoint &lt;endPointName&gt; already exists
+         * When trying to add an endpoint that already exists it will throw an error.
+         * `D2Api Error: EndPoint "' + endPointName + '" already exists`
+         *
+         * {@note warning Nameing convention
+         * The name that is passed in as the endPointName should be the name as it is used in the url.
+         * Therefore when trying to create and endpoint for the dataElement api located at
+         * `/dhis/api/dataElement`. You would specify the name as `dataElement`. Note the capital E.
+         * If the endpoint were to be specified as `dataelement`, the service would call /dhis/api/dataelement.}
          */
         this.addEndPoint = function (endPointName, isObject) {
 
@@ -1326,6 +1387,27 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
             return this[endPointName];
         };
 
+        /**
+         * @ngdoc method
+         * @name d2Api#getEndPoint
+         *
+         * @param {String=} endPointName
+         *
+         * @returns {Object}
+         *
+         * @description
+         *
+         * This will attempt to get an endpoint that is defined on the d2Api object.
+         *
+         * ### Errors
+         *
+         * #### D2Api Error: Endpoint does not exist
+         * When the endpoint does not exist, trying to get it will throw the does not exist error.
+         *
+         * {@note info Exposed on object directly
+         * The endpoint is also exposed directly on the d2Api object. So when trying to get the `indicators`
+         * endpoint instead of using `getEndPoint('indicators')` you could also use `d2Api.indicators` directly.}
+         */
         this.getEndPoint = function (endPointName) {
             if (this[endPointName] === undefined) {
                 throw 'D2Api Error: Endpoint does not exist';
@@ -1333,6 +1415,16 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
             return this[endPointName];
         };
 
+        /**
+         * @ngdoc method
+         * @name d2Api#hasEndPoint
+         *
+         * @description
+         * Check if an endpoint is defined on the d2Api object.
+         *
+         * @param {String} endPointName The name of the endpoint to check
+         * @returns {boolean} True when the endpoint exists, false when it does not.
+         */
         this.hasEndPoint = function (endPointName) {
             if (this[endPointName]) {
                 return true;
@@ -1346,14 +1438,34 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
      */
 
     /**
-     * Set a base url to be used with the api.
+     * @ngdoc method
+     * @name d2ApiProvider#config
      *
-     * @param baseUrl=
+     * @param {String=} baseUrl
+     *
+     * @description
+     *
+     * Set a base url to be used with the api.
      */
     this.setBaseUrl = function (baseUrl) {
         this.config.setBaseUrl(baseUrl);
     };
 
+    /**
+     * @ngdoc method
+     * @name d2ApiProvider#$get
+     *
+     * @param {Restangular} Restangular The restangular object instance that is
+     *                                  configured through the restangular provider.
+     * @returns {d2Api} d2Api This is the rest-api service that is provided after being configured
+     *                        by the set providers.
+     *
+     * @description
+     *
+     * This is the provider method for the d2Api. This will create a new instance of the d2Api.
+     * The D2Api is basically a wrapper object for Restangular with some dhis2 api
+     * sugar methods and properties.
+     */
     this.$get = ["Restangular", function (Restangular) {
         var api;
 
@@ -1364,10 +1476,15 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
     }];
 
     /**
-     * Expose the restangularProvider so settings can be set that we didn't expose
-     * through shorthand methods
+     * @ngdoc property
+     * @name d2ApiProvider#config
      *
      * @type {Object} RestangularProvider instance
+     *
+     * @description
+     *
+     * Expose the restangularProvider so settings can be set that we didn't expose
+     * through shorthand methods.
      */
     this.config = RestangularProvider;
 
@@ -1428,16 +1545,21 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
 }]);
 
 /**
- * @ngdoc factory
- * @name userIsLoggedOutInterceptor
+ * TODO: find a way how to define requires that depend on angular modules/objects
+ * The userIsLoggedOutInterceptor should have a requires statement that it depends on $window
  *
  * @requires $window
+ */
+/**
+ * @ngdoc function
+ * @name userIsLoggedOutInterceptor
+ *
  *
  * @description
  *
  * This interceptor is used to identify when the session expired and the user
- * is logged out. We
- *
+ * is logged out. We currently reload the page when the d2Rest service requests a page
+ * that returns a response that contains the html fragment `<body class="loginPage">`.
  */
 d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
     return {
@@ -1455,12 +1577,10 @@ d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
 /**
  * Set the default base url
  */
-d2Rest.config(["d2ApiProvider", function (d2ApiProvider) {
-    d2ApiProvider.setBaseUrl('/dhis/api');
-}]);
-
-d2Rest.config(["$httpProvider", function ($httpProvider) {
+d2Rest.config(["$httpProvider", "d2ApiProvider", function ($httpProvider, d2ApiProvider) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
+
+    d2ApiProvider.setBaseUrl('/dhis/api');
 }]);
 
 "use strict";
