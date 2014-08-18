@@ -1,12 +1,5 @@
-var d2,
-    d2Auth,
-    d2Services,
-    d2Filters,
-    d2RecordTable,
-    d2ContextMenu,
-    d2Config;
-
-d2 = {
+/* jshint ignore:start */
+var d2 = {
     scriptPath: (function () {
         var d2ScriptPath;
 
@@ -35,8 +28,9 @@ d2 = {
         };
     })()
 };
+/* jshint ignore:end */
 
-d2Config = angular.module('d2-config', []);
+angular.module('d2-config', []);
 
 /**
  * @ngdoc module
@@ -53,10 +47,23 @@ d2Config = angular.module('d2-config', []);
  * and easy and convenient way to create and resuse your own endpoints.
  */
 angular.module('d2-rest', ['restangular']);
-d2Auth = angular.module('d2-auth', ['d2-rest']);
+angular.module('d2-auth', ['d2-rest']);
 angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
-d2ContextMenu = angular.module('d2-contextmenu', []);
+angular.module('d2-contextmenu', []);
+
+/**
+ * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ */
+angular.module('d2-typeahead', []);
 
 /**
  * @ngdoc module
@@ -77,7 +84,7 @@ d2ContextMenu = angular.module('d2-contextmenu', []);
  * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
  * dhis2 rest services.
  */
-d2RecordTable = angular.module('d2-recordtable', [
+angular.module('d2-recordtable', [
     'd2-filters',
     'd2-typeahead',
     'ui.bootstrap.tpls',
@@ -109,12 +116,52 @@ angular.module('d2-breadcrumbs', []);
  * This module contains the basic filters that are supported in D2JS. A lot of these filters are general filters and
  * they are used by the components in the library.
  */
-d2Filters = angular.module('d2-filters', []);
+angular.module('d2-filters', []);
+
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
+angular.module('d2-detailsbox', []);
+
+/**
+ * @ngdoc module
+ * @name d2-headerbar
+ *
+ *
+ * @description
+ *
+ * # d2-headerbar
+ *
+ * This module contains the directive for the headerbar
+ * the headerbar does not have any services therefore this is the only
+ * directive currently in this module.
+ */
+angular.module('d2-headerbar', []);
+
+/**
+ * @ngdoc module
+ * @name d2-introlist
+ *
+ *
+ * @description
+ *
+ * # d2-introlist
+ *
+ * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
+ *
+ */
+angular.module('d2-introlist', []);
 
 // Combine modules into a wrapper directive for easy inclusion
 // TODO: look at if this is useful or not
 angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox']);
-d2Services = angular.module('d2-services', ['d2-auth']);
+angular.module('d2-services', ['d2-auth']);
 
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);

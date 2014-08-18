@@ -267,7 +267,7 @@ d2Rest.provider('d2Api', function (RestangularProvider) {
  */
 d2Rest.factory('userIsLoggedOutInterceptor', function ($window) {
     return {
-        'response': function (response) {
+        response: function (response) {
             if (response && typeof response.data === 'string' &&
                 response.data.indexOf('<body class="loginPage">') >= 0) {
                 $window.location.reload();

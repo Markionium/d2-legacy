@@ -1,5 +1,3 @@
-var d2RecordTable = angular.module('d2-recordtable');
-
 /**
  * @ngdoc directive
  * @name recordTableHeader
@@ -20,7 +18,7 @@ var d2RecordTable = angular.module('d2-recordtable');
  * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
  *
  */
-d2RecordTable.directive('recordTableHeader', function () {
+function recordTableHeader() {
     return {
         restrict: 'AC',
         replace: true,
@@ -29,9 +27,15 @@ d2RecordTable.directive('recordTableHeader', function () {
         scope: {
             column: '='
         },
-        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>' +
-            '<span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" ' +
-            'typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
+
+        template: [
+            '<th class="table-header">',
+            '<a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
+            '<span ng-if="!column.sortable" ng-transclude></span>',
+            '<input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '</th>'
+        ].join(''),
+
         link: function (scope, element, attr, parentCtrl) {
             scope.sortOrder = function () {
                 parentCtrl.setSortOrder(scope.column);
@@ -42,4 +46,6 @@ d2RecordTable.directive('recordTableHeader', function () {
             };
         }
     };
-});
+}
+
+angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);

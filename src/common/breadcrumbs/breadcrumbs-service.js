@@ -51,7 +51,7 @@ angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
     this.addCrumb = function (name, callback) {
         var crumb = {};
 
-        if ( ! angular.isString(name) || name === '') {
+        if (!angular.isString(name) || name === '') {
             return;
         }
 

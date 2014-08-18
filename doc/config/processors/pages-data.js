@@ -37,7 +37,7 @@ var navGroupMappers = {
       .groupBy('module')
 
       .map(function(modulePages, moduleName) {
-        log.debug('moduleName: ' + moduleName);
+        log.info('moduleName: ' + moduleName);
         var navItems = [];
         var modulePage;
         _(modulePages)

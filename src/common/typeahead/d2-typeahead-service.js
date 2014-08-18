@@ -1,17 +1,4 @@
 /**
- * @ngdoc module
- * @name d2-typeahead
- *
- * @description
- *
- * #d2-typeahead
- *
- * The typeahead module provides a service that can be used to store typeahead values that can be used
- * by angular ui's typeahead functionality.
- */
-angular.module('d2-typeahead', []);
-
-/**
  * @ngdoc service
  * @name typeAheadService
  *

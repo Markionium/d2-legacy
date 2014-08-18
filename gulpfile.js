@@ -178,5 +178,5 @@ gulp.task('build', function () {
 */
 gulp.task('build-prod', function () {
     destFold = 'dist';
-    runSequence('test', 'lint', 'clean', ['make-css', 'make-js', 'templates']);
+    runSequence('test', 'lint', 'jscs', 'clean', ['make-css', 'make-js', 'templates']);
 });

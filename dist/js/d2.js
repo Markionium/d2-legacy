@@ -27,15 +27,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 (function (angular, undefined) {
-    var d2,
-    d2Auth,
-    d2Services,
-    d2Filters,
-    d2RecordTable,
-    d2ContextMenu,
-    d2Config;
-
-d2 = {
+    /* jshint ignore:start */
+var d2 = {
     scriptPath: (function () {
         var d2ScriptPath;
 
@@ -64,8 +57,9 @@ d2 = {
         };
     })()
 };
+/* jshint ignore:end */
 
-d2Config = angular.module('d2-config', []);
+angular.module('d2-config', []);
 
 /**
  * @ngdoc module
@@ -82,10 +76,23 @@ d2Config = angular.module('d2-config', []);
  * and easy and convenient way to create and resuse your own endpoints.
  */
 angular.module('d2-rest', ['restangular']);
-d2Auth = angular.module('d2-auth', ['d2-rest']);
+angular.module('d2-auth', ['d2-rest']);
 angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
-d2ContextMenu = angular.module('d2-contextmenu', []);
+angular.module('d2-contextmenu', []);
+
+/**
+ * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ */
+angular.module('d2-typeahead', []);
 
 /**
  * @ngdoc module
@@ -106,7 +113,7 @@ d2ContextMenu = angular.module('d2-contextmenu', []);
  * The recordtable will use the paging that is set in the config or use the rest paging as provided by the
  * dhis2 rest services.
  */
-d2RecordTable = angular.module('d2-recordtable', [
+angular.module('d2-recordtable', [
     'd2-filters',
     'd2-typeahead',
     'ui.bootstrap.tpls',
@@ -138,12 +145,52 @@ angular.module('d2-breadcrumbs', []);
  * This module contains the basic filters that are supported in D2JS. A lot of these filters are general filters and
  * they are used by the components in the library.
  */
-d2Filters = angular.module('d2-filters', []);
+angular.module('d2-filters', []);
+
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
+angular.module('d2-detailsbox', []);
+
+/**
+ * @ngdoc module
+ * @name d2-headerbar
+ *
+ *
+ * @description
+ *
+ * # d2-headerbar
+ *
+ * This module contains the directive for the headerbar
+ * the headerbar does not have any services therefore this is the only
+ * directive currently in this module.
+ */
+angular.module('d2-headerbar', []);
+
+/**
+ * @ngdoc module
+ * @name d2-introlist
+ *
+ *
+ * @description
+ *
+ * # d2-introlist
+ *
+ * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
+ *
+ */
+angular.module('d2-introlist', []);
 
 // Combine modules into a wrapper directive for easy inclusion
 // TODO: look at if this is useful or not
 angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox']);
-d2Services = angular.module('d2-services', ['d2-auth']);
+angular.module('d2-services', ['d2-auth']);
 
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
@@ -298,7 +345,7 @@ angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
     this.addCrumb = function (name, callback) {
         var crumb = {};
 
-        if ( ! angular.isString(name) || name === '') {
+        if (!angular.isString(name) || name === '') {
             return;
         }
 
@@ -377,12 +424,10 @@ angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
     };
 });
 
-/* global d2Config */
-d2Config.constant('API_ENDPOINT', '/dhis/api');
-d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
+function apiConfig(API_ENDPOINT) {
     return {
         getUrl: function (resource) {
-            if ( ! angular.isString(resource)) {
+            if (!angular.isString(resource)) {
                 throw 'Api Config Error: Resource URL should be a string';
             }
             if (resource[0] === '/') {
@@ -391,24 +436,16 @@ d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
             return [API_ENDPOINT, resource].join('/');
         }
     };
-}]);
+}
 
-/* global d2ContextMenu */
-d2ContextMenu.directive('contextMenu', function () {
+angular.module('d2-config').constant('API_ENDPOINT', '/dhis/api');
+angular.module('d2-config').factory('apiConfig', apiConfig);
+
+angular.module('d2-contextmenu').directive('contextMenu', function () {
 
 });
-/* global d2 */
-/**
- * @ngdoc module
- * @name d2-detailsbox
- *
- * @description
- *
- * This module represents the detailsbox that shows basic details about a record. This
- * can show a list details in key/value format.
- */
-angular.module('d2-detailsbox', []);
 
+/* global d2 */
 /**
  * @ngdoc directive
  * @name detailsBox
@@ -528,21 +565,6 @@ angular.module('d2-filters').filter('translate', ["capitalizeFilter", function (
 
 /* global d2 */
 /**
- * @ngdoc module
- * @name d2-headerbar
- *
- *
- * @description
- *
- * # d2-headerbar
- *
- * This module contains the directive for the headerbar
- * the headerbar does not have any services therefore this is the only
- * directive currently in this module.
- */
-angular.module('d2-headerbar', []);
-
-/**
  * @ngdoc directive
  * @name headerBar
  *
@@ -584,20 +606,6 @@ angular.module('d2-headerbar').directive('headerBar', function () {
 
 /* global d2 */
 /**
- * @ngdoc module
- * @name d2-introlist
- *
- *
- * @description
- *
- * # d2-introlist
- *
- * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
- *
- */
-angular.module('d2-introlist', []);
-
-/**
  * @ngdoc directive
  * @name introList
  *
@@ -638,7 +646,6 @@ angular.module('d2-introlist').directive('introList', function () {
     };
 });
 
-/* global window, d2RecordTable */
 /**
  * @ngdoc controller
  * @name RecordTableController
@@ -647,7 +654,7 @@ angular.module('d2-introlist').directive('introList', function () {
  *
  * TODO: Document the rest of this Controller.
  */
-d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$timeout", "typeAheadService", function ($scope, $q, $filter, $timeout, typeAheadService) {
+angular.module('d2-recordtable').controller('RecordTableController', ["$scope", "$q", "$filter", "$timeout", "typeAheadService", function ($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
 
@@ -768,7 +775,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
         });
 
-        if(data && this.localData) {
+        if (data && this.localData) {
             $scope.pager = {
                 currentPage: 1,
                 resultTotal: data.length,
@@ -803,7 +810,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      * Additionally it updates the $scope.pager.currentPage to the current page.
      */
     this.setUpPager = function () {
-        if ( ! $scope.pager.itemsPerPage) {
+        if (!$scope.pager.itemsPerPage) {
             $scope.pager.itemsPerPage = $scope.items.length;
         }
 
@@ -838,7 +845,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) { return; }
+            if (!angular.isNumber($scope.pageItems) || !angular.isNumber($scope.pager.currentPage)) { return; }
 
             $scope.items = this.origData.slice(
                 $scope.pageItems * ($scope.pager.currentPage - 1),
@@ -1077,7 +1084,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
                 self.doLocalSorting();
             }
             if ($scope.d2Service) {
-                if ( ! requestServiceTimeoutIsSet) {
+                if (!requestServiceTimeoutIsSet) {
                     $timeout(function () {
                         self.requestNewDataFromService();
                         requestServiceTimeoutIsSet = false;
@@ -1101,7 +1108,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
     });
 }]);
 
-/* global d2, d2RecordTable */
+/* global d2 */
 /**
  * @ngdoc directive
  * @name recordTable
@@ -1219,7 +1226,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      </file>
  </example>
  */
-d2RecordTable.directive('recordTable', function () {
+angular.module('d2-recordtable').directive('recordTable', function () {
     return {
         restrict: 'E',
         replace: true,
@@ -1235,8 +1242,6 @@ d2RecordTable.directive('recordTable', function () {
         }
     };
 });
-
-var d2RecordTable = angular.module('d2-recordtable');
 
 /**
  * @ngdoc directive
@@ -1258,7 +1263,7 @@ var d2RecordTable = angular.module('d2-recordtable');
  * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
  *
  */
-d2RecordTable.directive('recordTableHeader', function () {
+function recordTableHeader() {
     return {
         restrict: 'AC',
         replace: true,
@@ -1267,9 +1272,15 @@ d2RecordTable.directive('recordTableHeader', function () {
         scope: {
             column: '='
         },
-        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>' +
-            '<span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" ' +
-            'typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
+
+        template: [
+            '<th class="table-header">',
+            '<a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
+            '<span ng-if="!column.sortable" ng-transclude></span>',
+            '<input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '</th>'
+        ].join(''),
+
         link: function (scope, element, attr, parentCtrl) {
             scope.sortOrder = function () {
                 parentCtrl.setSortOrder(scope.column);
@@ -1280,7 +1291,9 @@ d2RecordTable.directive('recordTableHeader', function () {
             };
         }
     };
-});
+}
+
+angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
 
 var d2Rest = angular.module('d2-rest');
 /**
@@ -1551,7 +1564,7 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
  */
 d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
     return {
-        'response': function (response) {
+        response: function (response) {
             if (response && typeof response.data === 'string' &&
                 response.data.indexOf('<body class="loginPage">') >= 0) {
                 $window.location.reload();
@@ -1575,94 +1588,94 @@ angular.module('d2-services').factory('schemaProcessor', function () {
     return function (providedSchemas) {
         var schemaProcessor,
             SchemaProcessorConstructor = function () {
-            this.schemas = [];
-            this.schemaGroups = {};
+                this.schemas = [];
+                this.schemaGroups = {};
 
-            this.getKlassGroupName = function (klass) {
-                var parts = klass.split('.');
-                return parts[parts.length - 2];
-            };
+                this.getKlassGroupName = function (klass) {
+                    var parts = klass.split('.');
+                    return parts[parts.length - 2];
+                };
 
-            this.addSchemasToGroups = function (schemas) {
-                var self = this,
-                    schemaGroups = {};
+                this.addSchemasToGroups = function (schemas) {
+                    var self = this,
+                        schemaGroups = {};
 
-                angular.forEach(schemas, function (schema) {
-                    var groupName = self.getKlassGroupName(schema.klass);
-                    if (schemaGroups[groupName] === undefined) {
-                        schemaGroups[groupName] = [];
-                    }
-                    schemaGroups[groupName].push(schema);
-                });
-                this.schemaGroups = schemaGroups;
-                return schemaGroups;
-            };
+                    angular.forEach(schemas, function (schema) {
+                        var groupName = self.getKlassGroupName(schema.klass);
+                        if (schemaGroups[groupName] === undefined) {
+                            schemaGroups[groupName] = [];
+                        }
+                        schemaGroups[groupName].push(schema);
+                    });
+                    this.schemaGroups = schemaGroups;
+                    return schemaGroups;
+                };
 
-            this.filterSchemasByPermissions = function (userPermissions) {
-                var authorizedSchemas = [];
+                this.filterSchemasByPermissions = function (userPermissions) {
+                    var authorizedSchemas = [];
 
-                angular.forEach(this.schemas, function (schema) {
-                    if (schema.isAuthorizedBy(userPermissions)) {
-                        authorizedSchemas.push(schema);
-                    }
-                });
+                    angular.forEach(this.schemas, function (schema) {
+                        if (schema.isAuthorizedBy(userPermissions)) {
+                            authorizedSchemas.push(schema);
+                        }
+                    });
 
-                return authorizedSchemas;
-            };
+                    return authorizedSchemas;
+                };
 
-            this.process = function (providedSchemas) {
-                this.schemas = providedSchemas;
+                this.process = function (providedSchemas) {
+                    this.schemas = providedSchemas;
 
-                angular.forEach(this.schemas, function (schema) {
-                    schema.getPermissions = function () {
-                        var permissions = {
-                            all: []
+                    angular.forEach(this.schemas, function (schema) {
+                        schema.getPermissions = function () {
+                            var permissions = {
+                                all: []
+                            };
+
+                            angular.forEach(this.authorities, function (permission) {
+                                if (permission.type === 'DELETE') {
+                                    permissions.remove = permission.authorities;
+                                } else {
+                                    permissions[permission.type.toLowerCase()] = permission.authorities;
+                                }
+                                permissions.all = permissions.all.concat(permission.authorities);
+
+                            });
+                            return permissions;
                         };
+                        schema.isAuthorizedBy = function (userPermissions) {
+                            var authorized = false,
+                                permissions = schema.getPermissions();
+                            angular.forEach(permissions.all, function (permission) {
+                                if (userPermissions.indexOf(permission) >= 0) {
+                                    schema.permissions = permissions;
+                                    authorized = true;
+                                }
+                            });
+                            return authorized;
+                        };
+                    });
+                };
 
-                        angular.forEach(this.authorities, function (permission) {
-                            if (permission.type === 'DELETE') {
-                                permissions.remove = permission.authorities;
-                            } else {
-                                permissions[permission.type.toLowerCase()] = permission.authorities;
-                            }
-                            permissions.all = permissions.all.concat(permission.authorities);
+                this.getSchemaGroupsForPermissions = function (permissions) {
+                    var authorizedSchemas = this.filterSchemasByPermissions(permissions),
+                        schemaGroups = this.addSchemasToGroups(authorizedSchemas);
+                    return schemaGroups;
+                };
 
-                        });
-                        return permissions;
-                    };
-                    schema.isAuthorizedBy = function (userPermissions) {
-                        var authorized = false,
-                            permissions = schema.getPermissions();
-                        angular.forEach(permissions.all, function (permission) {
-                            if (userPermissions.indexOf(permission) >= 0) {
-                                schema.permissions = permissions;
-                                authorized = true;
-                            }
-                        });
-                        return authorized;
-                    };
-                });
+                this.filterByGroupNames = function (names) {
+                    var schemas = this.addSchemasToGroups(this.schemas),
+                        filteredSchemaGroups = {};
+
+                    angular.forEach(names, function (name) {
+                        if (schemas[name]) {
+                            filteredSchemaGroups[name] = schemas[name];
+                        }
+                    });
+
+                    return filteredSchemaGroups;
+                };
             };
-
-            this.getSchemaGroupsForPermissions = function (permissions) {
-                var authorizedSchemas = this.filterSchemasByPermissions(permissions),
-                    schemaGroups = this.addSchemasToGroups(authorizedSchemas);
-                return schemaGroups;
-            };
-
-            this.filterByGroupNames = function (names) {
-                var schemas = this.addSchemasToGroups(this.schemas),
-                    filteredSchemaGroups = {};
-
-                angular.forEach(names, function (name) {
-                    if (schemas[name]) {
-                        filteredSchemaGroups[name] = schemas[name];
-                    }
-                });
-
-                return filteredSchemaGroups;
-            };
-        };
 
         schemaProcessor = new SchemaProcessorConstructor();
         schemaProcessor.process(providedSchemas || []);
@@ -1707,8 +1720,8 @@ angular.module('d2-translate').factory('d2LanguageLoader', ["$q", "$http", "tran
                 loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
-                    deferred.reject(options.key);
-                });
+                deferred.reject(options.key);
+            });
         }
         return deferred.promise;
     };
@@ -1776,18 +1789,6 @@ angular.module('d2-translate').config(["$translateProvider", function ($translat
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
 }]);
-/**
- * @ngdoc module
- * @name d2-typeahead
- *
- * @description
- *
- * #d2-typeahead
- *
- * The typeahead module provides a service that can be used to store typeahead values that can be used
- * by angular ui's typeahead functionality.
- */
-angular.module('d2-typeahead', []);
 
 /**
  * @ngdoc service

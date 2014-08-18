@@ -1,4 +1,4 @@
-/* global d2, d2RecordTable */
+/* global d2 */
 /**
  * @ngdoc directive
  * @name recordTable
@@ -116,7 +116,7 @@
      </file>
  </example>
  */
-d2RecordTable.directive('recordTable', function () {
+angular.module('d2-recordtable').directive('recordTable', function () {
     return {
         restrict: 'E',
         replace: true,

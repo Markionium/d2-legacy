@@ -12,8 +12,8 @@ angular.module('d2-translate').factory('d2LanguageLoader', function ($q, $http, 
                 loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
-                    deferred.reject(options.key);
-                });
+                deferred.reject(options.key);
+            });
         }
         return deferred.promise;
     };

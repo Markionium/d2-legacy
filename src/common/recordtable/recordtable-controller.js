@@ -1,4 +1,3 @@
-/* global window, d2RecordTable */
 /**
  * @ngdoc controller
  * @name RecordTableController
@@ -7,7 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
-d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter, $timeout, typeAheadService) {
+angular.module('d2-recordtable').controller('RecordTableController', function ($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
 
@@ -128,7 +127,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
         });
 
-        if(data && this.localData) {
+        if (data && this.localData) {
             $scope.pager = {
                 currentPage: 1,
                 resultTotal: data.length,
@@ -163,7 +162,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
      * Additionally it updates the $scope.pager.currentPage to the current page.
      */
     this.setUpPager = function () {
-        if ( ! $scope.pager.itemsPerPage) {
+        if (!$scope.pager.itemsPerPage) {
             $scope.pager.itemsPerPage = $scope.items.length;
         }
 
@@ -198,7 +197,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) { return; }
+            if (!angular.isNumber($scope.pageItems) || !angular.isNumber($scope.pager.currentPage)) { return; }
 
             $scope.items = this.origData.slice(
                 $scope.pageItems * ($scope.pager.currentPage - 1),
@@ -437,7 +436,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
                 self.doLocalSorting();
             }
             if ($scope.d2Service) {
-                if ( ! requestServiceTimeoutIsSet) {
+                if (!requestServiceTimeoutIsSet) {
                     $timeout(function () {
                         self.requestNewDataFromService();
                         requestServiceTimeoutIsSet = false;

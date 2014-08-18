@@ -1,16 +1,5 @@
 /* global d2 */
 /**
- * @ngdoc module
- * @name d2-detailsbox
- *
- * @description
- *
- * This module represents the detailsbox that shows basic details about a record. This
- * can show a list details in key/value format.
- */
-angular.module('d2-detailsbox', []);
-
-/**
  * @ngdoc directive
  * @name detailsBox
  *
