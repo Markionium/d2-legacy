@@ -1,16 +1,9 @@
-//TODO Write tests for this.
 var d2,
-    d2Rest,
     d2Auth,
     d2Services,
     d2Filters,
     d2RecordTable,
-    d2BreadCrumbs,
-    d2IntroList,
-    d2HeaderBar,
-    d2Translate,
     d2ContextMenu,
-    d2DetailsBox,
     d2Config;
 
 d2 = {
@@ -39,7 +32,7 @@ d2 = {
             currentScriptPath = d2ScriptTag.src || '';
             d2ScriptPath = currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
             return d2ScriptPath;
-        }
+        };
     })()
 };
 
@@ -59,35 +52,11 @@ d2Config = angular.module('d2-config', []);
  * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
  * and easy and convenient way to create and resuse your own endpoints.
  */
-d2Rest = angular.module('d2-rest', ['restangular']);
+angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
-d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
+angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 d2ContextMenu = angular.module('d2-contextmenu', []);
-
-/**
- * @ngdoc module
- * @name d2-detailsbox
- *
- * @description
- *
- * This module represents the detailsbox that shows basic details about a record. This
- * can show a list details in key/value format.
- */
-d2DetailsBox =  angular.module('d2-detailsbox', []);
-
-/**
- * @ngdoc module
- * @name d2-typeahead
- *
- * @description
- *
- * #d2-typeahead
- *
- * The typeahead module provides a service that can be used to store typeahead values that can be used
- * by angular ui's typeahead functionality.
- */
-var d2TypeAhead = angular.module('d2-typeahead', []);
 
 /**
  * @ngdoc module
@@ -128,36 +97,7 @@ d2RecordTable = angular.module('d2-recordtable', [
  * The breadcrumbs component contains of a service and a directive.
  * The service will manage the list of breadcrumbs where the directive will display them.
  */
-d2BreadCrumbs = angular.module('d2-breadcrumbs', []);
-
-/**
- * @ngdoc module
- * @name d2-introlist
- *
- *
- * @description
- *
- * # d2-introlist
- *
- * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
- *
- */
-d2IntroList = angular.module('d2-introlist', []);
-
-/**
- * @ngdoc module
- * @name d2-headerbar
- *
- *
- * @description
- *
- * # d2-headerbar
- *
- * This module contains the directive for the headerbar
- * the headerbar does not have any services therefore this is the only
- * directive currently in this module.
- */
-d2HeaderBar = angular.module('d2-headerbar', []);
+angular.module('d2-breadcrumbs', []);
 
 //TODO: Filters has a too general name maybe?
 /**

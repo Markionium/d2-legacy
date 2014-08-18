@@ -1,7 +1,7 @@
-"use strict";
-d2Services.factory('schemaProcessor', function () {
+angular.module('d2-services').factory('schemaProcessor', function () {
     return function (providedSchemas) {
-        var schemaProcessor = new function () {
+        var schemaProcessor,
+            SchemaProcessorConstructor = function () {
             this.schemas = [];
             this.schemaGroups = {};
 
@@ -19,7 +19,6 @@ d2Services.factory('schemaProcessor', function () {
                     if (schemaGroups[groupName] === undefined) {
                         schemaGroups[groupName] = [];
                     }
-                    ;
                     schemaGroups[groupName].push(schema);
                 });
                 this.schemaGroups = schemaGroups;
@@ -27,12 +26,12 @@ d2Services.factory('schemaProcessor', function () {
             };
 
             this.filterSchemasByPermissions = function (userPermissions) {
-                var self = this,
-                    authorizedSchemas = [];
+                var authorizedSchemas = [];
 
                 angular.forEach(this.schemas, function (schema) {
-                    if (schema.isAuthorizedBy(userPermissions))
+                    if (schema.isAuthorizedBy(userPermissions)) {
                         authorizedSchemas.push(schema);
+                    }
                 });
 
                 return authorizedSchemas;
@@ -49,11 +48,11 @@ d2Services.factory('schemaProcessor', function () {
 
                         angular.forEach(this.authorities, function (permission) {
                             if (permission.type === 'DELETE') {
-                                permissions['remove'] = permission.authorities;
+                                permissions.remove = permission.authorities;
                             } else {
                                 permissions[permission.type.toLowerCase()] = permission.authorities;
                             }
-                            permissions['all'] = permissions['all'].concat(permission.authorities);
+                            permissions.all = permissions.all.concat(permission.authorities);
 
                         });
                         return permissions;
@@ -68,7 +67,7 @@ d2Services.factory('schemaProcessor', function () {
                             }
                         });
                         return authorized;
-                    }
+                    };
                 });
             };
 
@@ -83,14 +82,18 @@ d2Services.factory('schemaProcessor', function () {
                     filteredSchemaGroups = {};
 
                 angular.forEach(names, function (name) {
-                    if (schemas[name])
+                    if (schemas[name]) {
                         filteredSchemaGroups[name] = schemas[name];
+                    }
                 });
 
                 return filteredSchemaGroups;
             };
         };
+
+        schemaProcessor = new SchemaProcessorConstructor();
         schemaProcessor.process(providedSchemas || []);
+
         return schemaProcessor;
     };
 });

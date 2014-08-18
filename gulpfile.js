@@ -46,6 +46,8 @@ var flatten = require('gulp-flatten');
 
 var wrap = require('gulp-wrap');
 
+var jshint = require('gulp-jshint');
+
 /***********************************************************************************************************************
  * Settings
  **********************************************************************************************************************/
@@ -148,19 +150,25 @@ gulp.task('templates', function () {
        .pipe(gulp.dest(destFold + '/js/common'));
 });
 
+gulp.task('lint', function () {
+    return gulp.src('./src/common/**/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'))
+        .pipe(jshint.reporter('fail'));
+});
+
 /***********************************************************************************************************************
  * Dev
  */
 gulp.task('build', function () {
     destFold = 'dev';
-    runSequence('clean', ['make-css', 'src-js', 'templates']);
+    runSequence('lint', 'clean', ['make-css', 'src-js', 'templates']);
 });
 
 /***********************************************************************************************************************
  * Production
  */
-//TODO: Add JSHint to the build check
 gulp.task('build-prod', function () {
     destFold = 'dist';
-    runSequence('test', 'clean', ['make-css', 'make-js', 'templates']);
+    runSequence('test', 'lint', 'clean', ['make-css', 'make-js', 'templates']);
 });

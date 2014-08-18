@@ -1,4 +1,4 @@
-var recordTable = angular.module('d2-recordtable');
+var d2RecordTable = angular.module('d2-recordtable');
 
 /**
  * @ngdoc directive
@@ -29,15 +29,17 @@ d2RecordTable.directive('recordTableHeader', function () {
         scope: {
             column: '='
         },
-        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
+        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>' +
+            '<span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" ' +
+            'typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
         link: function (scope, element, attr, parentCtrl) {
-            scope.sortOrder = function (event) {
+            scope.sortOrder = function () {
                 parentCtrl.setSortOrder(scope.column);
-            }
+            };
 
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];
-            }
+            };
         }
     };
 });

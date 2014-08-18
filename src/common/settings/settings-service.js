@@ -9,7 +9,7 @@ d2Settings.service('systemSettingsService', function (d2Api) {
 
     this.get = function (key) {
         return settings[key];
-    }
+    };
 
     /**
      * Loading of the system settings

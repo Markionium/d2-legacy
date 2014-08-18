@@ -1,3 +1,4 @@
+var d2Rest = angular.module('d2-rest');
 /**
  * @ngdoc provider
  * @name d2ApiProvider
@@ -199,7 +200,7 @@ d2Rest.provider('d2Api', function (RestangularProvider) {
      * Response interceptor that takes the data from the endpoint and extracts the meta
      * data that is wrapped around it.
      */
-    this.config.addResponseInterceptor(function (data, operation, what, url, response, defered) {
+    this.config.addResponseInterceptor(function (data, operation, what) {
         if (operation === 'getList' && data && data[what]) {
             var newData = data[what],
                 metaData = angular.copy(data);
@@ -274,7 +275,7 @@ d2Rest.factory('userIsLoggedOutInterceptor', function ($window) {
 
             return response;
         }
-    }
+    };
 });
 
 /**

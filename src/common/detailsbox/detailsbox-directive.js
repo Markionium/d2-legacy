@@ -1,3 +1,15 @@
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
+angular.module('d2-detailsbox', []);
+
 /**
  * @ngdoc directive
  * @name detailsBox
@@ -48,13 +60,13 @@
  </file>
  </example>
  */
-d2DetailsBox.directive('detailsBox', function () {
+angular.module('d2-detailsbox').directive('detailsBox', function () {
     return {
         restrict: 'EA',
         replace: true,
         scope: {
-            details: "=",
-            headers: "="
+            details: '=',
+            headers: '='
         },
         templateUrl: d2.scriptPath() + 'common/detailsbox/detailsbox.html',
         controller: function ($scope) {
@@ -69,8 +81,8 @@ d2DetailsBox.directive('detailsBox', function () {
 
                 $scope.valueList = _.map(filteredList, function (value, key) {
                     return {
-                        "key": key,
-                        "value": value
+                        key: key,
+                        value: value
                     };
                 });
             };
@@ -78,7 +90,7 @@ d2DetailsBox.directive('detailsBox', function () {
             this.parseDetailsToArray();
 
             $scope.$watch('details', function (newVal, oldVal) {
-                if (newVal === oldVal) return;
+                if (newVal === oldVal) { return; }
                 self.parseDetailsToArray();
             });
         }

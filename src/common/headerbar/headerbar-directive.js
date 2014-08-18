@@ -1,3 +1,19 @@
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-headerbar
+ *
+ *
+ * @description
+ *
+ * # d2-headerbar
+ *
+ * This module contains the directive for the headerbar
+ * the headerbar does not have any services therefore this is the only
+ * directive currently in this module.
+ */
+angular.module('d2-headerbar', []);
+
 /**
  * @ngdoc directive
  * @name headerBar
@@ -18,7 +34,7 @@
  </file>
  </example>
  */
-d2HeaderBar.directive('headerBar', function () {
+angular.module('d2-headerbar').directive('headerBar', function () {
     return {
         restrict: 'E',
         replace: true,

@@ -1,3 +1,4 @@
+/* global d2 */
 /**
  * @ngdoc directive
  * @name breadCrumbs
@@ -38,12 +39,12 @@
         </file>
     </example>
  */
-d2BreadCrumbs.directive('breadCrumbs', function () {
+angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
     return {
         restrict: 'E',
         replace: true,
         scope: {
-            homeCrumb: "="
+            homeCrumb: '='
         },
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controller: function ($scope, $location, breadCrumbsService) {

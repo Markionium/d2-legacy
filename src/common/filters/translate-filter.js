@@ -13,7 +13,7 @@
  *  To add translation functionality add the `d2-translate` module to your app.
  * }
  */
-d2Filters.filter('translate', function (capitalizeFilter) {
+angular.module('d2-filters').filter('translate', function (capitalizeFilter) {
     return function (input) {
         return capitalizeFilter(input);
     };

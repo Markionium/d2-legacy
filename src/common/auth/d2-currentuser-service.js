@@ -1,6 +1,4 @@
-"use strict";
-
-d2Auth.service('currentUser', function (d2Api) {
+angular.module('d2-auth').service('currentUser', function (d2Api) {
     var self = this,
         permissionPromise,
         permissions;

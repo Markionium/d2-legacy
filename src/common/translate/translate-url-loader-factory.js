@@ -1,7 +1,7 @@
-d2Translate.factory('d2LanguageLoader', function ($q, $http, translateApi) {
+angular.module('d2-translate').factory('d2LanguageLoader', function ($q, $http, translateApi) {
     var loadedValues = {};
 
-    return function (options, $uses) {
+    return function (options) {
         var deferred = $q.defer();
 
         if (loadedValues[options.key]) {
@@ -11,7 +11,7 @@ d2Translate.factory('d2LanguageLoader', function ($q, $http, translateApi) {
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
                 loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
-            }).error(function (data) {
+            }).error(function () {
                     deferred.reject(options.key);
                 });
         }
@@ -19,14 +19,14 @@ d2Translate.factory('d2LanguageLoader', function ($q, $http, translateApi) {
     };
 });
 
-d2Translate.factory('d2MissingTranslationHandler', function ($translate, translateApi) {
+angular.module('d2-translate').factory('d2MissingTranslationHandler', function ($translate, translateApi) {
     return function (translationId, $uses) {
         translateApi.add(translationId);
-        translateApi.translateThroughApi($uses)
-    }
+        translateApi.translateThroughApi($uses);
+    };
 });
 
-d2Translate.service('translateApi', function ($q, $translate, apiConfig, $timeout, $http) {
+angular.module('d2-translate').service('translateApi', function ($q, $translate, apiConfig, $timeout, $http) {
     var self = this;
     var timeOutSet = false;
     var translateKeys = [];
@@ -64,7 +64,7 @@ d2Translate.service('translateApi', function ($q, $translate, apiConfig, $timeou
         }, 100, false);
 
         return deferred.promise;
-    }
+    };
 
     this.translateThroughApi = function (languageCode) {
         if (timeOutSet === false) {
@@ -73,10 +73,10 @@ d2Translate.service('translateApi', function ($q, $translate, apiConfig, $timeou
                 $translate.refresh();
             });
         }
-    }
+    };
 });
 
-d2Translate.config(function ($translateProvider) {
+angular.module('d2-translate').config(function ($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');

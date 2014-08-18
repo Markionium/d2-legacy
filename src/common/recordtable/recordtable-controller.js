@@ -1,3 +1,4 @@
+/* global window, d2RecordTable */
 /**
  * @ngdoc controller
  * @name RecordTableController
@@ -197,7 +198,8 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) return;
+            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) { return; }
+
             $scope.items = this.origData.slice(
                 $scope.pageItems * ($scope.pager.currentPage - 1),
                 $scope.pageItems * $scope.pager.currentPage
@@ -274,7 +276,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         var filters = this.getColumnsWithFilters(),
             filterObject = {};
 
-        if (filters.length === 0) return false;
+        if (filters.length === 0) { return false; }
 
         angular.forEach(filters, function (column) {
             filterObject[column.name] = column.filter;
@@ -308,10 +310,11 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
     this.getRemoteFilters = function () {
         var filters = [];
 
-        if (!this.getFilterObject()) return;
+        if (!this.getFilterObject()) { return; }
+
         angular.forEach(this.getFilterObject(), function (filterValue, filterOn) {
             if (filterValue) {
-                filters.push(filterOn + ":like:" + filterValue);
+                filters.push(filterOn + ':like:' + filterValue);
             }
         });
 
@@ -394,7 +397,7 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
             items;
 
         //Don't do anything when there is no sorting to be done
-        if (sorting.length === 0) return;
+        if (sorting.length === 0) { return; }
 
         items = _.sortBy($scope.items, sortBy);
         if (sorting[0] && sorting[0].sort === 'desc') {
@@ -409,18 +412,17 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
      * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
      */
     this.serviceSorting = function () {
-        var sorting = _.filter($scope.columns, 'sort'),
-            sortBy = _.pluck(sorting, 'name');
+        var sorting = _.filter($scope.columns, 'sort');
 
         //Don't do anything when there is no sorting to be done
-        if (sorting.length === 0) return;
+        if (sorting.length === 0) { return; }
 
-        alert('API Sorting not yet implemented');
+        window.alert('API Sorting not yet implemented');
     };
 
     this.getValuesForColumn = function (column) {
         if (!column || !column.name || !angular.isString(column.name)) {
-            return []
+            return [];
         }
 
         return _.map($scope.items, function (item) {
@@ -456,5 +458,5 @@ d2RecordTable.controller('RecordTableController', function ($scope, $q, $filter,
         if (newValue !== oldValue) {
             self.parseTableData();
         }
-    })
+    });
 });

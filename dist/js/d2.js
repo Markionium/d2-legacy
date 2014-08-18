@@ -27,19 +27,12 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 (function (angular, undefined) {
-    //TODO Write tests for this.
-var d2,
-    d2Rest,
+    var d2,
     d2Auth,
     d2Services,
     d2Filters,
     d2RecordTable,
-    d2BreadCrumbs,
-    d2IntroList,
-    d2HeaderBar,
-    d2Translate,
     d2ContextMenu,
-    d2DetailsBox,
     d2Config;
 
 d2 = {
@@ -68,7 +61,7 @@ d2 = {
             currentScriptPath = d2ScriptTag.src || '';
             d2ScriptPath = currentScriptPath.substring(0, currentScriptPath.lastIndexOf('/') + 1);
             return d2ScriptPath;
-        }
+        };
     })()
 };
 
@@ -88,35 +81,11 @@ d2Config = angular.module('d2-config', []);
  * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
  * and easy and convenient way to create and resuse your own endpoints.
  */
-d2Rest = angular.module('d2-rest', ['restangular']);
+angular.module('d2-rest', ['restangular']);
 d2Auth = angular.module('d2-auth', ['d2-rest']);
-d2Translate = angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
+angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
 d2ContextMenu = angular.module('d2-contextmenu', []);
-
-/**
- * @ngdoc module
- * @name d2-detailsbox
- *
- * @description
- *
- * This module represents the detailsbox that shows basic details about a record. This
- * can show a list details in key/value format.
- */
-d2DetailsBox =  angular.module('d2-detailsbox', []);
-
-/**
- * @ngdoc module
- * @name d2-typeahead
- *
- * @description
- *
- * #d2-typeahead
- *
- * The typeahead module provides a service that can be used to store typeahead values that can be used
- * by angular ui's typeahead functionality.
- */
-var d2TypeAhead = angular.module('d2-typeahead', []);
 
 /**
  * @ngdoc module
@@ -157,36 +126,7 @@ d2RecordTable = angular.module('d2-recordtable', [
  * The breadcrumbs component contains of a service and a directive.
  * The service will manage the list of breadcrumbs where the directive will display them.
  */
-d2BreadCrumbs = angular.module('d2-breadcrumbs', []);
-
-/**
- * @ngdoc module
- * @name d2-introlist
- *
- *
- * @description
- *
- * # d2-introlist
- *
- * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
- *
- */
-d2IntroList = angular.module('d2-introlist', []);
-
-/**
- * @ngdoc module
- * @name d2-headerbar
- *
- *
- * @description
- *
- * # d2-headerbar
- *
- * This module contains the directive for the headerbar
- * the headerbar does not have any services therefore this is the only
- * directive currently in this module.
- */
-d2HeaderBar = angular.module('d2-headerbar', []);
+angular.module('d2-breadcrumbs', []);
 
 //TODO: Filters has a too general name maybe?
 /**
@@ -208,9 +148,7 @@ d2Services = angular.module('d2-services', ['d2-auth']);
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 
-"use strict";
-
-d2Auth.service('currentUser', ["d2Api", function (d2Api) {
+angular.module('d2-auth').service('currentUser', ["d2Api", function (d2Api) {
     var self = this,
         permissionPromise,
         permissions;
@@ -240,6 +178,7 @@ d2Auth.service('currentUser', ["d2Api", function (d2Api) {
     });
 }]);
 
+/* global d2 */
 /**
  * @ngdoc directive
  * @name breadCrumbs
@@ -280,12 +219,12 @@ d2Auth.service('currentUser', ["d2Api", function (d2Api) {
         </file>
     </example>
  */
-d2BreadCrumbs.directive('breadCrumbs', function () {
+angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
     return {
         restrict: 'E',
         replace: true,
         scope: {
-            homeCrumb: "="
+            homeCrumb: '='
         },
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controller: ["$scope", "$location", "breadCrumbsService", function ($scope, $location, breadCrumbsService) {
@@ -315,7 +254,7 @@ d2BreadCrumbs.directive('breadCrumbs', function () {
  * Service that manages the breadcrumbs list. Use this service throughout your app to
  * modify the breadcrumbs list.
  */
-d2BreadCrumbs.service('breadCrumbsService', function () {
+angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
     var homeCrumb = [];
     /**
      * @ngdoc property
@@ -435,9 +374,10 @@ d2BreadCrumbs.service('breadCrumbsService', function () {
             }
         });
         return homeCrumb[0];
-    }
+    };
 });
 
+/* global d2Config */
 d2Config.constant('API_ENDPOINT', '/dhis/api');
 d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
     return {
@@ -450,12 +390,25 @@ d2Config.factory('apiConfig', ["API_ENDPOINT", function (API_ENDPOINT) {
             }
             return [API_ENDPOINT, resource].join('/');
         }
-    }
+    };
 }]);
 
+/* global d2ContextMenu */
 d2ContextMenu.directive('contextMenu', function () {
 
 });
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-detailsbox
+ *
+ * @description
+ *
+ * This module represents the detailsbox that shows basic details about a record. This
+ * can show a list details in key/value format.
+ */
+angular.module('d2-detailsbox', []);
+
 /**
  * @ngdoc directive
  * @name detailsBox
@@ -506,13 +459,13 @@ d2ContextMenu.directive('contextMenu', function () {
  </file>
  </example>
  */
-d2DetailsBox.directive('detailsBox', function () {
+angular.module('d2-detailsbox').directive('detailsBox', function () {
     return {
         restrict: 'EA',
         replace: true,
         scope: {
-            details: "=",
-            headers: "="
+            details: '=',
+            headers: '='
         },
         templateUrl: d2.scriptPath() + 'common/detailsbox/detailsbox.html',
         controller: ["$scope", function ($scope) {
@@ -527,8 +480,8 @@ d2DetailsBox.directive('detailsBox', function () {
 
                 $scope.valueList = _.map(filteredList, function (value, key) {
                     return {
-                        "key": key,
-                        "value": value
+                        key: key,
+                        value: value
                     };
                 });
             };
@@ -536,14 +489,14 @@ d2DetailsBox.directive('detailsBox', function () {
             this.parseDetailsToArray();
 
             $scope.$watch('details', function (newVal, oldVal) {
-                if (newVal === oldVal) return;
+                if (newVal === oldVal) { return; }
                 self.parseDetailsToArray();
             });
         }]
     };
 });
 
-d2Filters.filter('capitalize', function () {
+angular.module('d2-filters').filter('capitalize', function () {
     return function (input) {
         if (angular.isString(input)) {
             return input.charAt(0).toUpperCase() + input.slice(1);
@@ -567,11 +520,27 @@ d2Filters.filter('capitalize', function () {
  *  To add translation functionality add the `d2-translate` module to your app.
  * }
  */
-d2Filters.filter('translate', ["capitalizeFilter", function (capitalizeFilter) {
+angular.module('d2-filters').filter('translate', ["capitalizeFilter", function (capitalizeFilter) {
     return function (input) {
         return capitalizeFilter(input);
     };
 }]);
+
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-headerbar
+ *
+ *
+ * @description
+ *
+ * # d2-headerbar
+ *
+ * This module contains the directive for the headerbar
+ * the headerbar does not have any services therefore this is the only
+ * directive currently in this module.
+ */
+angular.module('d2-headerbar', []);
 
 /**
  * @ngdoc directive
@@ -593,7 +562,7 @@ d2Filters.filter('translate', ["capitalizeFilter", function (capitalizeFilter) {
  </file>
  </example>
  */
-d2HeaderBar.directive('headerBar', function () {
+angular.module('d2-headerbar').directive('headerBar', function () {
     return {
         restrict: 'E',
         replace: true,
@@ -612,6 +581,21 @@ d2HeaderBar.directive('headerBar', function () {
         }
     };
 });
+
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-introlist
+ *
+ *
+ * @description
+ *
+ * # d2-introlist
+ *
+ * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
+ *
+ */
+angular.module('d2-introlist', []);
 
 /**
  * @ngdoc directive
@@ -636,7 +620,7 @@ d2HeaderBar.directive('headerBar', function () {
  *
  * TODO: ADD Picture
  */
-d2IntroList.directive('introList', function () {
+angular.module('d2-introlist').directive('introList', function () {
     return {
         restrict: 'E',
         replace: true,
@@ -654,6 +638,7 @@ d2IntroList.directive('introList', function () {
     };
 });
 
+/* global window, d2RecordTable */
 /**
  * @ngdoc controller
  * @name RecordTableController
@@ -853,7 +838,8 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) return;
+            if ( ! angular.isNumber($scope.pageItems) || ! angular.isNumber($scope.pager.currentPage)) { return; }
+
             $scope.items = this.origData.slice(
                 $scope.pageItems * ($scope.pager.currentPage - 1),
                 $scope.pageItems * $scope.pager.currentPage
@@ -930,7 +916,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
         var filters = this.getColumnsWithFilters(),
             filterObject = {};
 
-        if (filters.length === 0) return false;
+        if (filters.length === 0) { return false; }
 
         angular.forEach(filters, function (column) {
             filterObject[column.name] = column.filter;
@@ -964,10 +950,11 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
     this.getRemoteFilters = function () {
         var filters = [];
 
-        if (!this.getFilterObject()) return;
+        if (!this.getFilterObject()) { return; }
+
         angular.forEach(this.getFilterObject(), function (filterValue, filterOn) {
             if (filterValue) {
-                filters.push(filterOn + ":like:" + filterValue);
+                filters.push(filterOn + ':like:' + filterValue);
             }
         });
 
@@ -1050,7 +1037,7 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
             items;
 
         //Don't do anything when there is no sorting to be done
-        if (sorting.length === 0) return;
+        if (sorting.length === 0) { return; }
 
         items = _.sortBy($scope.items, sortBy);
         if (sorting[0] && sorting[0].sort === 'desc') {
@@ -1065,18 +1052,17 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
      * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
      */
     this.serviceSorting = function () {
-        var sorting = _.filter($scope.columns, 'sort'),
-            sortBy = _.pluck(sorting, 'name');
+        var sorting = _.filter($scope.columns, 'sort');
 
         //Don't do anything when there is no sorting to be done
-        if (sorting.length === 0) return;
+        if (sorting.length === 0) { return; }
 
-        alert('API Sorting not yet implemented');
+        window.alert('API Sorting not yet implemented');
     };
 
     this.getValuesForColumn = function (column) {
         if (!column || !column.name || !angular.isString(column.name)) {
-            return []
+            return [];
         }
 
         return _.map($scope.items, function (item) {
@@ -1112,9 +1098,10 @@ d2RecordTable.controller('RecordTableController', ["$scope", "$q", "$filter", "$
         if (newValue !== oldValue) {
             self.parseTableData();
         }
-    })
+    });
 }]);
 
+/* global d2, d2RecordTable */
 /**
  * @ngdoc directive
  * @name recordTable
@@ -1249,7 +1236,7 @@ d2RecordTable.directive('recordTable', function () {
     };
 });
 
-var recordTable = angular.module('d2-recordtable');
+var d2RecordTable = angular.module('d2-recordtable');
 
 /**
  * @ngdoc directive
@@ -1280,21 +1267,24 @@ d2RecordTable.directive('recordTableHeader', function () {
         scope: {
             column: '='
         },
-        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a><span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
+        template: '<th class="table-header"><a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>' +
+            '<span ng-if="!column.sortable" ng-transclude></span><input ng-if="column.searchable" ng-model="column.filter" type="text" ' +
+            'typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8"></th>',
         link: function (scope, element, attr, parentCtrl) {
-            scope.sortOrder = function (event) {
+            scope.sortOrder = function () {
                 parentCtrl.setSortOrder(scope.column);
-            }
+            };
 
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];
-            }
+            };
         }
     };
 });
 
 
 
+var d2Rest = angular.module('d2-rest');
 /**
  * @ngdoc provider
  * @name d2ApiProvider
@@ -1496,7 +1486,7 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
      * Response interceptor that takes the data from the endpoint and extracts the meta
      * data that is wrapped around it.
      */
-    this.config.addResponseInterceptor(function (data, operation, what, url, response, defered) {
+    this.config.addResponseInterceptor(function (data, operation, what) {
         if (operation === 'getList' && data && data[what]) {
             var newData = data[what],
                 metaData = angular.copy(data);
@@ -1571,7 +1561,7 @@ d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
 
             return response;
         }
-    }
+    };
 }]);
 
 /**
@@ -1583,10 +1573,10 @@ d2Rest.config(["$httpProvider", "d2ApiProvider", function ($httpProvider, d2ApiP
     d2ApiProvider.setBaseUrl('/dhis/api');
 }]);
 
-"use strict";
-d2Services.factory('schemaProcessor', function () {
+angular.module('d2-services').factory('schemaProcessor', function () {
     return function (providedSchemas) {
-        var schemaProcessor = new function () {
+        var schemaProcessor,
+            SchemaProcessorConstructor = function () {
             this.schemas = [];
             this.schemaGroups = {};
 
@@ -1604,7 +1594,6 @@ d2Services.factory('schemaProcessor', function () {
                     if (schemaGroups[groupName] === undefined) {
                         schemaGroups[groupName] = [];
                     }
-                    ;
                     schemaGroups[groupName].push(schema);
                 });
                 this.schemaGroups = schemaGroups;
@@ -1612,12 +1601,12 @@ d2Services.factory('schemaProcessor', function () {
             };
 
             this.filterSchemasByPermissions = function (userPermissions) {
-                var self = this,
-                    authorizedSchemas = [];
+                var authorizedSchemas = [];
 
                 angular.forEach(this.schemas, function (schema) {
-                    if (schema.isAuthorizedBy(userPermissions))
+                    if (schema.isAuthorizedBy(userPermissions)) {
                         authorizedSchemas.push(schema);
+                    }
                 });
 
                 return authorizedSchemas;
@@ -1634,11 +1623,11 @@ d2Services.factory('schemaProcessor', function () {
 
                         angular.forEach(this.authorities, function (permission) {
                             if (permission.type === 'DELETE') {
-                                permissions['remove'] = permission.authorities;
+                                permissions.remove = permission.authorities;
                             } else {
                                 permissions[permission.type.toLowerCase()] = permission.authorities;
                             }
-                            permissions['all'] = permissions['all'].concat(permission.authorities);
+                            permissions.all = permissions.all.concat(permission.authorities);
 
                         });
                         return permissions;
@@ -1653,7 +1642,7 @@ d2Services.factory('schemaProcessor', function () {
                             }
                         });
                         return authorized;
-                    }
+                    };
                 });
             };
 
@@ -1668,14 +1657,18 @@ d2Services.factory('schemaProcessor', function () {
                     filteredSchemaGroups = {};
 
                 angular.forEach(names, function (name) {
-                    if (schemas[name])
+                    if (schemas[name]) {
                         filteredSchemaGroups[name] = schemas[name];
+                    }
                 });
 
                 return filteredSchemaGroups;
             };
         };
+
+        schemaProcessor = new SchemaProcessorConstructor();
         schemaProcessor.process(providedSchemas || []);
+
         return schemaProcessor;
     };
 });
@@ -1691,7 +1684,7 @@ d2Settings.service('systemSettingsService', ["d2Api", function (d2Api) {
 
     this.get = function (key) {
         return settings[key];
-    }
+    };
 
     /**
      * Loading of the system settings
@@ -1702,10 +1695,10 @@ d2Settings.service('systemSettingsService', ["d2Api", function (d2Api) {
     });
 }]);
 
-d2Translate.factory('d2LanguageLoader', ["$q", "$http", "translateApi", function ($q, $http, translateApi) {
+angular.module('d2-translate').factory('d2LanguageLoader', ["$q", "$http", "translateApi", function ($q, $http, translateApi) {
     var loadedValues = {};
 
-    return function (options, $uses) {
+    return function (options) {
         var deferred = $q.defer();
 
         if (loadedValues[options.key]) {
@@ -1715,7 +1708,7 @@ d2Translate.factory('d2LanguageLoader', ["$q", "$http", "translateApi", function
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
                 loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
-            }).error(function (data) {
+            }).error(function () {
                     deferred.reject(options.key);
                 });
         }
@@ -1723,14 +1716,14 @@ d2Translate.factory('d2LanguageLoader', ["$q", "$http", "translateApi", function
     };
 }]);
 
-d2Translate.factory('d2MissingTranslationHandler', ["$translate", "translateApi", function ($translate, translateApi) {
+angular.module('d2-translate').factory('d2MissingTranslationHandler', ["$translate", "translateApi", function ($translate, translateApi) {
     return function (translationId, $uses) {
         translateApi.add(translationId);
-        translateApi.translateThroughApi($uses)
-    }
+        translateApi.translateThroughApi($uses);
+    };
 }]);
 
-d2Translate.service('translateApi', ["$q", "$translate", "apiConfig", "$timeout", "$http", function ($q, $translate, apiConfig, $timeout, $http) {
+angular.module('d2-translate').service('translateApi', ["$q", "$translate", "apiConfig", "$timeout", "$http", function ($q, $translate, apiConfig, $timeout, $http) {
     var self = this;
     var timeOutSet = false;
     var translateKeys = [];
@@ -1768,7 +1761,7 @@ d2Translate.service('translateApi', ["$q", "$translate", "apiConfig", "$timeout"
         }, 100, false);
 
         return deferred.promise;
-    }
+    };
 
     this.translateThroughApi = function (languageCode) {
         if (timeOutSet === false) {
@@ -1777,14 +1770,27 @@ d2Translate.service('translateApi', ["$q", "$translate", "apiConfig", "$timeout"
                 $translate.refresh();
             });
         }
-    }
+    };
 }]);
 
-d2Translate.config(["$translateProvider", function ($translateProvider) {
+angular.module('d2-translate').config(["$translateProvider", function ($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
 }]);
+/**
+ * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ */
+angular.module('d2-typeahead', []);
+
 /**
  * @ngdoc service
  * @name typeAheadService
@@ -1800,7 +1806,7 @@ d2Translate.config(["$translateProvider", function ($translateProvider) {
  * This is used for example in the {@link d2-recordtable#recordTable} directive. When searching fields that are loaded
  * by a rest service. When searching and new values get pulled in these get added to the typeahead service.
  */
-d2TypeAhead.service('typeAheadService', function () {
+angular.module('d2-typeahead').service('typeAheadService', function () {
     /**
      * @ngdoc method
      * @name typeAheadService#add

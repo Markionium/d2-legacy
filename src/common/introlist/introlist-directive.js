@@ -1,3 +1,18 @@
+/* global d2 */
+/**
+ * @ngdoc module
+ * @name d2-introlist
+ *
+ *
+ * @description
+ *
+ * # d2-introlist
+ *
+ * The introlist is a menu directive that shows menu items with a small descriptive text and an icon.
+ *
+ */
+angular.module('d2-introlist', []);
+
 /**
  * @ngdoc directive
  * @name introList
@@ -21,7 +36,7 @@
  *
  * TODO: ADD Picture
  */
-d2IntroList.directive('introList', function () {
+angular.module('d2-introlist').directive('introList', function () {
     return {
         restrict: 'E',
         replace: true,

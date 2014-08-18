@@ -1,3 +1,4 @@
+/* global d2, d2RecordTable */
 /**
  * @ngdoc directive
  * @name recordTable

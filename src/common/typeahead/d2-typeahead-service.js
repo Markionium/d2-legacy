@@ -1,4 +1,17 @@
 /**
+ * @ngdoc module
+ * @name d2-typeahead
+ *
+ * @description
+ *
+ * #d2-typeahead
+ *
+ * The typeahead module provides a service that can be used to store typeahead values that can be used
+ * by angular ui's typeahead functionality.
+ */
+angular.module('d2-typeahead', []);
+
+/**
  * @ngdoc service
  * @name typeAheadService
  *
@@ -13,7 +26,7 @@
  * This is used for example in the {@link d2-recordtable#recordTable} directive. When searching fields that are loaded
  * by a rest service. When searching and new values get pulled in these get added to the typeahead service.
  */
-d2TypeAhead.service('typeAheadService', function () {
+angular.module('d2-typeahead').service('typeAheadService', function () {
     /**
      * @ngdoc method
      * @name typeAheadService#add

@@ -1,3 +1,4 @@
+/* global d2Config */
 d2Config.constant('API_ENDPOINT', '/dhis/api');
 d2Config.factory('apiConfig', function (API_ENDPOINT) {
     return {
@@ -10,5 +11,5 @@ d2Config.factory('apiConfig', function (API_ENDPOINT) {
             }
             return [API_ENDPOINT, resource].join('/');
         }
-    }
+    };
 });
