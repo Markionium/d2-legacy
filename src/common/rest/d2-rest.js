@@ -173,10 +173,8 @@ d2Rest.factory('userIsLoggedOutInterceptor', function ($window) {
 /**
  * Set the default base url
  */
-d2Rest.config(function (d2ApiProvider) {
-    d2ApiProvider.setBaseUrl('/dhis/api');
-});
-
-d2Rest.config(function ($httpProvider) {
+d2Rest.config(function ($httpProvider, d2ApiProvider) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
+
+    d2ApiProvider.setBaseUrl('/dhis/api');
 });

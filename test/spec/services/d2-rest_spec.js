@@ -268,7 +268,7 @@ describe('D2 Rest Interface', function () {
         }));
     });
 
-    describe('', function () {
+    describe('expired session handler', function () {
         var d2Api, $httpBackend, $http,
             reloaded = false;
 
