@@ -49,7 +49,6 @@ var wrap = require('gulp-wrap');
 //Code linting and style checkers
 var jshint = require('gulp-jshint');
 var jscs = require('gulp-jscs');
-var gulpprint = require('gulp-print');
 
 /***********************************************************************************************************************
 * Settings
