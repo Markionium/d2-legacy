@@ -16,6 +16,9 @@ d2Auth.service('currentUser', function (d2Api) {
         return permissions.indexOf(permissionToCheck) > 0 ? true : false;
     };
 
+    /**
+     * Loading of the user profile
+     */
     d2Api.currentUser.get().then(function (response) {
         angular.extend(self, response.getDataOnly());
     });

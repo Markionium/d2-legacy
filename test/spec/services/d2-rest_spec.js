@@ -267,4 +267,46 @@ describe('D2 Rest Interface', function () {
             $httpBackend.flush();
         }));
     });
+
+    describe('', function () {
+        var d2Api, $httpBackend, $http,
+            reloaded = false;
+
+        beforeEach(module('d2-rest'));
+        beforeEach(inject(function (_$httpBackend_, _$http_, _d2Api_, $window) {
+            $httpBackend = _$httpBackend_;
+            d2Api = _d2Api_;
+            $http = _$http_;
+
+            $window.location.reload = function () {
+                reloaded = true;
+            };
+        }));
+
+        afterEach(function () {
+            $httpBackend.verifyNoOutstandingExpectation();
+            $httpBackend.verifyNoOutstandingRequest();
+        });
+
+        it('should not intercept the response when the response is json', function () {
+            var actualResult;
+            $httpBackend.expectGET('/dhis/api/dataIndicators').respond(200, [{}, {}]);
+            $http.get('/dhis/api/dataIndicators').success(function (responseData) {
+                actualResult = responseData;
+            });
+            $httpBackend.flush();
+
+            expect(actualResult).toEqual([{}, {}]);
+        });
+
+        it('should intercept the response when the response is the login page', function () {
+            $httpBackend.expectGET('/dhis/api/dataIndicators').respond(200, fixtures.api.loginpage);
+
+            $http.get('/dhis/api/dataIndicators');
+
+            $httpBackend.flush();
+
+            expect(reloaded).toBe(true);
+        });
+    });
 });
