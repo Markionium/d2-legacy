@@ -180,3 +180,7 @@ gulp.task('build-prod', function () {
     destFold = 'dist';
     runSequence('test', 'lint', 'jscs', 'clean', ['make-css', 'make-js', 'templates']);
 });
+
+gulp.task('travis', function () {
+   return runSequence('test', 'lint', 'jscs');
+});
