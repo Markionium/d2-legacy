@@ -1,0 +1,4 @@
+{
+    "preset": "google"
+    //"excludeFiles": ["./src/common/recordtable/*.js"]
+}

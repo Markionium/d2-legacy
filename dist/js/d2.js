@@ -1282,8 +1282,6 @@ d2RecordTable.directive('recordTableHeader', function () {
     };
 });
 
-
-
 var d2Rest = angular.module('d2-rest');
 /**
  * @ngdoc provider
