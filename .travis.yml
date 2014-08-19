@@ -8,3 +8,6 @@ before_script:
 
 script:
   - gulp travis
+  - cd src
+  - cat ../coverage/phantomjs/lcov.info | ../node_modules/coveralls/bin/coveralls.js
+  - rm -rf ../coverage

@@ -164,6 +164,10 @@ gulp.task('jscs', function () {
         .pipe(jscs('./.jscsrc'));
 });
 
+gulp.task('code-style', function () {
+    return runSequence('lint', 'jscs');
+});
+
 /***********************************************************************************************************************
 * Dev
 */

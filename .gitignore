@@ -10,3 +10,5 @@ build/
 test/vendor/
 
 dev/
+
+coverage

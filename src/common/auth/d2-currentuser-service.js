@@ -1,4 +1,4 @@
-angular.module('d2-auth').service('currentUser', function (d2Api) {
+function currentUser(d2Api) {
     var self = this,
         permissionPromise,
         permissions;
@@ -26,4 +26,6 @@ angular.module('d2-auth').service('currentUser', function (d2Api) {
         permissions = response.getDataOnly();
         return permissions;
     });
-});
+}
+
+angular.module('d2-auth').service('currentUser', currentUser);
