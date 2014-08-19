@@ -49,7 +49,7 @@
  </file>
  </example>
  */
-angular.module('d2-detailsbox').directive('detailsBox', function () {
+function detailsBox() {
     return {
         restrict: 'EA',
         replace: true,
@@ -84,4 +84,6 @@ angular.module('d2-detailsbox').directive('detailsBox', function () {
             });
         }
     };
-});
+}
+
+angular.module('d2-detailsbox').directive('detailsBox', detailsBox);

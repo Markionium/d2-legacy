@@ -338,18 +338,18 @@ describe('Controller: Datatable with remote data', function () {
     describe('page switcher', function () {
         it('should do a call to the api when a page is switched', function () {
             $httpBackend.expectGET('/dhis/api/indicators?page=2').respond(200, fixtures.api.indicators.page2);
-            scope.pager.currentPage = 2;
+            controller.pager.currentPage = 2;
             scope.$apply();
             $httpBackend.flush();
         });
 
         it('should not add the page param on the first page', function () {
             $httpBackend.expectGET('/dhis/api/indicators?page=2').respond(200, fixtures.api.indicators.page2);
-            scope.pager.currentPage = 2;
+            controller.pager.currentPage = 2;
             $httpBackend.flush();
 
             $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
-            scope.pager.currentPage = 1;
+            controller.pager.currentPage = 1;
             $httpBackend.flush();
         });
     });

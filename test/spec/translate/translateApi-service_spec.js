@@ -1,5 +1,5 @@
 describe('Translate Api Service', function () {
-    var translateApi,
+    var translateApiService,
         $rootScope,
         returnedTranslations = [];
 
@@ -15,60 +15,60 @@ describe('Translate Api Service', function () {
         $translateProvider.useLoader('customLoader');
     }));
 
-    beforeEach(inject(function (_translateApi_, _$rootScope_) {
-        translateApi = _translateApi_;
+    beforeEach(inject(function (_translateApiService_, _$rootScope_) {
+        translateApiService = _translateApiService_;
         $rootScope = _$rootScope_;
     }));
 
     it('should have an add method', function () {
-        expect(translateApi).toHaveMethod('add')
+        expect(translateApiService).toHaveMethod('add')
     });
 
     it('should have a method getTranslationKeys', function () {
-        expect(translateApi).toHaveMethod('getTranslationKeys');
+        expect(translateApiService).toHaveMethod('getTranslationKeys');
     });
 
     it('should return an empty array when calling getTranslationKeys', function () {
-        expect(translateApi.getTranslationKeys()).toEqual([]);
+        expect(translateApiService.getTranslationKeys()).toEqual([]);
     });
 
     it('should add a key to the translation array after calling add', function () {
-        translateApi.add('yes');
+        translateApiService.add('yes');
 
-        expect(translateApi.getTranslationKeys()).toEqual(['yes']);
+        expect(translateApiService.getTranslationKeys()).toEqual(['yes']);
     });
 
     it('should not add the same key twice', function () {
-        translateApi.add('yes');
-        translateApi.add('yes');
+        translateApiService.add('yes');
+        translateApiService.add('yes');
 
-        expect(translateApi.getTranslationKeys()).toEqual(['yes']);
+        expect(translateApiService.getTranslationKeys()).toEqual(['yes']);
     });
 
     it('should not add a key that is not a string', function () {
-        translateApi.add([]);
-        translateApi.add({});
+        translateApiService.add([]);
+        translateApiService.add({});
 
-        expect(translateApi.getTranslationKeys()).toEqual([]);
+        expect(translateApiService.getTranslationKeys()).toEqual([]);
     });
 
     it('should not add an empty string', function () {
-        translateApi.add('');
+        translateApiService.add('');
 
-        expect(translateApi.getTranslationKeys()).toEqual([]);
+        expect(translateApiService.getTranslationKeys()).toEqual([]);
     });
 
     it('should not add a string that exists of whitespace', function () {
-        translateApi.add('  ');
-        translateApi.add('\t');
-        translateApi.add('\r\n');
+        translateApiService.add('  ');
+        translateApiService.add('\t');
+        translateApiService.add('\r\n');
 
-        expect(translateApi.getTranslationKeys()).toEqual([]);
+        expect(translateApiService.getTranslationKeys()).toEqual([]);
     });
 
     it('should trim whitespace from the identifiers', function () {
-        translateApi.add(' yes ');
+        translateApiService.add(' yes ');
 
-        expect(translateApi.getTranslationKeys()).toEqual(['yes']);
+        expect(translateApiService.getTranslationKeys()).toEqual(['yes']);
     });
 });

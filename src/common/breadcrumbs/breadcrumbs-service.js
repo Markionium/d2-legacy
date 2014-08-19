@@ -7,7 +7,7 @@
  * Service that manages the breadcrumbs list. Use this service throughout your app to
  * modify the breadcrumbs list.
  */
-angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
+function breadCrumbsService() {
     var homeCrumb = [];
     /**
      * @ngdoc property
@@ -128,4 +128,6 @@ angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
         });
         return homeCrumb[0];
     };
-});
+}
+
+angular.module('d2-breadcrumbs').service('breadCrumbsService', breadCrumbsService);

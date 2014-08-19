@@ -1,6 +1,9 @@
+
 /**
  * @ngdoc filter
  * @name translate
+ *
+ * @requires d2-filters#capitalize
  *
  * @description
  *
@@ -13,8 +16,10 @@
  *  To add translation functionality add the `d2-translate` module to your app.
  * }
  */
-angular.module('d2-filters').filter('translate', function (capitalizeFilter) {
+function translate(capitalizeFilter) {
     return function (input) {
         return capitalizeFilter(input);
     };
-});
+}
+
+angular.module('d2-filters').filter('translate', translate);

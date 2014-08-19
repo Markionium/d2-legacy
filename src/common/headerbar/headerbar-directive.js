@@ -19,7 +19,7 @@
  </file>
  </example>
  */
-angular.module('d2-headerbar').directive('headerBar', function () {
+function headerBar() {
     return {
         restrict: 'E',
         replace: true,
@@ -37,4 +37,6 @@ angular.module('d2-headerbar').directive('headerBar', function () {
             attrs.logo = attrs.logo || '../dhis-web-commons/css/light_blue/logo_banner.png';
         }
     };
-});
+}
+
+angular.module('d2-headerbar').directive('headerBar', headerBar);

@@ -195,7 +195,7 @@ angular.module('d2-services', ['d2-auth']);
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 
-angular.module('d2-auth').service('currentUser', ["d2Api", function (d2Api) {
+function currentUser(d2Api) {
     var self = this,
         permissionPromise,
         permissions;
@@ -223,9 +223,50 @@ angular.module('d2-auth').service('currentUser', ["d2Api", function (d2Api) {
         permissions = response.getDataOnly();
         return permissions;
     });
-}]);
+}
+
+angular.module('d2-auth').service('currentUser', currentUser);
 
 /* global d2 */
+/**
+ * @ngdoc controller
+ * @name breadCrumbs
+ *
+ * @param {Object} $scope Angular scope object. Isolated scope for this directive
+ * @param {Object} breadCrumbsService Breadcrumb service that contains the breadcrumb logic {@link breadCrumbsService}
+ *
+ * @description
+ *
+ * Controller for the breadcrumbs directive
+ */
+function BreadCrumbsController($scope, breadCrumbsService) {
+    /**
+     * @ngdoc method
+     * @name breadCrumbs#crumbClick
+     *
+     * @param {Object} crumb The crumb object corresponding to the crumb that was clicked on.
+     *
+     * @description
+     *
+     * Callback for when a bread crumb is clicked on.
+     * It removes the breadcrumbs after the one that was clicked on and then calls the crumbs click handler that was
+     * specified when creating the crumb.
+     */
+    this.crumbClick = function (crumb) {
+        breadCrumbsService.resetCrumbs(crumb.id);
+
+        if (crumb.click) {
+            crumb.click(angular.copy(crumb));
+        }
+    };
+
+    $scope.$watchCollection(function () {
+        return breadCrumbsService.getCrumbsList();
+    }, function (newValue) {
+        $scope.crumbsList = newValue;
+    });
+}
+
 /**
  * @ngdoc directive
  * @name breadCrumbs
@@ -274,21 +315,8 @@ angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
             homeCrumb: '='
         },
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
-        controller: ["$scope", "$location", "breadCrumbsService", function ($scope, $location, breadCrumbsService) {
-            $scope.crumbClick = function (crumb) {
-                breadCrumbsService.resetCrumbs(crumb.id);
-
-                if (crumb.click) {
-                    crumb.click(angular.copy(crumb));
-                }
-            };
-
-            $scope.$watchCollection(function () {
-                return breadCrumbsService.getCrumbsList();
-            }, function (newValue) {
-                $scope.crumbsList = newValue;
-            });
-        }]
+        controllerAs: 'breadCrumbs',
+        controller: BreadCrumbsController
     };
 });
 
@@ -301,7 +329,7 @@ angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
  * Service that manages the breadcrumbs list. Use this service throughout your app to
  * modify the breadcrumbs list.
  */
-angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
+function breadCrumbsService() {
     var homeCrumb = [];
     /**
      * @ngdoc property
@@ -422,7 +450,9 @@ angular.module('d2-breadcrumbs').service('breadCrumbsService', function () {
         });
         return homeCrumb[0];
     };
-});
+}
+
+angular.module('d2-breadcrumbs').service('breadCrumbsService', breadCrumbsService);
 
 function apiConfig(API_ENDPOINT) {
     return {
@@ -441,9 +471,11 @@ function apiConfig(API_ENDPOINT) {
 angular.module('d2-config').constant('API_ENDPOINT', '/dhis/api');
 angular.module('d2-config').factory('apiConfig', apiConfig);
 
-angular.module('d2-contextmenu').directive('contextMenu', function () {
+function contextMenu() {
 
-});
+}
+
+angular.module('d2-contextmenu').directive('contextMenu', contextMenu);
 
 /* global d2 */
 /**
@@ -496,7 +528,7 @@ angular.module('d2-contextmenu').directive('contextMenu', function () {
  </file>
  </example>
  */
-angular.module('d2-detailsbox').directive('detailsBox', function () {
+function detailsBox() {
     return {
         restrict: 'EA',
         replace: true,
@@ -505,7 +537,7 @@ angular.module('d2-detailsbox').directive('detailsBox', function () {
             headers: '='
         },
         templateUrl: d2.scriptPath() + 'common/detailsbox/detailsbox.html',
-        controller: ["$scope", function ($scope) {
+        controller: function ($scope) {
             var self = this;
 
             this.parseDetailsToArray = function () {
@@ -529,22 +561,37 @@ angular.module('d2-detailsbox').directive('detailsBox', function () {
                 if (newVal === oldVal) { return; }
                 self.parseDetailsToArray();
             });
-        }]
+        }
     };
-});
+}
 
-angular.module('d2-filters').filter('capitalize', function () {
+angular.module('d2-detailsbox').directive('detailsBox', detailsBox);
+
+/**
+ * @ngdoc filter
+ * @name capitalize
+ *
+ * @description
+ *
+ * Capitalizes the first letter of the given string.
+ */
+function capitalize() {
     return function (input) {
         if (angular.isString(input)) {
             return input.charAt(0).toUpperCase() + input.slice(1);
         }
         return input;
     };
-});
+}
+
+angular.module('d2-filters').filter('capitalize', capitalize);
+
 
 /**
  * @ngdoc filter
  * @name translate
+ *
+ * @requires d2-filters#capitalize
  *
  * @description
  *
@@ -557,11 +604,13 @@ angular.module('d2-filters').filter('capitalize', function () {
  *  To add translation functionality add the `d2-translate` module to your app.
  * }
  */
-angular.module('d2-filters').filter('translate', ["capitalizeFilter", function (capitalizeFilter) {
+function translate(capitalizeFilter) {
     return function (input) {
         return capitalizeFilter(input);
     };
-}]);
+}
+
+angular.module('d2-filters').filter('translate', translate);
 
 /* global d2 */
 /**
@@ -584,7 +633,7 @@ angular.module('d2-filters').filter('translate', ["capitalizeFilter", function (
  </file>
  </example>
  */
-angular.module('d2-headerbar').directive('headerBar', function () {
+function headerBar() {
     return {
         restrict: 'E',
         replace: true,
@@ -602,7 +651,9 @@ angular.module('d2-headerbar').directive('headerBar', function () {
             attrs.logo = attrs.logo || '../dhis-web-commons/css/light_blue/logo_banner.png';
         }
     };
-});
+}
+
+angular.module('d2-headerbar').directive('headerBar', headerBar);
 
 /* global d2 */
 /**
@@ -628,7 +679,7 @@ angular.module('d2-headerbar').directive('headerBar', function () {
  *
  * TODO: ADD Picture
  */
-angular.module('d2-introlist').directive('introList', function () {
+function introList() {
     return {
         restrict: 'E',
         replace: true,
@@ -644,7 +695,9 @@ angular.module('d2-introlist').directive('introList', function () {
             };
         }
     };
-});
+}
+
+angular.module('d2-introlist').directive('introList', introList);
 
 /**
  * @ngdoc controller
@@ -654,7 +707,7 @@ angular.module('d2-introlist').directive('introList', function () {
  *
  * TODO: Document the rest of this Controller.
  */
-angular.module('d2-recordtable').controller('RecordTableController', ["$scope", "$q", "$filter", "$timeout", "typeAheadService", function ($scope, $q, $filter, $timeout, typeAheadService) {
+function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
 
@@ -664,7 +717,7 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
     this.typeAheadCache = typeAheadService;
 
     $scope.items = [];
-    $scope.pager = {};
+    this.pager = {};
 
     /**
      * @ngdoc method
@@ -776,7 +829,7 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
         });
 
         if (data && this.localData) {
-            $scope.pager = {
+            this.pager = {
                 currentPage: 1,
                 resultTotal: data.length,
                 itemsPerPage: $scope.pageItems
@@ -805,18 +858,18 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
      *
      * @description
      *
-     * Sets pager data onto the $scope.pager
+     * Sets pager data onto the this.pager
      *
-     * Additionally it updates the $scope.pager.currentPage to the current page.
+     * Additionally it updates the this.pager.currentPage to the current page.
      */
     this.setUpPager = function () {
-        if (!$scope.pager.itemsPerPage) {
-            $scope.pager.itemsPerPage = $scope.items.length;
+        if (!this.pager.itemsPerPage) {
+            this.pager.itemsPerPage = $scope.items.length;
         }
 
-        $scope.pager.pageCount = $scope.meta.pager.pageCount;
-        $scope.pager.resultTotal = $scope.meta.pager.total;
-        $scope.pager.currentPage = $scope.meta.pager.page;
+        this.pager.pageCount = $scope.meta.pager.pageCount;
+        this.pager.resultTotal = $scope.meta.pager.total;
+        this.pager.currentPage = $scope.meta.pager.page;
     };
 
     /**
@@ -830,8 +883,8 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
      * Return the currentpage number or undefined when no page number is available.
      */
     this.getCurrentPageParams = function () {
-        if ($scope.pager.currentPage > 1) {
-            return $scope.pager.currentPage;
+        if (this.pager.currentPage > 1) {
+            return this.pager.currentPage;
         }
     };
 
@@ -845,11 +898,11 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if (!angular.isNumber($scope.pageItems) || !angular.isNumber($scope.pager.currentPage)) { return; }
+            if (!angular.isNumber($scope.pageItems) || !angular.isNumber(this.pager.currentPage)) { return; }
 
             $scope.items = this.origData.slice(
-                $scope.pageItems * ($scope.pager.currentPage - 1),
-                $scope.pageItems * $scope.pager.currentPage
+                $scope.pageItems * (this.pager.currentPage - 1),
+                $scope.pageItems * this.pager.currentPage
             );
         } else {
             this.requestNewDataFromService();
@@ -1095,7 +1148,9 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
         }
     }, true);
 
-    $scope.$watch('pager.currentPage', function (newVal, oldVal) {
+    $scope.$watch(function () {
+        return self.pager.currentPage || undefined;
+    }, function (newVal, oldVal) {
         if (oldVal && newVal !== oldVal) {
             self.switchPage();
         }
@@ -1106,7 +1161,9 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
             self.parseTableData();
         }
     });
-}]);
+}
+
+angular.module('d2-recordtable').controller('RecordTableController', RecordTableController);
 
 /* global d2 */
 /**
@@ -1226,7 +1283,7 @@ angular.module('d2-recordtable').controller('RecordTableController', ["$scope", 
      </file>
  </example>
  */
-angular.module('d2-recordtable').directive('recordTable', function () {
+function recordTable() {
     return {
         restrict: 'E',
         replace: true,
@@ -1235,13 +1292,16 @@ angular.module('d2-recordtable').directive('recordTable', function () {
             tableData: '='
         },
         templateUrl: d2.scriptPath() + 'common/recordtable/recordtable.html',
+        controllerAs: 'recordTable',
         controller: 'RecordTableController',
         link: function (scope, element, attrs, controller) {
             controller.parseTableConfig();
             controller.parseTableData();
         }
     };
-});
+}
+
+angular.module('d2-recordtable').directive('recordTable', recordTable);
 
 /**
  * @ngdoc directive
@@ -1295,7 +1355,6 @@ function recordTableHeader() {
 
 angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
 
-var d2Rest = angular.module('d2-rest');
 /**
  * @ngdoc provider
  * @name d2ApiProvider
@@ -1309,7 +1368,7 @@ var d2Rest = angular.module('d2-rest');
  * dhis2 api. This should make it more convenient for you to use the d2Api to get data from the
  * dhis2 api.
  */
-d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) {
+function d2Api(RestangularProvider) {
 
     /*****************************************************************************
      * Provided Object definition
@@ -1467,14 +1526,14 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
      * The D2Api is basically a wrapper object for Restangular with some dhis2 api
      * sugar methods and properties.
      */
-    this.$get = ["Restangular", function (Restangular) {
+    this.$get = function (Restangular) {
         var api;
 
         api = D2ApiRest;
         api.prototype = Restangular;
 
         return new D2ApiRest();
-    }];
+    };
 
     /**
      * @ngdoc property
@@ -1543,7 +1602,7 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
         };
         return element;
     });
-}]);
+}
 
 /**
  * TODO: find a way how to define requires that depend on angular modules/objects
@@ -1562,7 +1621,7 @@ d2Rest.provider('d2Api', ["RestangularProvider", function (RestangularProvider) 
  * is logged out. We currently reload the page when the d2Rest service requests a page
  * that returns a response that contains the html fragment `<body class="loginPage">`.
  */
-d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
+function userIsLoggedOutInterceptor($window) {
     return {
         response: function (response) {
             if (response && typeof response.data === 'string' &&
@@ -1573,18 +1632,18 @@ d2Rest.factory('userIsLoggedOutInterceptor', ["$window", function ($window) {
             return response;
         }
     };
-}]);
+}
 
-/**
- * Set the default base url
- */
-d2Rest.config(["$httpProvider", "d2ApiProvider", function ($httpProvider, d2ApiProvider) {
+function restConfig($httpProvider, d2ApiProvider) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
-
     d2ApiProvider.setBaseUrl('/dhis/api');
-}]);
+}
 
-angular.module('d2-services').factory('schemaProcessor', function () {
+angular.module('d2-rest').provider('d2Api', d2Api);
+angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
+angular.module('d2-rest').config(restConfig);
+
+function schemaProcessor() {
     return function (providedSchemas) {
         var schemaProcessor,
             SchemaProcessorConstructor = function () {
@@ -1682,11 +1741,11 @@ angular.module('d2-services').factory('schemaProcessor', function () {
 
         return schemaProcessor;
     };
-});
+}
 
-var d2Settings = angular.module('d2-settings', ['d2-rest']);
+angular.module('d2-services').factory('schemaProcessor', schemaProcessor);
 
-d2Settings.service('systemSettingsService', ["d2Api", function (d2Api) {
+function systemSettingsService(d2Api) {
     var settings = {};
 
     this.getAll = function () {
@@ -1704,20 +1763,22 @@ d2Settings.service('systemSettingsService', ["d2Api", function (d2Api) {
     d2Api.systemSettings.get().then(function (settingsData) {
         angular.extend(settings, settingsData.getDataOnly());
     });
-}]);
+}
 
-angular.module('d2-translate').factory('d2LanguageLoader', ["$q", "$http", "translateApi", function ($q, $http, translateApi) {
+angular.module('d2-settings', ['d2-rest']).service('systemSettingsService', systemSettingsService);
+
+function d2LanguageLoader($q, $http, translateApiService) {
     var loadedValues = {};
 
     return function (options) {
         var deferred = $q.defer();
 
         if (loadedValues[options.key]) {
-            loadedValues[options.key] = angular.extend(translateApi.apiTranslations, loadedValues[options.key]);
-            deferred.resolve(angular.extend(translateApi.apiTranslations, loadedValues[options.key]));
+            loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, loadedValues[options.key]);
+            deferred.resolve(angular.extend(translateApiService.apiTranslations, loadedValues[options.key]));
         } else {
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
-                loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
+                loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
                 deferred.reject(options.key);
@@ -1725,16 +1786,16 @@ angular.module('d2-translate').factory('d2LanguageLoader', ["$q", "$http", "tran
         }
         return deferred.promise;
     };
-}]);
+}
 
-angular.module('d2-translate').factory('d2MissingTranslationHandler', ["$translate", "translateApi", function ($translate, translateApi) {
+function d2MissingTranslationHandler(translateApiService) {
     return function (translationId, $uses) {
-        translateApi.add(translationId);
-        translateApi.translateThroughApi($uses);
+        translateApiService.add(translationId);
+        translateApiService.translateThroughApi($uses);
     };
-}]);
+}
 
-angular.module('d2-translate').service('translateApi', ["$q", "$translate", "apiConfig", "$timeout", "$http", function ($q, $translate, apiConfig, $timeout, $http) {
+function translateApiService($q, $translate, apiConfig, $timeout, $http) {
     var self = this;
     var timeOutSet = false;
     var translateKeys = [];
@@ -1782,13 +1843,18 @@ angular.module('d2-translate').service('translateApi', ["$q", "$translate", "api
             });
         }
     };
-}]);
+}
 
-angular.module('d2-translate').config(["$translateProvider", function ($translateProvider) {
+function translateConfig($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
-}]);
+}
+
+angular.module('d2-translate').factory('d2MissingTranslationHandler', d2MissingTranslationHandler);
+angular.module('d2-translate').service('translateApiService', translateApiService);
+angular.module('d2-translate').factory('d2LanguageLoader', d2LanguageLoader);
+angular.module('d2-translate').config(translateConfig);
 
 /**
  * @ngdoc service
@@ -1805,7 +1871,7 @@ angular.module('d2-translate').config(["$translateProvider", function ($translat
  * This is used for example in the {@link d2-recordtable#recordTable} directive. When searching fields that are loaded
  * by a rest service. When searching and new values get pulled in these get added to the typeahead service.
  */
-angular.module('d2-typeahead').service('typeAheadService', function () {
+function typeAheadService() {
     /**
      * @ngdoc method
      * @name typeAheadService#add
@@ -1856,6 +1922,8 @@ angular.module('d2-typeahead').service('typeAheadService', function () {
     this.get = function (id) {
         return this[id] || [];
     };
-});
+}
+
+angular.module('d2-typeahead').service('typeAheadService', typeAheadService);
 
 })(angular);

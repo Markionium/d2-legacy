@@ -30,8 +30,8 @@ describe('Translate', function () {
         expect(translations.yes).toBe('Oui');
     });
 
-    it('should ask the translateService for a translation when it cannot be found', inject(function (translateApi) {
-        spyOn(translateApi, 'add');
+    it('should ask the translateService for a translation when it cannot be found', inject(function (translateApiService) {
+        spyOn(translateApiService, 'add');
 
         $translate(['no']).then(function (data) {
             translations = data;
@@ -39,7 +39,7 @@ describe('Translate', function () {
 
         $rootScope.$apply();
 
-        expect(translateApi.add).toHaveBeenCalledOnce();
+        expect(translateApiService.add).toHaveBeenCalledOnce();
     }));
 });
 

@@ -1,19 +1,19 @@
 /* global d2 */
 /**
  * @ngdoc controller
- * @name breadCrumbs
+ * @name BreadCrumbsController
  *
  * @param {Object} $scope Angular scope object. Isolated scope for this directive
- * @param {Object} breadCrumbsService Breadcrumb service that contains the breadcrumb logic {@link breadCrumbService}
+ * @param {Object} breadCrumbsService Breadcrumb service that contains the breadcrumb logic {@link breadCrumbsService}
  *
  * @description
  *
  * Controller for the breadcrumbs directive
  */
-function breadCrumbs($scope, breadCrumbsService) {
+function BreadCrumbsController($scope, breadCrumbsService) {
     /**
      * @ngdoc method
-     * @name breadCrumbs#crumbClick
+     * @name BreadCrumbsController#crumbClick
      *
      * @param {Object} crumb The crumb object corresponding to the crumb that was clicked on.
      *
@@ -87,6 +87,6 @@ angular.module('d2-breadcrumbs').directive('breadCrumbs', function () {
         },
         templateUrl: d2.scriptPath() + 'common/breadcrumbs/breadcrumbs.html',
         controllerAs: 'breadCrumbs',
-        controller: breadCrumbs
+        controller: BreadCrumbsController
     };
 });

@@ -22,7 +22,7 @@
  *
  * TODO: ADD Picture
  */
-angular.module('d2-introlist').directive('introList', function () {
+function introList() {
     return {
         restrict: 'E',
         replace: true,
@@ -38,4 +38,6 @@ angular.module('d2-introlist').directive('introList', function () {
             };
         }
     };
-});
+}
+
+angular.module('d2-introlist').directive('introList', introList);

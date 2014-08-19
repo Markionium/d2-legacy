@@ -13,7 +13,7 @@
  * This is used for example in the {@link d2-recordtable#recordTable} directive. When searching fields that are loaded
  * by a rest service. When searching and new values get pulled in these get added to the typeahead service.
  */
-angular.module('d2-typeahead').service('typeAheadService', function () {
+function typeAheadService() {
     /**
      * @ngdoc method
      * @name typeAheadService#add
@@ -64,4 +64,6 @@ angular.module('d2-typeahead').service('typeAheadService', function () {
     this.get = function (id) {
         return this[id] || [];
     };
-});
+}
+
+angular.module('d2-typeahead').service('typeAheadService', typeAheadService);

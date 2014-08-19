@@ -1,3 +1,5 @@
-angular.module('d2-contextmenu').directive('contextMenu', function () {
+function contextMenu() {
 
-});
+}
+
+angular.module('d2-contextmenu').directive('contextMenu', contextMenu);

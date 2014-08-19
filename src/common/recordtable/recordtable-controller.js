@@ -6,7 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
-angular.module('d2-recordtable').controller('RecordTableController', function ($scope, $q, $filter, $timeout, typeAheadService) {
+function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
 
@@ -16,7 +16,7 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
     this.typeAheadCache = typeAheadService;
 
     $scope.items = [];
-    $scope.pager = {};
+    this.pager = {};
 
     /**
      * @ngdoc method
@@ -128,7 +128,7 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
         });
 
         if (data && this.localData) {
-            $scope.pager = {
+            this.pager = {
                 currentPage: 1,
                 resultTotal: data.length,
                 itemsPerPage: $scope.pageItems
@@ -157,18 +157,18 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
      *
      * @description
      *
-     * Sets pager data onto the $scope.pager
+     * Sets pager data onto the this.pager
      *
-     * Additionally it updates the $scope.pager.currentPage to the current page.
+     * Additionally it updates the this.pager.currentPage to the current page.
      */
     this.setUpPager = function () {
-        if (!$scope.pager.itemsPerPage) {
-            $scope.pager.itemsPerPage = $scope.items.length;
+        if (!this.pager.itemsPerPage) {
+            this.pager.itemsPerPage = $scope.items.length;
         }
 
-        $scope.pager.pageCount = $scope.meta.pager.pageCount;
-        $scope.pager.resultTotal = $scope.meta.pager.total;
-        $scope.pager.currentPage = $scope.meta.pager.page;
+        this.pager.pageCount = $scope.meta.pager.pageCount;
+        this.pager.resultTotal = $scope.meta.pager.total;
+        this.pager.currentPage = $scope.meta.pager.page;
     };
 
     /**
@@ -182,8 +182,8 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
      * Return the currentpage number or undefined when no page number is available.
      */
     this.getCurrentPageParams = function () {
-        if ($scope.pager.currentPage > 1) {
-            return $scope.pager.currentPage;
+        if (this.pager.currentPage > 1) {
+            return this.pager.currentPage;
         }
     };
 
@@ -197,11 +197,11 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
      */
     this.switchPage = function () {
         if (this.localData === true) {
-            if (!angular.isNumber($scope.pageItems) || !angular.isNumber($scope.pager.currentPage)) { return; }
+            if (!angular.isNumber($scope.pageItems) || !angular.isNumber(this.pager.currentPage)) { return; }
 
             $scope.items = this.origData.slice(
-                $scope.pageItems * ($scope.pager.currentPage - 1),
-                $scope.pageItems * $scope.pager.currentPage
+                $scope.pageItems * (this.pager.currentPage - 1),
+                $scope.pageItems * this.pager.currentPage
             );
         } else {
             this.requestNewDataFromService();
@@ -447,7 +447,9 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
         }
     }, true);
 
-    $scope.$watch('pager.currentPage', function (newVal, oldVal) {
+    $scope.$watch(function () {
+        return self.pager.currentPage || undefined;
+    }, function (newVal, oldVal) {
         if (oldVal && newVal !== oldVal) {
             self.switchPage();
         }
@@ -458,4 +460,6 @@ angular.module('d2-recordtable').controller('RecordTableController', function ($
             self.parseTableData();
         }
     });
-});
+}
+
+angular.module('d2-recordtable').controller('RecordTableController', RecordTableController);

@@ -116,7 +116,7 @@
      </file>
  </example>
  */
-angular.module('d2-recordtable').directive('recordTable', function () {
+function recordTable() {
     return {
         restrict: 'E',
         replace: true,
@@ -125,10 +125,13 @@ angular.module('d2-recordtable').directive('recordTable', function () {
             tableData: '='
         },
         templateUrl: d2.scriptPath() + 'common/recordtable/recordtable.html',
+        controllerAs: 'recordTable',
         controller: 'RecordTableController',
         link: function (scope, element, attrs, controller) {
             controller.parseTableConfig();
             controller.parseTableData();
         }
     };
-});
+}
+
+angular.module('d2-recordtable').directive('recordTable', recordTable);

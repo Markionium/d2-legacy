@@ -47,29 +47,29 @@ describe('Paging with remote data', function () {
     });
 
     it('should parse the pager data', function () {
-        expect(scope.pager).toBeDefined();
+        expect(controller.pager).toBeDefined();
     });
 
     it('should set the pages number onto the pager', function () {
-        expect(scope.pager.pageCount).toBe(11);
+        expect(controller.pager.pageCount).toBe(11);
     });
 
     it('should set the current page onto the pager', function () {
-        expect(scope.pager.currentPage).toBe(1);
+        expect(controller.pager.currentPage).toBe(1);
     });
 
     it('should set the result total onto the pager', function () {
-        expect(scope.pager.resultTotal).toBe(527);
+        expect(controller.pager.resultTotal).toBe(527);
     });
 
     it('should set the amount of items per page onto the pager', function () {
-        expect(scope.pager.itemsPerPage).toBe(50);
+        expect(controller.pager.itemsPerPage).toBe(50);
     });
 
     it('should call the switchPage method when currentPage is changed', function () {
         spyOn(controller, 'switchPage');
 
-        scope.pager.currentPage = 2;
+        controller.pager.currentPage = 2;
         scope.$apply();
 
         expect(controller.switchPage).toHaveBeenCalledOnce();
@@ -84,9 +84,9 @@ describe('Paging with remote data', function () {
         $httpBackend.flush();
 
         expect(scope.items.length).toBe(27);
-        expect(scope.pager.resultTotal).toBe(27);
-        expect(scope.pager.pageCount).toBe(1);
-        expect(scope.pager.currentPage).toBe(1);
+        expect(controller.pager.resultTotal).toBe(27);
+        expect(controller.pager.pageCount).toBe(1);
+        expect(controller.pager.currentPage).toBe(1);
     });
 
     it('should display the new page amount after filtering switching page on a filtered result', function () {
@@ -101,13 +101,13 @@ describe('Paging with remote data', function () {
         $httpBackend.expectGET('/dhis/api/dataElements?filter=name:like:an&page=2')
             .respond(200, fixtures.api.dataElements.filteredOnANPage2);
 
-        scope.pager.currentPage = 2;
+        controller.pager.currentPage = 2;
 
         $httpBackend.flush();
 
-        expect(scope.pager.resultTotal).toBe(90);
-        expect(scope.pager.pageCount).toBe(2);
-        expect(scope.pager.currentPage).toBe(2);
+        expect(controller.pager.resultTotal).toBe(90);
+        expect(controller.pager.pageCount).toBe(2);
+        expect(controller.pager.currentPage).toBe(2);
     });
 
     it('should keep the itemsPerPage that was loaded from the first page', function () {
@@ -122,11 +122,11 @@ describe('Paging with remote data', function () {
         $httpBackend.expectGET('/dhis/api/dataElements?filter=name:like:an&page=2')
             .respond(200, fixtures.api.dataElements.filteredOnANPage2);
 
-        scope.pager.currentPage = 2;
+        controller.pager.currentPage = 2;
 
         $httpBackend.flush();
 
-        expect(scope.pager.itemsPerPage).toBe(50);
+        expect(controller.pager.itemsPerPage).toBe(50);
     });
 });
 
@@ -205,7 +205,7 @@ describe('Paging with local data', function () {
                 "name": "ANC 4th or more visits",
                 "code": "DE_359599"
             }];
-        scope.pager.currentPage = 2;
+        controller.pager.currentPage = 2;
         scope.$apply();
 
         expect(scope.items).toEqual(expectedItems);

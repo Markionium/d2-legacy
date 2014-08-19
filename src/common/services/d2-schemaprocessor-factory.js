@@ -1,4 +1,4 @@
-angular.module('d2-services').factory('schemaProcessor', function () {
+function schemaProcessor() {
     return function (providedSchemas) {
         var schemaProcessor,
             SchemaProcessorConstructor = function () {
@@ -96,4 +96,6 @@ angular.module('d2-services').factory('schemaProcessor', function () {
 
         return schemaProcessor;
     };
-});
+}
+
+angular.module('d2-services').factory('schemaProcessor', schemaProcessor);

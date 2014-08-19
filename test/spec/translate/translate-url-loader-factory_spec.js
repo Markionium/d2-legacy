@@ -53,7 +53,7 @@ describe('Translate loader: Loading api translations', function () {
         $httpBackend.verifyNoOutstandingRequest();
     }));
 
-    it('should add the extra returned keys to result from the loader', inject(function (translateApi, d2MissingTranslationHandler) {
+    it('should add the extra returned keys to result from the loader', inject(function (d2MissingTranslationHandler) {
         var translations;
 
         $httpBackend.expectPOST('/dhis/api/i18n', ["no"]).respond(200, {"no": "No"});
@@ -85,7 +85,7 @@ describe('Translate loader: Loading api translations', function () {
         expect(firstLoad).toEqual(secondLoad);
     }));
 
-    it('should call the i18n api endpoint when there are keys in the translateApi', inject(function (d2MissingTranslationHandler) {
+    it('should call the i18n api endpoint when there are keys in the translateApiService', inject(function (d2MissingTranslationHandler) {
         $httpBackend.expectPOST('/dhis/api/i18n', ["no"]).respond(200, {"no": "No"});
 
         d2MissingTranslationHandler('no', 'en');
@@ -95,8 +95,8 @@ describe('Translate loader: Loading api translations', function () {
         $httpBackend.flush();
     }));
 
-    it('should ask the translateApi for a list of translation keys', inject(function (translateApi, d2MissingTranslationHandler) {
-        spyOn(translateApi, 'getTranslationKeys').andReturn(['no']);
+    it('should ask the translateApiService for a list of translation keys', inject(function (translateApiService, d2MissingTranslationHandler) {
+        spyOn(translateApiService, 'getTranslationKeys').andReturn(['no']);
 
         $httpBackend.expectPOST('/dhis/api/i18n', ["no"]).respond(200, {"no": "No"});
 
@@ -104,6 +104,6 @@ describe('Translate loader: Loading api translations', function () {
         $timeout.flush(100);
         $httpBackend.flush();
 
-        expect(translateApi.getTranslationKeys).toHaveBeenCalledOnce();
+        expect(translateApiService.getTranslationKeys).toHaveBeenCalledOnce();
     }));
 });

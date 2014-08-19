@@ -1,6 +1,4 @@
-var d2Settings = angular.module('d2-settings', ['d2-rest']);
-
-d2Settings.service('systemSettingsService', function (d2Api) {
+function systemSettingsService(d2Api) {
     var settings = {};
 
     this.getAll = function () {
@@ -18,4 +16,6 @@ d2Settings.service('systemSettingsService', function (d2Api) {
     d2Api.systemSettings.get().then(function (settingsData) {
         angular.extend(settings, settingsData.getDataOnly());
     });
-});
+}
+
+angular.module('d2-settings', ['d2-rest']).service('systemSettingsService', systemSettingsService);

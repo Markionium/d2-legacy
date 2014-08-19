@@ -1,4 +1,3 @@
-var d2Rest = angular.module('d2-rest');
 /**
  * @ngdoc provider
  * @name d2ApiProvider
@@ -12,7 +11,7 @@ var d2Rest = angular.module('d2-rest');
  * dhis2 api. This should make it more convenient for you to use the d2Api to get data from the
  * dhis2 api.
  */
-d2Rest.provider('d2Api', function (RestangularProvider) {
+function d2Api(RestangularProvider) {
 
     /*****************************************************************************
      * Provided Object definition
@@ -246,7 +245,7 @@ d2Rest.provider('d2Api', function (RestangularProvider) {
         };
         return element;
     });
-});
+}
 
 /**
  * TODO: find a way how to define requires that depend on angular modules/objects
@@ -265,7 +264,7 @@ d2Rest.provider('d2Api', function (RestangularProvider) {
  * is logged out. We currently reload the page when the d2Rest service requests a page
  * that returns a response that contains the html fragment `<body class="loginPage">`.
  */
-d2Rest.factory('userIsLoggedOutInterceptor', function ($window) {
+function userIsLoggedOutInterceptor($window) {
     return {
         response: function (response) {
             if (response && typeof response.data === 'string' &&
@@ -276,13 +275,13 @@ d2Rest.factory('userIsLoggedOutInterceptor', function ($window) {
             return response;
         }
     };
-});
+}
 
-/**
- * Set the default base url
- */
-d2Rest.config(function ($httpProvider, d2ApiProvider) {
+function restConfig($httpProvider, d2ApiProvider) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
-
     d2ApiProvider.setBaseUrl('/dhis/api');
-});
+}
+
+angular.module('d2-rest').provider('d2Api', d2Api);
+angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
+angular.module('d2-rest').config(restConfig);

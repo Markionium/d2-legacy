@@ -1,15 +1,15 @@
-angular.module('d2-translate').factory('d2LanguageLoader', function ($q, $http, translateApi) {
+function d2LanguageLoader($q, $http, translateApiService) {
     var loadedValues = {};
 
     return function (options) {
         var deferred = $q.defer();
 
         if (loadedValues[options.key]) {
-            loadedValues[options.key] = angular.extend(translateApi.apiTranslations, loadedValues[options.key]);
-            deferred.resolve(angular.extend(translateApi.apiTranslations, loadedValues[options.key]));
+            loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, loadedValues[options.key]);
+            deferred.resolve(angular.extend(translateApiService.apiTranslations, loadedValues[options.key]));
         } else {
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
-                loadedValues[options.key] = angular.extend(translateApi.apiTranslations, data);
+                loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
                 deferred.reject(options.key);
@@ -17,16 +17,16 @@ angular.module('d2-translate').factory('d2LanguageLoader', function ($q, $http, 
         }
         return deferred.promise;
     };
-});
+}
 
-angular.module('d2-translate').factory('d2MissingTranslationHandler', function ($translate, translateApi) {
+function d2MissingTranslationHandler(translateApiService) {
     return function (translationId, $uses) {
-        translateApi.add(translationId);
-        translateApi.translateThroughApi($uses);
+        translateApiService.add(translationId);
+        translateApiService.translateThroughApi($uses);
     };
-});
+}
 
-angular.module('d2-translate').service('translateApi', function ($q, $translate, apiConfig, $timeout, $http) {
+function translateApiService($q, $translate, apiConfig, $timeout, $http) {
     var self = this;
     var timeOutSet = false;
     var translateKeys = [];
@@ -74,10 +74,15 @@ angular.module('d2-translate').service('translateApi', function ($q, $translate,
             });
         }
     };
-});
+}
 
-angular.module('d2-translate').config(function ($translateProvider) {
+function translateConfig($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
-});
+}
+
+angular.module('d2-translate').factory('d2MissingTranslationHandler', d2MissingTranslationHandler);
+angular.module('d2-translate').service('translateApiService', translateApiService);
+angular.module('d2-translate').factory('d2LanguageLoader', d2LanguageLoader);
+angular.module('d2-translate').config(translateConfig);
