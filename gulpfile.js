@@ -59,7 +59,7 @@ var benchMarkTests = true;
 
 var files = [
     //Vendor
-    'test/vendor/jquery/jquery.js',
+    'test/vendor/jquery/dist/jquery.js',
     'test/vendor/lodash/dist/lodash.js',
 
     'test/vendor/angular/angular.js',
