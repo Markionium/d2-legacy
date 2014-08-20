@@ -230,7 +230,7 @@ angular.module('d2-auth').service('currentUser', currentUser);
 /* global d2 */
 /**
  * @ngdoc controller
- * @name breadCrumbs
+ * @name BreadCrumbsController
  *
  * @param {Object} $scope Angular scope object. Isolated scope for this directive
  * @param {Object} breadCrumbsService Breadcrumb service that contains the breadcrumb logic {@link breadCrumbsService}
@@ -242,7 +242,7 @@ angular.module('d2-auth').service('currentUser', currentUser);
 function BreadCrumbsController($scope, breadCrumbsService) {
     /**
      * @ngdoc method
-     * @name breadCrumbs#crumbClick
+     * @name BreadCrumbsController#crumbClick
      *
      * @param {Object} crumb The crumb object corresponding to the crumb that was clicked on.
      *
@@ -1925,5 +1925,9 @@ function typeAheadService() {
 }
 
 angular.module('d2-typeahead').service('typeAheadService', typeAheadService);
+
+/**
+ * Created by mark on 20/08/14.
+ */
 
 })(angular);
