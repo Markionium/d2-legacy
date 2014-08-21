@@ -58,6 +58,16 @@
   color: black;
   margin-bottom: 10px; }
 
+.closable {
+  position: relative; }
+
+.closable-button {
+  color: #276696;
+  font-size: 1.5em;
+  position: absolute;
+  top: -0.4em;
+  right: -0.4em; }
+
 /* Style utilities */
 /* Message colors */
 .callout {

@@ -64,7 +64,11 @@ beforeEach(function () {
 
         toHaveClass: function (className) {
             this.message = function () {
-                return 'Expected ' + this.actual + ' to have class "' + className + '"';
+                if (this.actual.length > 0) {
+                    return 'Expected ' + this.actual + ' to have class "' + className + '"';
+                } else {
+                    return 'Expected some elements to have class "' + className + '" but no elements were found.';
+                }
             }
             return this.actual.hasClass(className);
         }

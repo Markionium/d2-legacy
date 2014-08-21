@@ -158,9 +158,21 @@ angular.module('d2-headerbar', []);
  */
 angular.module('d2-introlist', []);
 
+/**
+ * @ngdoc module
+ * @name d2-uienhancements
+ *
+ * @description
+ *
+ * #d2-uienhancements
+ *
+ * This module contains a list of useful small enhancements to add to your ui.
+ */
+angular.module('d2-ui-enhancements', []);
+
 // Combine modules into a wrapper directive for easy inclusion
 // TODO: look at if this is useful or not
-angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox']);
+angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox', 'd2-ui-enhancements']);
 angular.module('d2-services', ['d2-auth']);
 
 // Create the final d2 module that can be used when all functionality is required
