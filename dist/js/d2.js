@@ -245,18 +245,22 @@ function currentUser(d2Api, $q) {
     user = d2Api.currentUser.get();
     user.then(function (response) {
         angular.extend(user, response.getDataOnly());
+        return user;
     });
 
-    return angular.extend(user, {
-        get: function (valueKey) {
+    user = angular.extend(user, {
+        valueFor: function (valueKey) {
             if (this[valueKey]) {
                 return this[valueKey];
             } else {
                 return undefined;
             }
         },
+        mark: {},
         permissions: loadPermissions()
     });
+
+    return user;
 }
 currentUser.$inject = ["d2Api", "$q"];
 

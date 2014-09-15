@@ -28,10 +28,11 @@ function currentUser(d2Api, $q) {
     user = d2Api.currentUser.get();
     user.then(function (response) {
         angular.extend(user, response.getDataOnly());
+        return user;
     });
 
-    return angular.extend(user, {
-        getValue: function (valueKey) {
+    user = angular.extend(user, {
+        valueFor: function (valueKey) {
             if (this[valueKey]) {
                 return this[valueKey];
             } else {
@@ -40,6 +41,7 @@ function currentUser(d2Api, $q) {
         },
         permissions: loadPermissions()
     });
+    return user;
 }
 
 angular.module('d2-auth').factory('currentUser', currentUser);
