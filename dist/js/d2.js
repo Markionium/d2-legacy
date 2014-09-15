@@ -243,10 +243,6 @@ function currentUser(d2Api, $q) {
      * Loading of the user profile
      */
     user = d2Api.currentUser.get();
-    user.then(function (response) {
-        angular.extend(user, response.getDataOnly());
-        return user;
-    });
 
     user = angular.extend(user, {
         valueFor: function (valueKey) {
@@ -258,6 +254,12 @@ function currentUser(d2Api, $q) {
         },
         permissions: loadPermissions()
     });
+
+    user.then(function (response) {
+        angular.extend(user, response.getDataOnly());
+        return user;
+    });
+
     return user;
 }
 currentUser.$inject = ["d2Api", "$q"];
