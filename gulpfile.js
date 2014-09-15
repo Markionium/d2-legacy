@@ -181,9 +181,28 @@ gulp.task('build', function () {
 */
 gulp.task('build-prod', function () {
     destFold = 'dist';
-    runSequence('test', 'lint', 'jscs', 'clean', ['make-css', 'make-js', 'templates']);
+    runSequence('test', 'lint', 'jscs', 'clean', ['make-css', 'make-js', 'templates'], 'prod-test');
 });
 
 gulp.task('travis', function () {
    return runSequence('test', 'lint', 'jscs');
+});
+
+gulp.task('prod-test', function () {
+    var _ = require('lodash');
+
+    var prodTestFiles = _.map(files, function (pattern) {
+        if (pattern === 'src/**/*.js')
+            return 'dist/js/d2.js';
+        return pattern;
+    });
+
+    return gulp.src(prodTestFiles)
+        .pipe(karma({
+            configFile: karma_config,
+            action: 'run'
+        }))
+        .on('error', function( err ) {
+            throw err;
+        });
 });
