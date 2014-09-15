@@ -258,6 +258,7 @@ function currentUser(d2Api, $q) {
         permissions: loadPermissions()
     });
 }
+currentUser.$inject = ["d2Api", "$q"];
 
 angular.module('d2-auth').factory('currentUser', currentUser);
 
@@ -300,6 +301,7 @@ function BreadCrumbsController($scope, breadCrumbsService) {
         $scope.crumbsList = newValue;
     });
 }
+BreadCrumbsController.$inject = ["$scope", "breadCrumbsService"];
 
 /**
  * @ngdoc directive
@@ -501,6 +503,7 @@ function apiConfig(API_ENDPOINT) {
         }
     };
 }
+apiConfig.$inject = ["API_ENDPOINT"];
 
 angular.module('d2-config').constant('API_ENDPOINT', '/dhis/api');
 angular.module('d2-config').factory('apiConfig', apiConfig);
@@ -536,6 +539,7 @@ function contextMenu($document) {
         }
     };
 }
+contextMenu.$inject = ["$document"];
 
 angular.module('d2-contextmenu').directive('contextMenu', contextMenu);
 
@@ -765,6 +769,7 @@ function translate(capitalizeFilter) {
         return capitalizeFilter(input);
     };
 }
+translate.$inject = ["capitalizeFilter"];
 
 angular.module('d2-filters').filter('translate', translate);
 
@@ -1319,6 +1324,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         }
     });
 }
+RecordTableController.$inject = ["$scope", "$q", "$filter", "$timeout", "typeAheadService"];
 
 angular.module('d2-recordtable').controller('RecordTableController', RecordTableController);
 
@@ -1761,6 +1767,7 @@ function d2Api(RestangularProvider) {
         return element;
     });
 }
+d2Api.$inject = ["RestangularProvider"];
 
 /**
  * TODO: find a way how to define requires that depend on angular modules/objects
@@ -1791,11 +1798,13 @@ function userIsLoggedOutInterceptor($window) {
         }
     };
 }
+userIsLoggedOutInterceptor.$inject = ["$window"];
 
 function restConfig($httpProvider, d2ApiProvider) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
     d2ApiProvider.setBaseUrl('/dhis/api');
 }
+restConfig.$inject = ["$httpProvider", "d2ApiProvider"];
 
 angular.module('d2-rest').provider('d2Api', d2Api);
 angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
@@ -1922,6 +1931,7 @@ function systemSettingsService(d2Api) {
         angular.extend(settings, settingsData.getDataOnly());
     });
 }
+systemSettingsService.$inject = ["d2Api"];
 
 angular.module('d2-settings', ['d2-rest']).service('systemSettingsService', systemSettingsService);
 
@@ -1945,6 +1955,7 @@ function d2LanguageLoader($q, $http, translateApiService) {
         return deferred.promise;
     };
 }
+d2LanguageLoader.$inject = ["$q", "$http", "translateApiService"];
 
 function d2MissingTranslationHandler(translateApiService) {
     return function (translationId, $uses) {
@@ -1952,6 +1963,7 @@ function d2MissingTranslationHandler(translateApiService) {
         translateApiService.translateThroughApi($uses);
     };
 }
+d2MissingTranslationHandler.$inject = ["translateApiService"];
 
 function translateApiService($q, $translate, apiConfig, $timeout, $http) {
     var self = this;
@@ -2002,12 +2014,14 @@ function translateApiService($q, $translate, apiConfig, $timeout, $http) {
         }
     };
 }
+translateApiService.$inject = ["$q", "$translate", "apiConfig", "$timeout", "$http"];
 
 function translateConfig($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
     $translateProvider.preferredLanguage('en');
     $translateProvider.useMissingTranslationHandler('d2MissingTranslationHandler');
 }
+translateConfig.$inject = ["$translateProvider"];
 
 angular.module('d2-translate').factory('d2MissingTranslationHandler', d2MissingTranslationHandler);
 angular.module('d2-translate').service('translateApiService', translateApiService);
