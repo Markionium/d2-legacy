@@ -256,10 +256,8 @@ function currentUser(d2Api, $q) {
                 return undefined;
             }
         },
-        mark: {},
         permissions: loadPermissions()
     });
-
     return user;
 }
 currentUser.$inject = ["d2Api", "$q"];
