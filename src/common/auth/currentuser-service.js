@@ -31,7 +31,7 @@ function currentUser(d2Api, $q) {
     });
 
     return angular.extend(user, {
-        get: function (valueKey) {
+        getValue: function (valueKey) {
             if (this[valueKey]) {
                 return this[valueKey];
             } else {

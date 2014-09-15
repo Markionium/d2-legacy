@@ -21,7 +21,7 @@ describe('User Profile Service', function () {
     it('should have alternate method to get data', function () {
         $httpBackend.flush();
 
-        expect(user.get('name')).toBe('John Traore');
+        expect(user.getValue('name')).toBe('John Traore');
     });
 
     it('should be a promise itself', function () {
@@ -33,7 +33,7 @@ describe('User Profile Service', function () {
     it('should return a undefined when trying to get a unknown property', function () {
         $httpBackend.flush();
 
-        expect(user.get('name2')).toBe(undefined);
+        expect(user.getValue('name2')).toBe(undefined);
     });
 
     describe('Authorization', function () {
