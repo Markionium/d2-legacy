@@ -257,7 +257,6 @@ function currentUser(d2Api, $q) {
 
     user.then(function (response) {
         angular.extend(user, response.getDataOnly());
-        return user;
     });
 
     return user;
