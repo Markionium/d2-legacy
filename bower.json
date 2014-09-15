@@ -13,7 +13,7 @@
     "jasmine": "2.0.x",
     "angular-mocks": "1.2.x"
   },
-  "main": "./dist/d2.js",
+  "main": ["./dist/js/d2.js", "./dist/css/d2.css", "./dist/js/common"],
   "ignore": [
     "doc",
     "test",

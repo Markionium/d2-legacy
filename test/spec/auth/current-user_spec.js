@@ -11,8 +11,29 @@ describe('User Profile Service', function () {
         $httpBackend.expectGET('/dhis/api/me/authorization').respond(200, fixtures.api.me.authorization);
     }));
 
-    it('should have a userLoaded property', function () {
-        expect(user.userLoaded).toBe(false);
+
+    it('should set the username', function () {
+        $httpBackend.flush();
+
+        expect(user.name).toBe('John Traore');
+    });
+
+    it('should have alternate method to get data', function () {
+        $httpBackend.flush();
+
+        expect(user.get('name')).toBe('John Traore');
+    });
+
+    it('should be a promise itself', function () {
+        $httpBackend.flush();
+
+        expect(user.then).toBeAFunction();
+    });
+
+    it('should return a undefined when trying to get a unknown property', function () {
+        $httpBackend.flush();
+
+        expect(user.get('name2')).toBe(undefined);
     });
 
     describe('Authorization', function () {
@@ -21,14 +42,14 @@ describe('User Profile Service', function () {
 
         });
 
-        it('should have a permissions method', function () {
-            expect(user).toHaveMethod('getPermissions');
+        it('should have a permissions object', function () {
+            expect(user.permissions).toBeAnObject();
         });
 
         it('should load the list from the api', function () {
             var permissions;
 
-            user.getPermissions().then(function (recievedPermissions) {
+            user.permissions.then(function (recievedPermissions) {
                 permissions = recievedPermissions;
             });
 
@@ -38,51 +59,39 @@ describe('User Profile Service', function () {
         });
 
         it('should return true if the user has a permission', function () {
-            user.getPermissions();
+            var hasPermissions = false;
+
+            user.permissions.hasPermission('F_SECTION_ADD').then(function () {
+                hasPermissions = true;
+            });
 
             $httpBackend.flush();
 
-            expect(user.hasPermission('F_SECTION_ADD')).toBe(true);
+            expect(hasPermissions).toBe(true);
         });
 
         it('should return false when the user does not have a permission', function () {
-            user.getPermissions();
+            var hasPermissions = false;
+
+            user.permissions.hasPermission('unknown permissions').then(function (perm) {
+                hasPermissions = true;
+            });
 
             $httpBackend.flush();
 
-            expect(user.hasPermission('unknown_permission')).toBe(false);
-        });
-
-        it('should set the username', function () {
-            $httpBackend.flush();
-
-            expect(user.name).toBe('John Traore');
+            expect(hasPermissions).toBe(false);
         });
 
         it('should have a method that returns all permissions', function () {
             var userPermissions;
 
-            user.getPermissions().then(function (permissions) {
+            user.permissions.then(function (permissions) {
                 userPermissions = permissions;
             });
 
             $httpBackend.flush();
 
             expect(userPermissions).toEqual(fixtures.api.me.authorization);
-        });
-
-        it('should have a property for permissions loaded', function () {
-            expect(user.permissionsLoaded).toBe(false);
-        });
-
-        it('should set permissions loaded to true after loading permissions', function () {
-            expect(user.permissionsLoaded).toBe(false);
-
-            user.getPermissions();
-
-            $httpBackend.flush();
-
-            expect(user.permissionsLoaded).toBe(true);
         });
     });
 });

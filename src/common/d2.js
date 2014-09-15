@@ -50,6 +50,14 @@ angular.module('d2-rest', ['restangular']);
 angular.module('d2-auth', ['d2-rest']);
 angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
+/**
+ * @ngdoc module
+ * @name d2-contextmenu
+ *
+ * @description
+ *
+ * This module wraps the ng-context-menu dependency.
+ */
 angular.module('d2-contextmenu', []);
 
 /**
@@ -172,7 +180,7 @@ angular.module('d2-ui-enhancements', []);
 
 // Combine modules into a wrapper directive for easy inclusion
 // TODO: look at if this is useful or not
-angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox', 'd2-ui-enhancements']);
+angular.module('d2-directives', ['d2-breadcrumbs', 'd2-introlist', 'd2-headerbar', 'd2-recordtable', 'd2-detailsbox', 'd2-ui-enhancements', 'd2-contextmenu']);
 angular.module('d2-services', ['d2-auth']);
 
 // Create the final d2 module that can be used when all functionality is required

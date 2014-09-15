@@ -17,6 +17,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
     $scope.items = [];
     this.pager = {};
+    this.contextMenu = $scope.contextMenu;
 
     /**
      * @ngdoc method
@@ -63,7 +64,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
         $scope.pageItems = tableConfig.pageItems;
         $scope.columns = tableConfig.columns || undefined;
-        $scope.rowClick = tableConfig.rowClick;
+        this.rowClick = tableConfig.rowClick;
 
         return this;
     };

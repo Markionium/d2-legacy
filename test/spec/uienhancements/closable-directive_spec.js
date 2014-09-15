@@ -14,6 +14,7 @@ describe('UI Enhancements: Directive closable', function () {
         }
 
         $compile(element)(scope);
+        scope.$digest();
 
         controller = element.controller('closable');
     }));

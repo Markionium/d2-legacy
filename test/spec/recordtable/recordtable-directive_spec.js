@@ -1,4 +1,3 @@
-"use strict";
 describe('Directive: recordtable', function () {
     var element, scope;
 

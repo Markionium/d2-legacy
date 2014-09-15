@@ -6,12 +6,17 @@
             </tr>
         </thead>
         <tbody>
-            <tr ng-repeat="item in items" ng-click="rowClick(item)">
+            <tr ng-repeat="item in items" ng-click="recordTable.rowClick(item)">
                 <td ng-repeat="column in columns">{{ item[column.name]}}</td>
             </tr>
         </tbody>
     </table>
     <div class="record-table-pagination">
         <pagination boundary-links="true" items-per-page="recordTable.pager.itemsPerPage" total-items="recordTable.pager.resultTotal" ng-model="recordTable.pager.currentPage" class="pagination-sm" previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate }}" first-text="{{ 'first' | translate }}" last-text="{{ 'last' | translate }}"></pagination>
+    </div>
+    <div class="record-table-context-menu" ng-if="recordTable.contextMenu">
+        <ul id="recordTableContextMenu">
+            <li ng-repeat="menuItem in recordTable.contextMenu" ng-bind="menuItem.name" ng-click="menuItem.click()"></li>
+        </ul>
     </div>
 </div>

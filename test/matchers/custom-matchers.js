@@ -62,15 +62,27 @@ beforeEach(function () {
             return angular.isArray(this.actual);
         },
 
+        toBeAFunction: function () {
+            var result = angular.isFunction(this.actual);
+
+            this.message = function () {
+                return 'Expected ' + this.actual + (result ? ' NOT' : '') + ' to be an function';
+            }
+            return result;
+        },
+
         toHaveClass: function (className) {
+            var result = this.actual.hasClass(className);
+
             this.message = function () {
                 if (this.actual.length > 0) {
-                    return 'Expected ' + this.actual + ' to have class "' + className + '"';
+                    return 'Expected ' + this.actual + (result ? ' NOT' : '') + ' to have class "' + className + '"';
                 } else {
                     return 'Expected some elements to have class "' + className + '" but no elements were found.';
                 }
-            }
-            return this.actual.hasClass(className);
+            };
+
+            return result;
         }
     });
 });

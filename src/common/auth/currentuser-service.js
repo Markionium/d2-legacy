@@ -1,31 +1,45 @@
-function currentUser(d2Api) {
-    var self = this,
-        permissionPromise,
-        permissions;
+function currentUser(d2Api, $q) {
+    var permissions;
+    var user;
 
-    this.userLoaded = false;
-    this.permissionsLoaded = false;
+    function loadPermissions() {
+        var permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
+            permissions = response.getDataOnly();
+            return permissions;
+        });
 
-    this.getPermissions = function () {
+        function hasPermission(permissionToCheck) {
+            return permissionPromise.then(function (permissions) {
+                if (permissions.indexOf(permissionToCheck) > 0) {
+                    return true;
+                } else {
+                    return $q.reject('User does not have this permission');
+                }
+            });
+        }
+
+        permissionPromise.hasPermission = hasPermission;
         return permissionPromise;
-    };
-
-    this.hasPermission = function (permissionToCheck) {
-        return permissions.indexOf(permissionToCheck) > 0 ? true : false;
-    };
+    }
 
     /**
      * Loading of the user profile
      */
-    d2Api.currentUser.get().then(function (response) {
-        angular.extend(self, response.getDataOnly());
+    user = d2Api.currentUser.get();
+    user.then(function (response) {
+        angular.extend(user, response.getDataOnly());
     });
 
-    permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
-        self.permissionsLoaded = true;
-        permissions = response.getDataOnly();
-        return permissions;
+    return angular.extend(user, {
+        get: function (valueKey) {
+            if (this[valueKey]) {
+                return this[valueKey];
+            } else {
+                return undefined;
+            }
+        },
+        permissions: loadPermissions()
     });
 }
 
-angular.module('d2-auth').service('currentUser', currentUser);
+angular.module('d2-auth').factory('currentUser', currentUser);

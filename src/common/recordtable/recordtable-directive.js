@@ -122,7 +122,8 @@ function recordTable() {
         replace: true,
         scope: {
             tableConfig: '=',
-            tableData: '='
+            tableData: '=',
+            contextMenu: '=tableContextMenu'
         },
         templateUrl: d2.scriptPath() + 'common/recordtable/recordtable.html',
         controllerAs: 'recordTable',
