@@ -9,7 +9,7 @@ function recordTableSelectable($parse) {
 
     function selectOne(item) {
         return function () {
-          item.selected = true;
+            item.selected = true;
         };
     }
 

@@ -981,6 +981,10 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         $scope.items = this.origData = data;
         $scope.columns = $scope.columns || this.getHeadersFromData();
 
+        if (this.isSelectable()) {
+            this.addSelectable();
+        }
+
         if ($scope.pageItems) {
             $scope.items = $scope.items.slice(0, $scope.pageItems);
         }
@@ -1002,6 +1006,24 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         }
 
         return this;
+    };
+
+    this.isSelectable = function () {
+        if ($scope.tableConfig && $scope.tableConfig.select) {
+            return true;
+        }
+        return false;
+    };
+
+    this.addSelectable = function () {
+        $scope.columns = [{
+            name: '',
+            checkbox: true
+        }].concat($scope.columns);
+
+        _.each($scope.items, function (item) {
+            item.selected = false;
+        });
     };
 
     /**
@@ -1483,12 +1505,18 @@ angular.module('d2-recordtable').directive('recordTable', recordTable);
  *
  * This directive represents the column headers as they are displayed by the {@link recordTable} directive.
  *
+ * #Sorting
+ *
  * The directive adds the sort functionality and calls the setSortOrder function on {@link RecordTableController}.
  *
+ * #Searchable columns
  * An input box with be added to the column header when `column.searchable` is set to true.
  *
- * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
+ * A class can be configured in the tableConfig that is passed to the recordTable directive to add a class to the input boxes.
+ * When adding a property `headerInputClass` to the tableConfig this class will be added to the input searchboxes.
  *
+ * #Typeahead
+ * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
  */
 function recordTableHeader() {
     return {
@@ -1497,14 +1525,17 @@ function recordTableHeader() {
         require: '^recordTable',
         transclude: true,
         scope: {
-            column: '='
+            column: '=',
+            config: '='
         },
 
         template: [
             '<th class="table-header">',
-            '<a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
-            '<span ng-if="!column.sortable" ng-transclude></span>',
-            '<input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
+            '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
+            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="config.headerInputClass"' +
+                ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<record-table-selectable ng-if="column.checkbox"></record-table-selectable>',
             '</th>'
         ].join(''),
 
@@ -1521,6 +1552,46 @@ function recordTableHeader() {
 }
 
 angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
+
+function recordTableSelectable($parse) {
+    function selectAll(items) {
+        return function () {
+            _.each(items, function (item) {
+                item.selected = true;
+            });
+        };
+    }
+
+    function selectOne(item) {
+        return function () {
+            item.selected = true;
+        };
+    }
+
+    return {
+        restrict: 'E',
+        replace: true,
+        require: '^recordTable',
+        scope: false,
+        template: '<input type="checkbox" />',
+        link: function (scope, element, attrs, controller) {
+            //We use parse because we still want to get the item if it's there but dont want to isolate
+            //the scope.
+            var item = $parse(attrs.item)(scope);
+
+            if (item) {
+                controller.rowClick = selectOne(scope.item);
+            }
+
+            element.click(function () {
+                scope.$apply(selectAll(scope.items));
+            });
+        }
+    };
+}
+recordTableSelectable.$inject = ["$parse"];
+
+angular.module('d2-recordtable').directive('recordTableSelectable', recordTableSelectable);
 
 /**
  * @ngdoc provider

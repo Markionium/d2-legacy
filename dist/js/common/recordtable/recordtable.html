@@ -2,12 +2,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th ng-repeat="column in columns" class="record-table-header" column="column">{{ column.name }}</th>
+                <th ng-repeat="column in columns" class="record-table-header" column="column" config="tableConfig">{{ column.name }}</th>
             </tr>
         </thead>
         <tbody>
             <tr ng-repeat="item in items" ng-click="recordTable.rowClick(item)">
-                <td ng-repeat="column in columns">{{ item[column.name]}}</td>
+                <td ng-repeat="column in columns" ng-bind="item[column.name]"></td>
             </tr>
         </tbody>
     </table>
