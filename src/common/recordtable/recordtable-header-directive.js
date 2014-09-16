@@ -25,14 +25,15 @@ function recordTableHeader() {
         require: '^recordTable',
         transclude: true,
         scope: {
-            column: '='
+            column: '=',
+            config: '='
         },
 
         template: [
             '<th class="table-header">',
             '<a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
             '<span ng-if="!column.sortable" ng-transclude></span>',
-            '<input ng-if="column.searchable" ng-model="column.filter" type="text" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<input ng-if="column.searchable" ng-model="column.filter" type="text" ng-class="config.headerInputClass" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
             '</th>'
         ].join(''),
 

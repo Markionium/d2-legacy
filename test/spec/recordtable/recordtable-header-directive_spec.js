@@ -191,4 +191,25 @@ describe('Directive: RecordTable Header', function () {
 
         expect(controller.doLocalFiltering).toHaveBeenCalledOnce();
     });
+
+    describe('cosmetics', function () {
+        var firstHeader;
+
+        beforeEach(function () {
+            scope.tableConfig.headerInputClass = 'form-control',
+
+            scope.tableConfig.columns = [
+                { name: 'HeaderColumnText', searchable: true }
+            ];
+
+            $compile(element)(scope);
+            scope.$digest();
+
+            firstHeader = element.find('th').first();
+        });
+
+        it('should add the class that was given', function () {
+            expect(firstHeader.find('input')).toHaveClass('form-control');
+        });
+    });
 });
