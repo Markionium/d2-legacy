@@ -37,9 +37,10 @@ function recordTableHeader() {
 
         template: [
             '<th class="table-header">',
-            '<a ng-click="sortOrder()" href="#" ng-if="column.sortable" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
-            '<span ng-if="!column.sortable" ng-transclude></span>',
-            '<input ng-if="column.searchable" ng-model="column.filter" type="text" ng-class="config.headerInputClass" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
+            '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
+            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="config.headerInputClass" typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<record-table-selectable ng-if="column.checkbox"></record-table-selectable>',
             '</th>'
         ].join(''),
 

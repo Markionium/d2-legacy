@@ -7,7 +7,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="item in items" ng-click="recordTable.rowClick(item)">
-                <td ng-repeat="column in columns">{{ item[column.name]}}</td>
+                <td ng-repeat="column in columns" ng-bind="item[column.name]"></td>
             </tr>
         </tbody>
     </table>

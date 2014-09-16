@@ -116,6 +116,10 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         $scope.items = this.origData = data;
         $scope.columns = $scope.columns || this.getHeadersFromData();
 
+        if (this.isSelectable()) {
+            this.addSelectable();
+        }
+
         if ($scope.pageItems) {
             $scope.items = $scope.items.slice(0, $scope.pageItems);
         }
@@ -137,6 +141,24 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         }
 
         return this;
+    };
+
+    this.isSelectable = function () {
+        if ($scope.tableConfig && $scope.tableConfig.select) {
+            return true;
+        }
+        return false;
+    };
+
+    this.addSelectable = function () {
+        $scope.columns = [{
+            name: '',
+            checkbox: true
+        }].concat($scope.columns);
+
+        _.each($scope.items, function (item) {
+            item.selected = false;
+        });
     };
 
     /**

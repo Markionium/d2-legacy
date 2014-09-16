@@ -213,3 +213,38 @@ describe('Directive: RecordTable Header', function () {
         });
     });
 });
+
+describe('Directive: RecordTable Header', function () {
+    var element;
+    var scope;
+
+    beforeEach(module('d2-recordtable'));
+    beforeEach(module('common/recordtable/recordtable.html'));
+    beforeEach(inject(function ($rootScope, _$compile_) {
+        $compile = _$compile_;
+        scope = $rootScope.$new();
+
+        scope.tableConfig = {
+            select: true
+        };
+        scope.tableConfig.columns = [
+            { name: 'HeaderColumnText' }
+        ];
+
+        scope.tableData = [
+            { name: "Mark", desk: 1 },
+            { name: "Lars", desk: 2 },
+            { name: "Morten", desk: 3 }
+        ];
+
+        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+        element = $compile(element)(scope);
+        scope.$digest();
+    }));
+
+    it('should only display the checkbox field', function () {
+        var checkBox = element.find('th').first().find('input');
+
+        expect(checkBox.attr('type')).toBe('checkbox');
+    });
+});

@@ -436,3 +436,71 @@ describe('Controller: Datatable generation of headers', function () {
         expect(controller.getHeadersFromData).toHaveBeenCalledOnce();
     });
 });
+
+describe('Controller: Datatable selectable', function () {
+    var scope, controller, $httpBackend;
+
+    beforeEach(module('d2-rest'));
+    beforeEach(module('d2-recordtable'));
+
+    beforeEach(inject(function (d2Api, $rootScope, $controller, $q) {
+        scope = $rootScope.$new();
+
+        scope.tableData = [
+            { name: "Mark", desk: 1 },
+            { name: "Lars", desk: 2 },
+            { name: "Morten", desk: 3 }
+        ];
+
+        scope.tableConfig = {
+            select: true
+        };
+
+        controller = $controller('RecordTableController', {
+            $scope: scope,
+            $q: $q
+        });
+
+        controller.processData(scope.tableData);
+    }));
+
+    describe('isSelectable', function () {
+        it('should return true when tableConfig.select is true', function () {
+            expect(controller.isSelectable()).toBe(true);
+        });
+
+        it('should return false when tableConfig.select is false', function () {
+            scope.tableConfig.select = false;
+
+            expect(controller.isSelectable()).toBe(false);
+        });
+
+        it('should return false when tableConfig.select is not available', function () {
+            delete scope.tableConfig;
+
+            expect(controller.isSelectable()).toBe(false);
+        });
+    });
+
+    describe('addSelectable', function () {
+        it('should add a column for the checkboxes to the column list', function () {
+            expect(scope.columns.length).toBe(3);
+        });
+
+        it('should give the column header an empty name', function () {
+            expect(scope.columns[0].name).toBe('');
+        });
+
+        it('should add a property checkbox to the added column', function () {
+            expect(scope.columns[0].checkbox).toBeDefined();
+        });
+
+        it('should give the added property checkbox the value true', function () {
+            expect(scope.columns[0].checkbox).toBe(true);
+        });
+
+        it('should add a selected property onto the items', function () {
+            expect(scope.items[0].selected).toBe(false);
+        });
+    });
+});
