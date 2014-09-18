@@ -144,7 +144,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.isSelectable = function () {
-        if ($scope.tableConfig && $scope.tableConfig.select) {
+        if (angular.isDefined($scope.tableConfig) && $scope.tableConfig.select === true) {
             return true;
         }
         return false;
@@ -158,6 +158,20 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
         _.each($scope.items, function (item) {
             item.selected = false;
+        });
+    };
+
+    this.selectAll = function () {
+        return function () {
+            _.each($scope.items, function (item) {
+                item.selected = true;
+            });
+        };
+    };
+
+    this.getRowDataColumns = function () {
+        return _.filter($scope.columns, function (column) {
+            return !column.checkbox;
         });
     };
 

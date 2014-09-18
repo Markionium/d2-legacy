@@ -1,12 +1,4 @@
 function recordTableSelectable($parse) {
-    function selectAll(items) {
-        return function () {
-            _.each(items, function (item) {
-                item.selected = true;
-            });
-        };
-    }
-
     function selectOne(item) {
         return function () {
             item.selected = true;
@@ -17,20 +9,20 @@ function recordTableSelectable($parse) {
         restrict: 'E',
         replace: true,
         require: '^recordTable',
-        scope: false,
-        template: '<input type="checkbox" />',
+        scope: true,
+        template: '<input type="checkbox" ng-checked="item.selected" />',
         link: function (scope, element, attrs, controller) {
             //We use parse because we still want to get the item if it's there but dont want to isolate
             //the scope.
-            var item = $parse(attrs.item)(scope);
+            scope.item = $parse(attrs.item)(scope);
 
-            if (item) {
+            if (scope.item) {
                 controller.rowClick = selectOne(scope.item);
+            } else {
+                element.click(function () {
+                    scope.$apply(controller.selectAll());
+                });
             }
-
-            element.click(function () {
-                scope.$apply(selectAll(scope.items));
-            });
         }
     };
 }

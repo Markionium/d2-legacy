@@ -19,7 +19,7 @@
     "unused": true,
     "strict": false,
     "maxdepth": 5,
-    "maxstatements": 30,
+    "maxstatements": 32,
     "maxcomplexity": 6,
 
     "browser": true,

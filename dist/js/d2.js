@@ -1009,7 +1009,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.isSelectable = function () {
-        if ($scope.tableConfig && $scope.tableConfig.select) {
+        if (angular.isDefined($scope.tableConfig) && $scope.tableConfig.select === true) {
             return true;
         }
         return false;
@@ -1023,6 +1023,20 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
         _.each($scope.items, function (item) {
             item.selected = false;
+        });
+    };
+
+    this.selectAll = function () {
+        return function () {
+            _.each($scope.items, function (item) {
+                item.selected = true;
+            });
+        };
+    };
+
+    this.getRowDataColumns = function () {
+        return _.filter($scope.columns, function (column) {
+            return !column.checkbox;
         });
     };
 
@@ -1554,14 +1568,6 @@ function recordTableHeader() {
 angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
 
 function recordTableSelectable($parse) {
-    function selectAll(items) {
-        return function () {
-            _.each(items, function (item) {
-                item.selected = true;
-            });
-        };
-    }
-
     function selectOne(item) {
         return function () {
             item.selected = true;
@@ -1572,20 +1578,20 @@ function recordTableSelectable($parse) {
         restrict: 'E',
         replace: true,
         require: '^recordTable',
-        scope: false,
-        template: '<input type="checkbox" />',
+        scope: true,
+        template: '<input type="checkbox" ng-checked="item.selected" />',
         link: function (scope, element, attrs, controller) {
             //We use parse because we still want to get the item if it's there but dont want to isolate
             //the scope.
-            var item = $parse(attrs.item)(scope);
+            scope.item = $parse(attrs.item)(scope);
 
-            if (item) {
+            if (scope.item) {
                 controller.rowClick = selectOne(scope.item);
+            } else {
+                element.click(function () {
+                    scope.$apply(controller.selectAll());
+                });
             }
-
-            element.click(function () {
-                scope.$apply(selectAll(scope.items));
-            });
         }
     };
 }

@@ -452,19 +452,20 @@ describe('Controller: Datatable selectable', function () {
             { name: "Morten", desk: 3 }
         ];
 
-        scope.tableConfig = {
-            select: true
-        };
+        scope.tableConfig ={};
 
         controller = $controller('RecordTableController', {
             $scope: scope,
             $q: $q
         });
-
-        controller.processData(scope.tableData);
     }));
 
     describe('isSelectable', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = true;
+            controller.processData(scope.tableData);
+        });
+
         it('should return true when tableConfig.select is true', function () {
             expect(controller.isSelectable()).toBe(true);
         });
@@ -483,6 +484,11 @@ describe('Controller: Datatable selectable', function () {
     });
 
     describe('addSelectable', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = true;
+            controller.processData(scope.tableData);
+        });
+
         it('should add a column for the checkboxes to the column list', function () {
             expect(scope.columns.length).toBe(3);
         });
@@ -501,6 +507,24 @@ describe('Controller: Datatable selectable', function () {
 
         it('should add a selected property onto the items', function () {
             expect(scope.items[0].selected).toBe(false);
+        });
+    });
+
+    describe('getRowDataColumns', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = false;
+        });
+
+        it('should return all the available columns', function () {
+            controller.processData(scope.tableData);
+            expect(controller.getRowDataColumns().length).toBe(2);
+        });
+
+        it('should return the data only columns without the selectable', function () {
+            scope.tableConfig.select = true;
+            controller.processData(scope.tableData);
+
+            expect(controller.getRowDataColumns().length).toBe(2);
         });
     });
 });
