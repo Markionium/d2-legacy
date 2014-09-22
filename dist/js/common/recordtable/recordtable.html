@@ -2,7 +2,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th ng-repeat="column in columns" class="record-table-header" column="column" config="tableConfig">{{ column.name }}</th>
+                <th record-table-header ng-repeat="column in columns" column="column" config="tableConfig">{{ column.name }}</th>
             </tr>
         </thead>
         <tbody>
@@ -11,6 +11,7 @@
                 <td ng-repeat="column in recordTable.getRowDataColumns()" ng-bind="item[column.name]"></td>
             </tr>
         </tbody>
+        <!--<tbody record-table-rows columns="columns" items="items"></tbody>-->
     </table>
     <div class="record-table-pagination">
         <pagination boundary-links="true" items-per-page="recordTable.pager.itemsPerPage" total-items="recordTable.pager.resultTotal" ng-model="recordTable.pager.currentPage" class="pagination-sm" previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate }}" first-text="{{ 'first' | translate }}" last-text="{{ 'last' | translate }}"></pagination>

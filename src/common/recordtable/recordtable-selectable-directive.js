@@ -9,7 +9,7 @@ function recordTableSelectable($parse) {
         restrict: 'E',
         replace: true,
         require: '^recordTable',
-        scope: true,
+        scope: false,
         template: '<input type="checkbox" ng-checked="item.selected" />',
         link: function (scope, element, attrs, controller) {
             //We use parse because we still want to get the item if it's there but dont want to isolate

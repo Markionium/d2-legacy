@@ -6,6 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
+//jshint maxstatements:33
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
@@ -162,17 +163,19 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.selectAll = function () {
-        return function () {
-            _.each($scope.items, function (item) {
-                item.selected = true;
-            });
-        };
+        angular.forEach($scope.items, function (item) {
+            item.selected = true;
+        });
     };
 
     this.getRowDataColumns = function () {
         return _.filter($scope.columns, function (column) {
             return !column.checkbox;
         });
+    };
+
+    this.getItems = function () {
+        return $scope.items;
     };
 
     /**

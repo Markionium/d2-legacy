@@ -871,6 +871,7 @@ angular.module('d2-introlist').directive('introList', introList);
  *
  * TODO: Document the rest of this Controller.
  */
+//jshint maxstatements:33
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
@@ -1027,17 +1028,19 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.selectAll = function () {
-        return function () {
-            _.each($scope.items, function (item) {
-                item.selected = true;
-            });
-        };
+        angular.forEach($scope.items, function (item) {
+            item.selected = true;
+        });
     };
 
     this.getRowDataColumns = function () {
         return _.filter($scope.columns, function (column) {
             return !column.checkbox;
         });
+    };
+
+    this.getItems = function () {
+        return $scope.items;
     };
 
     /**
@@ -1534,22 +1537,18 @@ angular.module('d2-recordtable').directive('recordTable', recordTable);
  */
 function recordTableHeader() {
     return {
-        restrict: 'AC',
+        restrict: 'A',
         replace: true,
         require: '^recordTable',
         transclude: true,
-        scope: {
-            column: '=',
-            config: '='
-        },
-
+        scope: false,
         template: [
             '<th class="table-header">',
             '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
             '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
-            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="config.headerInputClass"' +
+            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="tableConfig.headerInputClass"' +
                 ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
-            '<record-table-selectable ng-if="column.checkbox"></record-table-selectable>',
+            '<input type="checkbox" ng-if="column.checkbox" />',
             '</th>'
         ].join(''),
 
@@ -1561,11 +1560,62 @@ function recordTableHeader() {
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];
             };
+
+            element.bind('click', 'input', function () {
+                parentCtrl.selectAll();
+                //console.log(parentCtrl.getItems());
+            });
         }
     };
 }
 
 angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
+
+function recordTableRowsDirective() {
+
+    function updateRows(items, columns, element) {
+        var rows = [];
+
+        if (!angular.isArray(columns)) {
+            //console.log('no columns');
+            return true;
+        }
+        if (!angular.isArray(items)) {
+            //console.log('no items');
+            return true;
+        }
+
+        angular.forEach(items, function (item) {
+            var row = angular.element('<tr ng-click="item.click()"></tr>');
+            angular.forEach(columns, function (column) {
+                row.append(angular.element('<td>' + item[column.name] + '</td>'));
+            });
+            rows.push(row);
+        });
+
+        element.children().remove();
+        element.append(rows);
+        return rows;
+    }
+
+    return {
+        restrict: 'A',
+        scope: false,
+        link: function (scope, element) {
+            updateRows(scope.items, scope.columns, element);
+            function update(newVal, oldVal) {
+                if (newVal[0] !== oldVal[0] || newVal[1] !== oldVal[1]) {
+                    updateRows(scope.items, scope.columns, element);
+                }
+            }
+
+            scope.$watchCollection('[items, columns]', update, true);
+
+        }
+    };
+}
+
+angular.module('d2-recordtable').directive('recordTableRows', recordTableRowsDirective);
 
 function recordTableSelectable($parse) {
     function selectOne(item) {
@@ -1578,7 +1628,7 @@ function recordTableSelectable($parse) {
         restrict: 'E',
         replace: true,
         require: '^recordTable',
-        scope: true,
+        scope: false,
         template: '<input type="checkbox" ng-checked="item.selected" />',
         link: function (scope, element, attrs, controller) {
             //We use parse because we still want to get the item if it's there but dont want to isolate

@@ -26,22 +26,18 @@
  */
 function recordTableHeader() {
     return {
-        restrict: 'AC',
+        restrict: 'A',
         replace: true,
         require: '^recordTable',
         transclude: true,
-        scope: {
-            column: '=',
-            config: '='
-        },
-
+        scope: false,
         template: [
             '<th class="table-header">',
             '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
             '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
-            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="config.headerInputClass"' +
+            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="tableConfig.headerInputClass"' +
                 ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
-            '<record-table-selectable ng-if="column.checkbox"></record-table-selectable>',
+            '<input type="checkbox" ng-if="column.checkbox" />',
             '</th>'
         ].join(''),
 
@@ -53,6 +49,11 @@ function recordTableHeader() {
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];
             };
+
+            element.bind('click', 'input', function () {
+                parentCtrl.selectAll();
+                //console.log(parentCtrl.getItems());
+            });
         }
     };
 }

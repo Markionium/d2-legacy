@@ -6,7 +6,6 @@ describe('RecordTable: Selectable Directive', function () {
         var controller = {
             selectAll: function () {
                 return function () {
-                    console.log($scope.items);
                     _.each($scope.items, function (item) {
                         item.selected = true;
                     });
