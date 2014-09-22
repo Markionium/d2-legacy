@@ -1,16 +1,9 @@
 function recordTableRowsDirective() {
 
-    function updateRows(items, columns, element) {
+    function addRows(scope, element) {
         var rows = [];
 
-        if (!angular.isArray(columns)) {
-            //console.log('no columns');
-            return true;
-        }
-        if (!angular.isArray(items)) {
-            //console.log('no items');
-            return true;
-        }
+        if (!angular.isArray(columns) || !angular.isArray(items)) { return true; }
 
         angular.forEach(items, function (item) {
             var row = angular.element('<tr ng-click="item.click()"></tr>');
@@ -27,17 +20,8 @@ function recordTableRowsDirective() {
 
     return {
         restrict: 'A',
-        scope: false,
         link: function (scope, element) {
-            updateRows(scope.items, scope.columns, element);
-            function update(newVal, oldVal) {
-                if (newVal[0] !== oldVal[0] || newVal[1] !== oldVal[1]) {
-                    updateRows(scope.items, scope.columns, element);
-                }
-            }
-
-            scope.$watchCollection('[items, columns]', update, true);
-
+            addRows(scope.tableConfig.columns, scope.items, element)
         }
     };
 }

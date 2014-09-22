@@ -12,14 +12,15 @@ describe('Paging with remote data', function () {
 
         $httpBackend.expectGET('/dhis/api/dataElements').respond(200, fixtures.api.dataElements.all);
 
-        scope.columns = [
+        scope.tableConfig = {};
+        scope.tableConfig.columns = [
             { name: 'name', sortable: true, sort: 'asc', searchable: true },
             { name: 'code', sortable: true },
             { name: 'lastUpdated' }
         ];
 
         d2Api.addEndPoint('dataElements');
-        scope.tableData = d2Api.dataElements;
+        scope.tableDataSource = d2Api.dataElements;
 
         controller = $controller('RecordTableController', {
             $scope: scope,
@@ -79,11 +80,11 @@ describe('Paging with remote data', function () {
         $httpBackend.expectGET('/dhis/api/dataElements?filter=name:like:anc')
             .respond(200, fixtures.api.dataElements.filteredOnAnc);
 
-        scope.columns[0].filter = 'anc';
+        scope.tableConfig.columns[0].filter = 'anc';
         applyScope(scope);
         $httpBackend.flush();
 
-        expect(scope.items.length).toBe(27);
+        expect(scope.tableData.items.length).toBe(27);
         expect(controller.pager.resultTotal).toBe(27);
         expect(controller.pager.pageCount).toBe(1);
         expect(controller.pager.currentPage).toBe(1);
@@ -93,7 +94,7 @@ describe('Paging with remote data', function () {
         $httpBackend.expectGET('/dhis/api/dataElements?filter=name:like:an')
             .respond(200, fixtures.api.dataElements.filteredOnAN);
 
-        scope.columns[0].filter = 'an';
+        scope.tableConfig.columns[0].filter = 'an';
 
         applyScope(scope);
         $httpBackend.flush();
@@ -114,7 +115,7 @@ describe('Paging with remote data', function () {
         $httpBackend.expectGET('/dhis/api/dataElements?filter=name:like:an')
             .respond(200, fixtures.api.dataElements.filteredOnAN);
 
-        scope.columns[0].filter = 'an';
+        scope.tableConfig.columns[0].filter = 'an';
 
         applyScope(scope);
         $httpBackend.flush();
@@ -143,7 +144,7 @@ describe('Paging with local data', function () {
             pageItems: 2
         };
 
-        scope.tableData = [
+        scope.tableDataSource = [
             {
                 "name": "ANC 1st visit",
                 "code": "DE_359596"
@@ -194,7 +195,7 @@ describe('Paging with local data', function () {
                 "code": "DE_359597"
             }];
 
-        expect(scope.items).toEqual(expectedItems);
+        expect(scope.tableData.items).toEqual(expectedItems);
     });
 
     it('should change the items when the page is changed', function () {
@@ -208,6 +209,6 @@ describe('Paging with local data', function () {
         controller.pager.currentPage = 2;
         scope.$apply();
 
-        expect(scope.items).toEqual(expectedItems);
+        expect(scope.tableData.items).toEqual(expectedItems);
     });
 });

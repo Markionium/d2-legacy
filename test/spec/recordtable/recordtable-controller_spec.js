@@ -14,7 +14,7 @@ describe('Controller: Datatable', function () {
     beforeEach(inject(function ($controller, $rootScope, $q) {
         scope = $rootScope.$new();
 
-        scope.tableData = sampleData;
+        scope.tableDataSource = sampleData;
         scope.tableConfig = {};
 
         controller = $controller('RecordTableController', {
@@ -28,8 +28,8 @@ describe('Controller: Datatable', function () {
 
         scope.$apply();
 
-        expect(scope.columns[0].name).toBe('name');
-        expect(scope.columns[1].name).toBe('desk');
+        expect(scope.tableConfig.columns[0].name).toBe('name');
+        expect(scope.tableConfig.columns[1].name).toBe('desk');
     });
 
     it('should not not generate the column names when they are provided', function () {
@@ -40,39 +40,39 @@ describe('Controller: Datatable', function () {
 
         scope.$apply();
 
-        expect(scope.columns.length).toBe(1);
-        expect(scope.columns[0].name).toBe('desk');
+        expect(scope.tableConfig.columns.length).toBe(1);
+        expect(scope.tableConfig.columns[0].name).toBe('desk');
     });
 
     it('should add a sort field to a column when setSortOrder is called for that column', function () {
         var column = { name: 'HeaderColumnText', sortable: true };
-        scope.columns = [column];
+        scope.tableConfig.columns = [column];
 
         controller.setSortOrder(column);
 
-        expect(scope.columns[0].sort).toBe('asc');
+        expect(scope.tableConfig.columns[0].sort).toBe('asc');
     });
 
     it('should set sorting to desc when the sorting is asc', function () {
         var column = { name: 'HeaderColumnText', sortable: true, sort: 'asc' };
-        scope.columns = [column];
+        scope.tableConfig.columns = [column];
 
         controller.setSortOrder(column);
 
-        expect(scope.columns[0].sort).toBe('desc');
+        expect(scope.tableConfig.columns[0].sort).toBe('desc');
     });
 
     it('should set sorting to asc when sorting is desc', function () {
         var column = { name: 'HeaderColumnText', sortable: true, sort: 'desc' };
-        scope.columns = [column];
+        scope.tableConfig.columns = [column];
 
         controller.setSortOrder(column);
 
-        expect(scope.columns[0].sort).toBe('asc');
+        expect(scope.tableConfig.columns[0].sort).toBe('asc');
     });
 
     it('should set sorting of other columns to undefined when a new column is sorted', function () {
-        scope.columns = [
+        scope.tableConfig.columns = [
             { name: 'HeaderColumnText', sortable: true, sort: 'asc' },
             { name: 'HeaderColumnTextTwo', sortable: true },
             { name: 'HeaderColumnTextThree', sortable: true }
@@ -80,13 +80,13 @@ describe('Controller: Datatable', function () {
 
         controller.setSortOrder({ name: 'HeaderColumnTextTwo', sortable: true });
 
-        expect(scope.columns[0].sort).not.toBeDefined();
-        expect(scope.columns[1].sort).toBe('asc');
-        expect(scope.columns[2].sort).not.toBeDefined();
+        expect(scope.tableConfig.columns[0].sort).not.toBeDefined();
+        expect(scope.tableConfig.columns[1].sort).toBe('asc');
+        expect(scope.tableConfig.columns[2].sort).not.toBeDefined();
     });
 
     it('should sort the data given based on the sorting that is set', function () {
-        scope.columns = [
+        scope.tableConfig.columns = [
             { name: 'name', sortable: true },
             { name: 'desk', sortable: true }
         ];
@@ -94,18 +94,18 @@ describe('Controller: Datatable', function () {
         controller.parseTableData(sampleData);
         scope.$apply();
 
-        expect(scope.items[0].name).toBe('Mark');
+        expect(scope.tableData.items[0].name).toBe('Mark');
 
-        controller.setSortOrder(scope.columns[0]);
+        controller.setSortOrder(scope.tableConfig.columns[0]);
         scope.$digest();
 
-        expect(scope.items[0].name).toBe('Lars');
-        expect(scope.items[1].name).toBe('Mark');
-        expect(scope.items[2].name).toBe('Morten');
+        expect(scope.tableData.items[0].name).toBe('Lars');
+        expect(scope.tableData.items[1].name).toBe('Mark');
+        expect(scope.tableData.items[2].name).toBe('Morten');
     });
 
     it('should sort the data in desc order', function () {
-        scope.columns = [
+        scope.tableConfig.columns = [
             { name: 'name', sortable: true, sort: 'asc' },
             { name: 'desk', sortable: true }
         ];
@@ -113,14 +113,14 @@ describe('Controller: Datatable', function () {
         controller.parseTableData(sampleData);
         scope.$apply();
 
-        expect(scope.items[0].name).toBe('Mark');
+        expect(scope.tableData.items[0].name).toBe('Mark');
 
-        controller.setSortOrder(scope.columns[0]);
+        controller.setSortOrder(scope.tableConfig.columns[0]);
         scope.$digest();
 
-        expect(scope.items[0].name).toBe('Morten');
-        expect(scope.items[1].name).toBe('Mark');
-        expect(scope.items[2].name).toBe('Lars');
+        expect(scope.tableData.items[0].name).toBe('Morten');
+        expect(scope.tableData.items[1].name).toBe('Mark');
+        expect(scope.tableData.items[2].name).toBe('Lars');
     });
 
     it('should set localData to true when the data is an array', function () {
@@ -147,15 +147,15 @@ describe('Controller: Datatable', function () {
 
         controller.doLocalFiltering();
 
-        expect(scope.items.length).toBe(1);
-        expect(scope.items[0].name).toBe('Mark');
+        expect(scope.tableData.items.length).toBe(1);
+        expect(scope.tableData.items[0].name).toBe('Mark');
     });
 
     it('should save the original data in the origData property on the controller', function () {
         controller.parseTableData();
         scope.$apply();
 
-        expect(controller.origData).toEqual(scope.tableData);
+        expect(controller.origData).toEqual(scope.tableDataSource);
     });
 
     it('should do local filtering when a filter is changed', function () {
@@ -165,7 +165,7 @@ describe('Controller: Datatable', function () {
         controller.parseTableData();
         scope.$digest();
 
-        scope.columns[0].filter = 'M';
+        scope.tableConfig.columns[0].filter = 'M';
         scope.$digest();
 
         expect(controller.doLocalFiltering).toHaveBeenCalledOnce();
@@ -174,7 +174,7 @@ describe('Controller: Datatable', function () {
 
     it('should call the remote filtering when data is not local', function () {
         //Fake that the data is a d2-rest service
-        scope.tableData.getList = function () {
+        scope.tableDataSource.getList = function () {
             return sampleData
         };
 
@@ -185,7 +185,7 @@ describe('Controller: Datatable', function () {
         spyOn(controller, 'doLocalFiltering');
         spyOn(controller, 'requestNewDataFromService').andCallThrough();
 
-        scope.columns[0].filter = 'M';
+        scope.tableConfig.columns[0].filter = 'M';
         applyScope(scope);
 
         expect(controller.doLocalFiltering).not.toHaveBeenCalled();
@@ -194,7 +194,7 @@ describe('Controller: Datatable', function () {
 
     it('should request the remote params when a filter is changed', inject(function ($timeout) {
         //Fake that the data is a d2-rest service
-        scope.tableData.getList = function () {
+        scope.tableDataSource.getList = function () {
             return sampleData
         };
         controller.parseTableData();
@@ -204,7 +204,7 @@ describe('Controller: Datatable', function () {
         spyOn(controller, 'getRemoteParams');
         spyOn(controller, 'requestNewDataFromService').andCallThrough();
 
-        scope.columns[0].filter = 'M';
+        scope.tableConfig.columns[0].filter = 'M';
         applyScope(scope);
 
         expect(controller.requestNewDataFromService).toHaveBeenCalledOnce();
@@ -218,7 +218,7 @@ describe('Controller: Datatable', function () {
         controller.parseTableData();
         applyScope(scope);
 
-        actualValues = controller.getValuesForColumn(scope.columns[0]);
+        actualValues = controller.getValuesForColumn(scope.tableConfig.columns[0]);
 
         expect(actualValues).toEqual(expectedValues);
     });
@@ -262,13 +262,14 @@ describe('Controller: Datatable with remote data', function () {
 
         $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
-        scope.columns = [
+        scope.tableConfig = {};
+        scope.tableConfig.columns = [
             { name: 'name', sortable: true, sort: 'asc', searchable: true },
             { name: 'code', sortable: true },
             { name: 'lastUpdated' }
         ];
 
-        scope.tableData = d2Api.indicators;
+        scope.tableDataSource = d2Api.indicators;
 
         controller = $controller('RecordTableController', {
             $scope: scope,
@@ -292,14 +293,14 @@ describe('Controller: Datatable with remote data', function () {
      * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
      */
     it('should call the sort method on the service when sorting is changed', function () {
-        expect(scope.items[0].name).toBe('ANC 1 Coverage');
+        expect(scope.tableData.items[0].name).toBe('ANC 1 Coverage');
     });
 
 
     it('should call the service with the filters', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc').respond(200, []);
 
-        scope.columns[0].filter = 'anc';
+        scope.tableConfig.columns[0].filter = 'anc';
         applyScope(scope);
 
         $httpBackend.flush();
@@ -309,30 +310,30 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
             .respond(200, fixtures.api.indicators.filteredOnAnc);
 
-        scope.columns[0].filter = 'anc';
+        scope.tableConfig.columns[0].filter = 'anc';
         applyScope(scope);
 
         $httpBackend.flush();
 
-        expect(scope.items.length).toBe(15);
+        expect(scope.tableData.items.length).toBe(15);
     });
 
     it('should request data with empty string (box-cleared)', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
             .respond(200, fixtures.api.indicators.filteredOnAnc);
 
-        scope.columns[0].filter = 'anc';
+        scope.tableConfig.columns[0].filter = 'anc';
         applyScope(scope);
         $httpBackend.flush();
 
-        expect(scope.items.length).toBe(15);
+        expect(scope.tableData.items.length).toBe(15);
 
         $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
-        scope.columns[0].filter = '';
+        scope.tableConfig.columns[0].filter = '';
         applyScope(scope);
         $httpBackend.flush();
 
-        expect(scope.items.length).toBe(50);
+        expect(scope.tableData.items.length).toBe(50);
     });
 
     describe('page switcher', function () {
@@ -367,11 +368,11 @@ describe('Controller: Datatable with remote data', function () {
             $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
                 .respond(200, fixtures.api.indicators.filteredOnAnc);
 
-            scope.columns[0].filter = 'a';
+            scope.tableConfig.columns[0].filter = 'a';
             applyScope(scope, 0);
-            scope.columns[0].filter = 'an';
+            scope.tableConfig.columns[0].filter = 'an';
             applyScope(scope, 150);
-            scope.columns[0].filter = 'anc';
+            scope.tableConfig.columns[0].filter = 'anc';
             applyScope(scope, 150);
 
             $httpBackend.flush();
@@ -388,12 +389,12 @@ describe('Controller: Datatable with remote data', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
             .respond(200, []);
 
-        scope.columns[0].filter = 'anc';
+        scope.tableConfig.columns[0].filter = 'anc';
         applyScope(scope);
 
         $httpBackend.flush();
 
-        expect(scope.items.length).toBe(0);
+        expect(scope.tableData.items.length).toBe(0);
         expect(controller.typeAheadCache.name.length).toBe(50);
     });
 });
@@ -410,7 +411,7 @@ describe('Controller: Datatable generation of headers', function () {
 
         $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
-        scope.tableData = d2Api.indicators;
+        scope.tableDataSource = d2Api.indicators;
 
         controller = $controller('RecordTableController', {
             $scope: scope,
@@ -427,8 +428,8 @@ describe('Controller: Datatable generation of headers', function () {
         $httpBackend.expectGET('/dhis/api/indicators?filter=name:like:anc')
             .respond(200, fixtures.api.indicators.filteredOnAnc);
 
-        scope.columns[2].searchable = true;
-        scope.columns[2].filter = 'anc';
+        scope.tableConfig.columns[2].searchable = true;
+        scope.tableConfig.columns[2].filter = 'anc';
         flushTime();
 
         $httpBackend.flush();
@@ -490,23 +491,23 @@ describe('Controller: Datatable selectable', function () {
         });
 
         it('should add a column for the checkboxes to the column list', function () {
-            expect(scope.columns.length).toBe(3);
+            expect(scope.tableConfig.columns.length).toBe(3);
         });
 
         it('should give the column header an empty name', function () {
-            expect(scope.columns[0].name).toBe('');
+            expect(scope.tableConfig.columns[0].name).toBe('');
         });
 
         it('should add a property checkbox to the added column', function () {
-            expect(scope.columns[0].checkbox).toBeDefined();
+            expect(scope.tableConfig.columns[0].checkbox).toBeDefined();
         });
 
         it('should give the added property checkbox the value true', function () {
-            expect(scope.columns[0].checkbox).toBe(true);
+            expect(scope.tableConfig.columns[0].checkbox).toBe(true);
         });
 
         it('should add a selected property onto the items', function () {
-            expect(scope.items[0].selected).toBe(false);
+            expect(scope.tableData.items[0].selected).toBe(false);
         });
     });
 

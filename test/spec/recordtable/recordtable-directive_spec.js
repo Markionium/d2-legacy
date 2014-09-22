@@ -20,9 +20,9 @@ describe('Directive: recordtable', function () {
             scope = $rootScope.$new();
 
             scope.tableConfig = tableConfig;
-            scope.tableData = tableData;
+            scope.tableDataSource = tableData;
 
-            element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableDataSource" />');
         }));
 
         describe('structure', function () {
@@ -187,7 +187,7 @@ describe('Directive: recordtable', function () {
                 $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
                 scope.tableConfig = {};
-                scope.tableData = d2Api.indicators;
+                scope.tableDataSource = d2Api.indicators;
 
                 $compile(element)(scope);
                 scope.$digest();
@@ -233,7 +233,7 @@ describe('Directive: recordtable', function () {
                 $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
                 scope.tableConfig = {};
-                scope.tableData = d2Api.indicators;
+                scope.tableDataSource = d2Api.indicators;
 
                 $compile(element)(scope);
                 scope.$digest();
@@ -282,20 +282,22 @@ describe('Directive: recordtable', function () {
 
             scope.tableConfig = tableConfig;
 
-            element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableDataSource" />');
 
             $compile(element)(scope);
             scope.$digest();
         }));
 
         it('should add the data when it becomes available', inject(function ($httpBackend) {
+            console.log(this.description);
             $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
             expect(element.find('tbody tr').length).toBe(0);
 
-            scope.tableData = d2Api.indicators;
+            scope.tableDataSource = d2Api.indicators;
             $httpBackend.flush();
 
             expect(element.find('tbody tr').length).toBe(50);
+            console.log(this.description);
         }));
     });
 
@@ -318,7 +320,7 @@ describe('Directive: recordtable', function () {
             ];
 
 
-            element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
 
             $compile(element)(scope);
             scope.$digest();
@@ -358,7 +360,7 @@ describe('Directive: recordtable', function () {
             ];
 
 
-            element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
 
             $compile(element)(scope);
             scope.$digest();

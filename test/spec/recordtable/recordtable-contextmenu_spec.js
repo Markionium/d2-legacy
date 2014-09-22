@@ -23,7 +23,7 @@ describe('Directive: recordtable', function () {
         scope.tableConfig = tableConfig;
         scope.tableData = tableData;
 
-        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" table-context-menu="contextMenu" />');
+        element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" table-context-menu="contextMenu" />');
     }));
 
     describe('without context menu', function () {

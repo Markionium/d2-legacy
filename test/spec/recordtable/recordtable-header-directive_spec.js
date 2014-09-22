@@ -21,7 +21,7 @@ describe('Directive: RecordTable Header', function () {
             { name: "Morten", desk: 3 }
         ];
 
-        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+        element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
     }));
 
     describe('without data', function () {
@@ -237,7 +237,7 @@ describe('Directive: RecordTable Header', function () {
             { name: "Morten", desk: 3 }
         ];
 
-        element = angular.element('<record-table table-config="tableConfig" table-data="tableData" />');
+        element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
         element = $compile(element)(scope);
         scope.$digest();
     }));

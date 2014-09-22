@@ -16,9 +16,12 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     this.origData = [];
     this.typeAheadCache = typeAheadService;
 
-    $scope.items = [];
     this.pager = {};
     this.contextMenu = $scope.contextMenu;
+
+    $scope.tableData = $scope.tableData || {};
+    $scope.tableData.items = [];
+    $scope.tableConfig = $scope.tableConfig || {};
 
     /**
      * @ngdoc method
@@ -33,7 +36,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     this.getHeadersFromData = function () {
         var columns = [];
 
-        _.map($scope.items, function (object) {
+        _.map($scope.tableData.items, function (object) {
             var data = object.getDataOnly ? object.getDataOnly() : object;
             _.map(data, function (value, key) {
                 columns.push({
@@ -46,8 +49,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             return column.name;
         });
 
-        $scope.columns = columns;
-        return $scope.columns;
+        $scope.tableConfig.columns = columns;
+        return $scope.tableConfig.columns;
     };
     /**
      * @ngdoc method
@@ -64,7 +67,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         var tableConfig = $scope.tableConfig || {};
 
         $scope.pageItems = tableConfig.pageItems;
-        $scope.columns = tableConfig.columns || undefined;
+        $scope.tableConfig.columns = tableConfig.columns || undefined;
         this.rowClick = tableConfig.rowClick;
 
         return this;
@@ -83,12 +86,12 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     this.parseTableData = function () {
         var promise;
         //If tableData is a d2 service
-        if (angular.isArray($scope.tableData) && $scope.tableData.getList !== undefined) {
+        if (angular.isArray($scope.tableDataSource) && $scope.tableDataSource.getList !== undefined) {
             this.localData = false;
-            $scope.d2Service = $scope.tableData;
+            $scope.d2Service = $scope.tableDataSource;
             promise = $scope.d2Service.getList(this.getRemoteParams());
         } else {
-            promise = $scope.tableData;
+            promise = $scope.tableDataSource;
         }
 
         $q.when(promise).then(this.processData.bind(this));
@@ -114,22 +117,23 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      * TODO: The typeahead data should only be generated when typeahead is actually available.
      */
     this.processData = function (data) {
-        $scope.items = this.origData = data;
-        $scope.columns = $scope.columns || this.getHeadersFromData();
+        $scope.tableData.items = this.origData = data;
+        $scope.tableConfig = $scope.tableConfig || {};
+        $scope.tableConfig.columns = $scope.tableConfig.columns || this.getHeadersFromData();
 
         if (this.isSelectable()) {
             this.addSelectable();
         }
 
         if ($scope.pageItems) {
-            $scope.items = $scope.items.slice(0, $scope.pageItems);
+            $scope.tableData.items = $scope.tableData.items.slice(0, $scope.pageItems);
         }
         if (data && data.meta) {
             $scope.meta = data.meta;
             this.processMetaData();
         }
 
-        angular.forEach($scope.columns, function (column) {
+        angular.forEach($scope.tableConfig.columns, function (column) {
             self.typeAheadCache.add(column.name, self.getValuesForColumn(column));
         });
 
@@ -152,30 +156,30 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.addSelectable = function () {
-        $scope.columns = [{
+        $scope.tableConfig.columns = [{
             name: '',
             checkbox: true
-        }].concat($scope.columns);
+        }].concat($scope.tableConfig.columns);
 
-        _.each($scope.items, function (item) {
+        _.each($scope.tableData.items, function (item) {
             item.selected = false;
         });
     };
 
     this.selectAll = function () {
-        angular.forEach($scope.items, function (item) {
+        angular.forEach($scope.tableData.items, function (item) {
             item.selected = true;
         });
     };
 
     this.getRowDataColumns = function () {
-        return _.filter($scope.columns, function (column) {
+        return _.filter($scope.tableConfig.columns, function (column) {
             return !column.checkbox;
         });
     };
 
     this.getItems = function () {
-        return $scope.items;
+        return $scope.tableData.items;
     };
 
     /**
@@ -203,7 +207,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      */
     this.setUpPager = function () {
         if (!this.pager.itemsPerPage) {
-            this.pager.itemsPerPage = $scope.items.length;
+            this.pager.itemsPerPage = $scope.tableData.items.length;
         }
 
         this.pager.pageCount = $scope.meta.pager.pageCount;
@@ -239,7 +243,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         if (this.localData === true) {
             if (!angular.isNumber($scope.pageItems) || !angular.isNumber(this.pager.currentPage)) { return; }
 
-            $scope.items = this.origData.slice(
+            $scope.tableData.items = this.origData.slice(
                 $scope.pageItems * (this.pager.currentPage - 1),
                 $scope.pageItems * this.pager.currentPage
             );
@@ -264,7 +268,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      * `desc` and `asc` are toggled, with asc taking the first turn if there is no current sort.
      */
     this.setSortOrder = function (currentColumn) {
-        var columns = angular.copy($scope.columns);
+        var columns = angular.copy($scope.tableConfig.columns);
 
         angular.forEach(columns, function (column) {
             if (column.name === currentColumn.name) {
@@ -278,7 +282,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             }
         });
 
-        $scope.columns = columns;
+        $scope.tableConfig.columns = columns;
     };
 
     /**
@@ -292,7 +296,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      * Filters out all the columns that have the `searchable` property set to true and returns them.
      */
     this.getColumnsWithFilters = function () {
-        return _.filter($scope.columns, 'searchable');
+        return _.filter($scope.tableConfig.columns || [], 'searchable');
     };
 
     /**
@@ -408,14 +412,14 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      *
      * @description
      *
-     * Filter the `$scope.items` items by the filters that are set.
+     * Filter the `$scope.tableData.items` items by the filters that are set.
      *
      * Note: Local data
      * This will be used for local data.
      */
     this.doLocalFiltering = function () {
         if (this.getFilterObject()) {
-            $scope.items = $filter('filter')(this.origData, this.getFilterObject());
+            $scope.tableData.items = $filter('filter')(this.origData, this.getFilterObject());
         }
     };
 
@@ -425,25 +429,25 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      *
      * @description
      *
-     * Sort the local data in `$scope.items` based on the sorting set on the columns.
+     * Sort the local data in `$scope.tableData.items` based on the sorting set on the columns.
      *
      * Note: Local data
      * This will be used for local data.
      */
     this.doLocalSorting = function () {
-        var sorting = _.filter($scope.columns, 'sort'),
+        var sorting = _.filter($scope.tableConfig.columns, 'sort'),
             sortBy = _.pluck(sorting, 'name'),
             items;
 
         //Don't do anything when there is no sorting to be done
         if (sorting.length === 0) { return; }
 
-        items = _.sortBy($scope.items, sortBy);
+        items = _.sortBy($scope.tableData.items, sortBy);
         if (sorting[0] && sorting[0].sort === 'desc') {
             items = items.reverse();
         }
 
-        $scope.items = items;
+        $scope.tableData.items = items;
     };
 
     /**
@@ -451,7 +455,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      * @see https://blueprints.launchpad.net/dhis2/+spec/webapi-ordering-of-properties
      */
     this.serviceSorting = function () {
-        var sorting = _.filter($scope.columns, 'sort');
+        var sorting = _.filter($scope.tableConfig.columns, 'sort');
 
         //Don't do anything when there is no sorting to be done
         if (sorting.length === 0) { return; }
@@ -464,12 +468,12 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             return [];
         }
 
-        return _.map($scope.items, function (item) {
+        return _.map($scope.tableData.items, function (item) {
             return item[column.name];
         });
     };
 
-    $scope.$watch('columns', function (newValue, oldValue) {
+    $scope.$watch('tableConfig.columns', function (newValue, oldValue) {
         if (oldValue !== newValue) {
             if (self.localData) {
                 self.doLocalFiltering();
@@ -495,7 +499,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         }
     });
 
-    $scope.$watch('tableData', function (newValue, oldValue) {
+    $scope.$watch('tableDataSource', function (newValue, oldValue) {
         if (newValue !== oldValue) {
             self.parseTableData();
         }
