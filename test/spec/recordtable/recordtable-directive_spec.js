@@ -289,7 +289,6 @@ describe('Directive: recordtable', function () {
         }));
 
         it('should add the data when it becomes available', inject(function ($httpBackend) {
-            console.log(this.description);
             $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
             expect(element.find('tbody tr').length).toBe(0);
 
@@ -297,7 +296,6 @@ describe('Directive: recordtable', function () {
             $httpBackend.flush();
 
             expect(element.find('tbody tr').length).toBe(50);
-            console.log(this.description);
         }));
     });
 
