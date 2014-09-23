@@ -10,7 +10,9 @@ describe('Directive: recordtable', function () {
         var element, scope;
 
         beforeEach(inject(function ($rootScope) {
-            var tableConfig = {},
+            var tableConfig = {
+                    pageItems: 3
+                },
                 tableData = [
                     { name: "Mark", desk: 1 },
                     { name: "Lars", desk: 2 },
@@ -232,7 +234,9 @@ describe('Directive: recordtable', function () {
 
                 $httpBackend.expectGET('/dhis/api/indicators').respond(200, fixtures.api.indicators.all);
 
-                scope.tableConfig = {};
+                scope.tableConfig = {
+                    pageItems: 50
+                };
                 scope.tableDataSource = d2Api.indicators;
 
                 $compile(element)(scope);
@@ -367,6 +371,40 @@ describe('Directive: recordtable', function () {
         it('should add a checkbox for each of the items', function () {
             var rowsFirstCells = element.find('tbody tr td:first-child input[type=checkbox]');
             expect(rowsFirstCells.length).toBe(3);
+        });
+    });
+
+    describe('Directive paging', function () {
+        var element, scope, d2Api;
+
+        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+            var tableConfig = {};
+            scope = $rootScope.$new();
+
+            scope.tableConfig = tableConfig;
+
+            scope.tableData = [
+                { name: "Mark", desk: 1 },
+                { name: "Lars", desk: 2 },
+                { name: "Morten", desk: 3 }
+            ];
+
+            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
+
+            $compile(element)(scope);
+            scope.$digest();
+        }));
+
+        it('should not show the pager if no pageItems has been set', function () {
+            expect(element.find('.record-table-pagination').length).toBe(0);
+        });
+
+        it('should show the pager when pageItems has been set', function () {
+            scope.tableConfig.pageItems = 2;
+
+            scope.$apply();
+
+            expect(element.find('.record-table-pagination').length).toBe(1);
         });
     });
 });

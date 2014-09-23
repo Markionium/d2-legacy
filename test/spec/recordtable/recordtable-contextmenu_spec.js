@@ -33,7 +33,7 @@ describe('Directive: recordtable', function () {
         });
 
         it('should not add the context menu to recordtable', function () {
-            expect(element.children().length).toBe(2);
+            expect(element.children().length).toBe(1);
         });
     });
 
@@ -52,7 +52,7 @@ describe('Directive: recordtable', function () {
         });
 
         it('should add the context menu to recordtable', function () {
-            expect(element.children().length).toBe(3);
+            expect(element.children().length).toBe(2);
             expect(element.children().last()).toHaveClass('record-table-context-menu');
         });
 

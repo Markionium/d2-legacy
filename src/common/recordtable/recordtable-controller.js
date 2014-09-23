@@ -6,7 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
-//jshint maxstatements:33
+//jshint maxstatements:35, maxcomplexity: 7
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;

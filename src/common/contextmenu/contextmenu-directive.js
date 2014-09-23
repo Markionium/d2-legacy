@@ -2,22 +2,7 @@ function contextMenuController($scope) {
     this.contextMenuId = $scope.contextMenuId;
 }
 
-function contextMenu($document) {
-
-    $document.on('click', function (event) {
-        var menuElement;
-
-        if (!angular.element(event.target).hasClass('context-menu')) {
-            window.console.log('wrong element');
-        }
-
-        menuElement = angular.element('#' + angular.element(event.target).attr('context-menu'));
-        angular.element('.context-menu-dropdown.open').removeClass('open');
-
-        window.console.log('clicked');
-        menuElement.addClass('open');
-    });
-
+function contextMenu(/*$document*/) {
     return {
         restrict: 'A',
         scope: {
@@ -26,6 +11,20 @@ function contextMenu($document) {
         controller: contextMenuController,
         link: function (scope, element) {
             element.addClass('context-menu');
+
+//            $document.on('click', function (event) {
+//                var menuElement;
+//
+//                if (!angular.element(event.target).hasClass('context-menu')) {
+//                    window.console.log('wrong element');
+//                }
+//
+//                menuElement = angular.element('#' + angular.element(event.target).attr('context-menu'));
+//                angular.element('.context-menu-dropdown.open').removeClass('open');
+//
+//                window.console.log('clicked');
+//                menuElement.addClass('open');
+//            });
         }
     };
 }

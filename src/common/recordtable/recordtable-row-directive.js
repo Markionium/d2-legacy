@@ -1,6 +1,6 @@
 function recordTableRowsDirective() {
 
-    function addRows(scope, element) {
+    function addRows(columns, items, element) {
         var rows = [];
 
         if (!angular.isArray(columns) || !angular.isArray(items)) { return true; }
@@ -21,7 +21,7 @@ function recordTableRowsDirective() {
     return {
         restrict: 'A',
         link: function (scope, element) {
-            addRows(scope.tableConfig.columns, scope.items, element)
+            addRows(scope.tableConfig.columns, scope.items, element);
         }
     };
 }
