@@ -161,7 +161,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             checkbox: true
         };
 
-        if (true === $scope.tableConfig.columns[0].checkbox) { return; }
+        if ($scope.tableConfig.columns[0].checkbox === true) { return; }
 
         $scope.tableConfig.columns = [selectableObject].concat($scope.tableConfig.columns);
 

@@ -1019,10 +1019,14 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
     };
 
     this.addSelectable = function () {
-        $scope.tableConfig.columns = [{
+        var selectableObject = {
             name: '',
             checkbox: true
-        }].concat($scope.tableConfig.columns);
+        };
+
+        if ($scope.tableConfig.columns[0].checkbox === true) { return; }
+
+        $scope.tableConfig.columns = [selectableObject].concat($scope.tableConfig.columns);
 
         _.each($scope.tableData.items, function (item) {
             item.selected = false;
