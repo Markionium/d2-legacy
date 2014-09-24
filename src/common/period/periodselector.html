@@ -1,0 +1,22 @@
+<div class="period-selector">
+    <ui-select
+            class="period-selector-type"
+            ng-model="period.selectedPeriodType"
+            on-select="changedPeriodType($item, $model)">
+        <ui-select-match placeholder="Select a period type">{{$select.selected}}</ui-select-match>
+        <ui-select-choices repeat="periodType in period.periodTypes | filter: $select.search">
+            <div>{{periodType}}</div>
+        </ui-select-choices>
+    </ui-select>
+
+    <ui-select
+            class="period-selector-period"
+            ng-disabled="!period.selectedPeriodType"
+            ng-model="period.selectedPeriod"
+            on-select="changePeriod($item, $model)">
+        <ui-select-match placeholder="Select a period">{{$select.selected.name}}</ui-select-match>
+        <ui-select-choices repeat="period.name as period in period.periodsRecentFirst">
+            <div>{{period.name}}</div>
+        </ui-select-choices>
+    </ui-select>
+</div>

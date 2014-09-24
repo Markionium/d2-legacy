@@ -68,6 +68,7 @@ var files = [
     'test/vendor/restangular/dist/restangular.js',
     'test/vendor/angular-translate/angular-translate.js',
     'test/vendor/angular-bootstrap/ui-bootstrap-tpls.js',
+    'test/vendor/angular-ui-select/dist/select.js',
 
     // Source files
     'src/**/*.js',
@@ -78,6 +79,7 @@ var files = [
     'test/utils/testing.js',
     'test/matchers/**/*.js',
     'test/fixtures/**/*.js',
+    'test/mocks/**/*.js',
     'test/spec/**/*.js'
 ];
 

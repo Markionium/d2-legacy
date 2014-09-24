@@ -168,6 +168,20 @@ angular.module('d2-introlist', []);
 
 /**
  * @ngdoc module
+ * @name d2-period
+ *
+ *
+ * @description
+ *
+ * # d2-period
+ *
+ * The period module contains the directives and services that are required to show a period selector.
+ *
+ */
+angular.module('d2-period', ['ui.select']);
+
+/**
+ * @ngdoc module
  * @name d2-uienhancements
  *
  * @description

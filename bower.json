@@ -3,7 +3,8 @@
   "dependencies": {
     "restangular": "~1.4.0",
     "angular-translate": "~2.2.0",
-    "angular-bootstrap": "~0.11.0"
+    "angular-bootstrap": "~0.11.0",
+    "angular-ui-select": "~0.7.0"
   },
   "devDependencies": {
     "jquery": "2.1.x",
@@ -13,7 +14,11 @@
     "jasmine": "2.0.x",
     "angular-mocks": "1.2.x"
   },
-  "main": ["./dist/js/d2.js", "./dist/css/d2.css", "./dist/js/common"],
+  "main": [
+    "./dist/js/d2.js",
+    "./dist/css/d2.css",
+    "./dist/js/common"
+  ],
   "ignore": [
     "doc",
     "test",
