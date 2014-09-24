@@ -197,6 +197,20 @@ angular.module('d2-introlist', []);
 
 /**
  * @ngdoc module
+ * @name d2-period
+ *
+ *
+ * @description
+ *
+ * # d2-period
+ *
+ * The period module contains the directives and services that are required to show a period selector.
+ *
+ */
+angular.module('d2-period', ['ui.select']);
+
+/**
+ * @ngdoc module
  * @name d2-uienhancements
  *
  * @description
@@ -860,6 +874,168 @@ function introList() {
 }
 
 angular.module('d2-introlist').directive('introList', introList);
+
+//FIXME: the service is not consistent with getters and setters
+/* global dhis2, jQuery */
+function periodService(d2Api) {
+    var service = this;
+
+    var currentPeriodType;
+    var currentPeriod;
+    var generatedPeriods;
+    var calendarType;
+    var dateFormat = 'yyyy-mm-dd';
+    var periodTypes = [
+        'Daily',
+        'Weekly',
+        'Monthly',
+        'BiMonthly',
+        'Quarterly',
+        'SixMonthly',
+        'SixMonthlyApril',
+        'Yearly',
+        'FinancialApril',
+        'FinancialJuly',
+        'FinancialOct'
+    ];
+    var periodBaseList = periodTypes;
+
+    var calendarTypes = [
+        'coptic',
+        'ethiopian',
+        'islamic',
+        'julian',
+        'nepali',
+        'thai'
+    ];
+
+    Object.defineProperties(this, {
+        period: {
+            get: function () { return currentPeriod; },
+            set: function (period) { currentPeriod = period; }
+        },
+        periodType: {
+            get: function () { return currentPeriodType; }
+        }
+    });
+
+    this.prepareCalendar = function () {
+        var calendar = jQuery.calendars.instance(service.getCalendarType());
+        dhis2.period.generator = new dhis2.period.PeriodGenerator(calendar, this.getDateFormat());
+    };
+
+    this.getDateFormat = function () {
+        return dateFormat;
+    };
+
+    this.getPeriodTypes = function () {
+        return periodTypes;
+    };
+
+    this.getCalendarTypes = function () {
+        return calendarTypes;
+    };
+
+    this.getCalendarType = function () {
+        return calendarType;
+    };
+
+    this.getPastPeriodsRecentFirst = function () {
+        return generatedPeriods;
+    };
+
+    this.setPeriodType = function (periodType) {
+        var periods;
+        if (_(periodTypes).contains(periodType)) {
+            currentPeriodType = periodType;
+            periods = dhis2.period.generator.generateReversedPeriods(currentPeriodType, 0);
+            generatedPeriods =  dhis2.period.generator.filterFuturePeriodsExceptCurrent(periods);
+        }
+    };
+
+    this.loadCalendarScript = function (calendarType) {
+        jQuery.getScript('../dhis-web-commons/javascripts/jQuery/calendars/jquery.calendars.' + calendarType + '.min.js',
+            function () {
+                service.prepareCalendar();
+            }).error(function () {
+                throw new Error('Unable to load ' + calendarType + ' calendar');
+            });
+
+    };
+
+    this.filterPeriodTypes = function (dataSetPeriodTypes) {
+        var firstPeriodIndex = _(periodBaseList).findLastIndex(function (periodType) {
+            return _(dataSetPeriodTypes).contains(periodType);
+        });
+        periodTypes = _.rest(periodBaseList, firstPeriodIndex);
+        return periodTypes;
+    };
+
+    d2Api.addEndPoint('system/info', true);
+    d2Api.getEndPoint('system/info').get().then(function (info) {
+        dateFormat = info.dateFormat;
+
+        if (info.calendar === 'iso8601') {
+            calendarType = 'gregorian';
+            service.prepareCalendar();
+        } else {
+            calendarType = info.calendar;
+
+            if (_(calendarTypes).contains(calendarType)) {
+                service.loadCalendarScript(calendarType);
+            }
+        }
+    });
+}
+periodService.$inject = ["d2Api"];
+
+angular.module('d2-period').service('periodService', periodService);
+
+/* global d2 */
+function periodSelectorDirective(periodService) {
+    return {
+        restrict: 'E',
+        replace: true,
+        scope: true,
+        templateUrl: d2.scriptPath() + 'common/period/periodselector.html',
+        link: function (scope) {
+            scope.period = {
+                selectedPeriodType: undefined,
+                selectedPeriod: undefined,
+                periodTypes: periodService.getPeriodTypes(),
+                periodsRecentFirst: periodService.getPastPeriodsRecentFirst()
+            };
+
+            scope.$watch(function () {
+                return periodService.getPeriodTypes();
+            }, function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    scope.period.periodTypes = periodService.getPeriodTypes();
+                }
+            });
+
+            scope.changedPeriodType = function ($item) {
+                periodService.setPeriodType($item);
+                scope.period.periodsRecentFirst = periodService.getPastPeriodsRecentFirst();
+
+                //Always select the first period when a new type is picked
+                scope.period.selectedPeriod = scope.period.periodsRecentFirst[0];
+                scope.changePeriod(scope.period.selectedPeriod);
+            };
+
+            scope.changePeriod = function ($item) {
+                if ($item === undefined) {
+                    return;
+                }
+
+                periodService.period = $item;
+            };
+        }
+    };
+}
+periodSelectorDirective.$inject = ["periodService"];
+
+angular.module('d2-period').directive('periodSelector', periodSelectorDirective);
 
 /**
  * @ngdoc controller

@@ -1,4 +1,5 @@
 //FIXME: the service is not consistent with getters and setters
+/* global dhis2, jQuery */
 function periodService(d2Api) {
     var service = this;
 
@@ -8,17 +9,17 @@ function periodService(d2Api) {
     var calendarType;
     var dateFormat = 'yyyy-mm-dd';
     var periodTypes = [
-        "Daily",
-        "Weekly",
-        "Monthly",
-        "BiMonthly",
-        "Quarterly",
-        "SixMonthly",
-        "SixMonthlyApril",
-        "Yearly",
-        "FinancialApril",
-        "FinancialJuly",
-        "FinancialOct"
+        'Daily',
+        'Weekly',
+        'Monthly',
+        'BiMonthly',
+        'Quarterly',
+        'SixMonthly',
+        'SixMonthlyApril',
+        'Yearly',
+        'FinancialApril',
+        'FinancialJuly',
+        'FinancialOct'
     ];
     var periodBaseList = periodTypes;
 
@@ -42,9 +43,9 @@ function periodService(d2Api) {
     });
 
     this.prepareCalendar = function () {
-        var calendar = $.calendars.instance(service.getCalendarType());
+        var calendar = jQuery.calendars.instance(service.getCalendarType());
         dhis2.period.generator = new dhis2.period.PeriodGenerator(calendar, this.getDateFormat());
-    }
+    };
 
     this.getDateFormat = function () {
         return dateFormat;
