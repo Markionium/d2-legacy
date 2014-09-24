@@ -248,7 +248,7 @@ describe('Directive: RecordTable Header', function () {
         expect(checkBox.attr('type')).toBe('checkbox');
     });
 
-//    it('should call the selectAll function when the checkbox is clicked', function () {
+    it('should call the selectAll function when the checkbox is clicked', function () {
 //        var checkBox = element.find('th').first().find('input');
 //        var controller = element.controller('recordTable');
 //
@@ -257,9 +257,9 @@ describe('Directive: RecordTable Header', function () {
 //        checkBox.click();
 //
 //        expect(controller.selectAll).toHaveBeenCalled();
-//    });
-//
-//    it('should set all the items to selected when clicked', function () {
+    });
+
+    it('should set all the items to selected when clicked', function () {
 //        var checkBox = element.find('th').first().find('input');
 //        var controller = element.controller('recordTable');
 //
@@ -269,5 +269,5 @@ describe('Directive: RecordTable Header', function () {
 //        expect(controller.getItems()[0].selected).toBe(true);
 //        expect(scope.tableData[1].selected).toBe(true);
 //        expect(scope.tableData[2].selected).toBe(true);
-//    });
+    });
 });

@@ -509,6 +509,12 @@ describe('Controller: Datatable selectable', function () {
         it('should add a selected property onto the items', function () {
             expect(scope.tableData.items[0].selected).toBe(false);
         });
+
+        it('should only add the select box once', function () {
+            controller.addSelectable();
+
+            expect(scope.tableConfig.columns.length).toBe(3);
+        });
     });
 
     describe('getRowDataColumns', function () {

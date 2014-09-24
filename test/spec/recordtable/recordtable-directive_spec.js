@@ -375,9 +375,9 @@ describe('Directive: recordtable', function () {
     });
 
     describe('Directive paging', function () {
-        var element, scope, d2Api;
+        var element, scope;
 
-        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+        beforeEach(inject(function ($rootScope, $compile) {
             var tableConfig = {};
             scope = $rootScope.$new();
 
