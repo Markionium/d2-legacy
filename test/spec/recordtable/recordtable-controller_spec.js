@@ -534,4 +534,110 @@ describe('Controller: Datatable selectable', function () {
             expect(controller.getRowDataColumns().length).toBe(2);
         });
     });
+
+    describe('selectAll', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = false;
+            controller.processData(scope.tableData);
+        });
+        it('should set all the items to selected', function () {
+            controller.selectAll();
+
+            expect(scope.tableData.items[0].selected).toBe(true);
+            expect(scope.tableData.items[1].selected).toBe(true);
+            expect(scope.tableData.items[2].selected).toBe(true);
+        });
+        it('should set all the items to unselected when they are all selected', function () {
+            controller.selectAll();
+            controller.selectAll();
+
+            expect(scope.tableData.items[0].selected).toBe(false);
+            expect(scope.tableData.items[1].selected).toBe(false);
+            expect(scope.tableData.items[2].selected).toBe(false);
+        });
+
+        it('should set all to selected when not all items are selected', function () {
+            scope.tableData.items[1].selected;
+
+            controller.selectAll();
+
+            expect(scope.tableData.items[0].selected).toBe(true);
+            expect(scope.tableData.items[1].selected).toBe(true);
+            expect(scope.tableData.items[2].selected).toBe(true);
+        });
+
+        it('should set allSelected on the controller to true when calling selectAll', function () {
+            controller.selectAll();
+
+            expect(controller.allSelected).toBe(true);
+        });
+
+        it('should set allSelected to false when a single item is unselected', function () {
+            controller.selectAll();
+
+            scope.tableData.items[1].selected = false;
+            controller.checkAllSelected();
+
+            expect(controller.allSelected).toBe(false);
+        });
+    });
+
+    describe('isAllSelected', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = false;
+            controller.processData(scope.tableData);
+        });
+
+        it('should return true when all items are selected', function () {
+            scope.tableData.items[0].selected = true;
+            scope.tableData.items[1].selected = true;
+            scope.tableData.items[2].selected = true;
+
+            expect(controller.isAllSelected()).toBe(true);
+        });
+
+        it('should return false when some items are selected', function () {
+            scope.tableData.items[0].selected = false;
+            scope.tableData.items[1].selected = true;
+            scope.tableData.items[2].selected = true;
+
+            expect(controller.isAllSelected()).toBe(false);
+        });
+
+        it('should return false when no items are selected', function () {
+            scope.tableData.items[0].selected = false;
+            scope.tableData.items[1].selected = false;
+            scope.tableData.items[2].selected = false;
+
+            expect(controller.isAllSelected()).toBe(false);
+        });
+    });
+
+    describe('checkAllSelected', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = false;
+            controller.processData(scope.tableData);
+
+            scope.tableData.items[0].selected = true;
+            scope.tableData.items[1].selected = true;
+            scope.tableData.items[2].selected = true;
+        });
+
+        it('should set allSelected to false when not all items are selected', function () {
+            scope.tableData.items[0].selected = false;
+            controller.allSelected = true;
+
+            controller.checkAllSelected();
+
+            expect(controller.allSelected).toBe(false);
+        });
+
+        it('should set allSelected to true when all items are selected', function () {
+            controller.allSelected = false;
+
+            controller.checkAllSelected();
+
+            expect(controller.allSelected).toBe(true);
+        });
+    });
 });

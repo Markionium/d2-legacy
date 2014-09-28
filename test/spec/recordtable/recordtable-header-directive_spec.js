@@ -244,30 +244,37 @@ describe('Directive: RecordTable Header', function () {
 
     it('should only display the checkbox field', function () {
         var checkBox = element.find('th').first().find('input');
-
+        //console.log(checkBox.attr('type'));
         expect(checkBox.attr('type')).toBe('checkbox');
     });
 
     it('should call the selectAll function when the checkbox is clicked', function () {
-//        var checkBox = element.find('th').first().find('input');
-//        var controller = element.controller('recordTable');
-//
-//        spyOn(controller, 'selectAll');
-//
-//        checkBox.click();
-//
-//        expect(controller.selectAll).toHaveBeenCalled();
+        var checkBox = element.find('th').first().find('input');
+        var controller = element.controller('recordTable');
+
+        spyOn(controller, 'selectAll');
+
+        checkBox.click();
+        scope.$apply();
+
+        expect(controller.selectAll).toHaveBeenCalled();
     });
 
     it('should set all the items to selected when clicked', function () {
-//        var checkBox = element.find('th').first().find('input');
-//        var controller = element.controller('recordTable');
-//
-//        checkBox.click();
-//        scope.$apply();
-//
-//        expect(controller.getItems()[0].selected).toBe(true);
-//        expect(scope.tableData[1].selected).toBe(true);
-//        expect(scope.tableData[2].selected).toBe(true);
+        var checkBox = element.find('th').first().find('input');
+        var controller = element.controller('recordTable');
+
+        checkBox.click();
+        scope.$apply();
+
+        expect(controller.getItems()[0].selected).toBe(true);
+        expect(scope.tableData[1].selected).toBe(true);
+        expect(scope.tableData[2].selected).toBe(true);
+    });
+
+    it('should only display one select all button for the header row', function () {
+        var checkBox = element.find('thead th').find('input[type="checkbox"]');
+
+        expect(checkBox.length).toBe(1);
     });
 });

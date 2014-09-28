@@ -7,7 +7,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="item in tableData.items" ng-click="recordTable.rowClick(item)">
-                <td ng-if="tableConfig.select"><record-table-selectable item="item"></record-table-selectable></td>
+                <td ng-if="tableConfig.select"><input type="checkbox" ng-model="item.selected" ng-change="recordTable.checkAllSelected()" /></td>
                 <td ng-repeat="column in recordTable.getRowDataColumns()" ng-bind="item[column.name]"></td>
             </tr>
         </tbody>

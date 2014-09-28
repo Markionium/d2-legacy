@@ -1045,7 +1045,7 @@ angular.module('d2-period').directive('periodSelector', periodSelectorDirective)
  *
  * TODO: Document the rest of this Controller.
  */
-//jshint maxstatements:35, maxcomplexity: 7
+//jshint maxstatements:38, maxcomplexity: 7
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
@@ -1057,6 +1057,9 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
     this.pager = {};
     this.contextMenu = $scope.contextMenu;
+
+    //Boolean switch to keep track if all elements are selected
+    this.allSelected = false;
 
     $scope.tableData = $scope.tableData || {};
     $scope.tableData.items = [];
@@ -1209,10 +1212,35 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         });
     };
 
+    this.isAllSelected = function () {
+        if (_.filter($scope.tableData.items, 'selected').length === $scope.tableData.items.length) {
+            return true;
+        }
+        return false;
+    };
+
+    this.checkAllSelected = function () {
+        if (this.isAllSelected()) {
+            if (this.allSelected !== true) {
+                this.allSelected = true;
+            }
+        } else {
+            if (this.allSelected === true) {
+                this.allSelected = false;
+            }
+        }
+    };
+
     this.selectAll = function () {
+        if (!this.isAllSelected()) {
+            this.allSelected = true;
+        } else {
+            this.allSelected = false;
+        }
+
         angular.forEach($scope.tableData.items, function (item) {
-            item.selected = true;
-        });
+            item.selected = this.allSelected;
+        }, this);
     };
 
     this.getRowDataColumns = function () {
@@ -1728,9 +1756,9 @@ function recordTableHeader() {
             '<th class="table-header">',
             '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
             '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
-            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="tableConfig.headerInputClass"' +
-                ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
-            '<input type="checkbox" ng-if="column.checkbox" />',
+            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="tableConfig.headerInputClass"',
+            ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
+            '<input type="checkbox" ng-if="tableConfig.select && column.checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
             '</th>'
         ].join(''),
 
@@ -1742,11 +1770,6 @@ function recordTableHeader() {
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];
             };
-
-            element.bind('click', 'input', function () {
-                parentCtrl.selectAll();
-                //console.log(parentCtrl.getItems());
-            });
         }
     };
 }
