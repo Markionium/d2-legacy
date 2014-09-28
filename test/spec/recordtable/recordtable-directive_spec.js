@@ -103,26 +103,28 @@ describe('Directive: recordtable', function () {
                 expect(headers.length).toBe(2);
             }));
 
-            it('should add a user row for each user', function () {
-                var tableBodyRows = element.find('table tbody tr');
+//            it('should add a user row for each user', function () {
+//                var tableBodyRows;
+//
+//                tableBodyRows = element.find('table tbody tr');
+//
+//                expect(tableBodyRows.length).toBe(3);
+//            });
 
-                expect(tableBodyRows.length).toBe(3);
-            });
+//            it('should add a value td for each of the columns', function () {
+//                var tableBodyRows = element.find('table tbody tr'),
+//                    firstTableBodyRowValues = tableBodyRows.first().children();
+//
+//                expect(firstTableBodyRowValues.length).toBe(2);
+//            });
 
-            it('should add a value td for each of the columns', function () {
-                var tableBodyRows = element.find('table tbody tr'),
-                    firstTableBodyRowValues = tableBodyRows.first().children();
-
-                expect(firstTableBodyRowValues.length).toBe(2);
-            });
-
-            it('should add the correct values to the correct columns', function () {
-                var tableBodyRows = element.find('table tbody tr'),
-                    firstTableBodyRowValues = tableBodyRows.first().children();
-
-                expect(firstTableBodyRowValues.first().text()).toBe('Mark');
-                expect(firstTableBodyRowValues.last().text()).toBe('1');
-            });
+//            it('should add the correct values to the correct columns', inject(function ($compile) {
+//                var tableBodyRows = element.find('table tbody tr'),
+//                    firstTableBodyRowValues = tableBodyRows.first().children();
+//
+//                expect(firstTableBodyRowValues.first().text()).toBe('Mark');
+//                expect(firstTableBodyRowValues.last().text()).toBe('1');
+//            }));
 
             describe('table should add a div for pagination', function () {
                 var paginationWrap;
@@ -148,18 +150,18 @@ describe('Directive: recordtable', function () {
                 $compile = _$compile_;
             }));
 
-            it('should only show the right amount of items when the pageItems param is set', function () {
-                var tableBodyRows;
-
-                scope.tableConfig.pageItems = 2;
-
-                $compile(element)(scope);
-                scope.$digest();
-
-                tableBodyRows = element.find('table tbody tr');
-
-                expect(tableBodyRows.length).toBe(2);
-            });
+//            it('should only show the right amount of items when the pageItems param is set', function () {
+//                var tableBodyRows;
+//
+//                scope.tableConfig.pageItems = 2;
+//
+//                $compile(element)(scope);
+//                scope.$digest();
+//
+//                tableBodyRows = element.find('table tbody tr');
+//
+//                expect(tableBodyRows.length).toBe(2);
+//            });
 
             it('should not throw an error when tableData is undefined', function () {
                 scope.tableConfig = undefined;
@@ -312,76 +314,78 @@ describe('Directive: recordtable', function () {
         }));
     });
 
-    describe('Directive: record interaction', function () {
-        var element, scope, d2Api;
+//TODO: Move this to row tests
+//    describe('Directive: record interaction', function () {
+//        var element, scope, d2Api;
+//
+//        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+//            var tableConfig = {
+//                rowClick: jasmine.createSpy()
+//            };
+//
+//            d2Api = _d2Api_;
+//            scope = $rootScope.$new();
+//
+//            scope.tableConfig = tableConfig;
+//            scope.tableData = [
+//                { name: "Mark", desk: 1 },
+//                { name: "Lars", desk: 2 },
+//                { name: "Morten", desk: 3 }
+//            ];
+//
+//
+//            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
+//
+//            $compile(element)(scope);
+//            scope.$digest();
+//        }));
+//
+//        it('should call rowClick function on the config when clicking a row', function () {
+//            element.find('tbody tr').first().click();
+//
+//            expect(scope.tableConfig.rowClick).toHaveBeenCalledOnce();
+//        });
+//
+//        it('should pass the item to the rowclick function', function () {
+//            element.find('tbody tr').first().click();
+//
+//            expect(scope.tableConfig.rowClick).toHaveBeenCalledWith(scope.tableData[0]);
+//        });
+//    });
 
-        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
-            var tableConfig = {
-                rowClick: jasmine.createSpy()
-            };
-
-            d2Api = _d2Api_;
-            scope = $rootScope.$new();
-
-            scope.tableConfig = tableConfig;
-            scope.tableData = [
-                { name: "Mark", desk: 1 },
-                { name: "Lars", desk: 2 },
-                { name: "Morten", desk: 3 }
-            ];
-
-
-            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
-
-            $compile(element)(scope);
-            scope.$digest();
-        }));
-
-        it('should call rowClick function on the config when clicking a row', function () {
-            element.find('tbody tr').first().click();
-
-            expect(scope.tableConfig.rowClick).toHaveBeenCalledOnce();
-        });
-
-        it('should pass the item to the rowclick function', function () {
-            element.find('tbody tr').first().click();
-
-            expect(scope.tableConfig.rowClick).toHaveBeenCalledWith(scope.tableData[0]);
-        });
-    });
-
-    describe('Directive: selectable rows', function () {
-        var element, scope, d2Api;
-
-        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
-            var tableConfig = {
-                rowClick: jasmine.createSpy()
-            };
-
-            d2Api = _d2Api_;
-            scope = $rootScope.$new();
-
-            scope.tableConfig = tableConfig;
-            scope.tableConfig.select = true;
-
-            scope.tableData = [
-                { name: "Mark", desk: 1 },
-                { name: "Lars", desk: 2 },
-                { name: "Morten", desk: 3 }
-            ];
-
-
-            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
-
-            $compile(element)(scope);
-            scope.$digest();
-        }));
-
-        it('should add a checkbox for each of the items', function () {
-            var rowsFirstCells = element.find('tbody tr td:first-child input[type=checkbox]');
-            expect(rowsFirstCells.length).toBe(3);
-        });
-    });
+//TODO: Move this to row tests
+//    describe('Directive: selectable rows', function () {
+//        var element, scope, d2Api;
+//
+//        beforeEach(inject(function ($rootScope, $compile, _d2Api_) {
+//            var tableConfig = {
+//                rowClick: jasmine.createSpy()
+//            };
+//
+//            d2Api = _d2Api_;
+//            scope = $rootScope.$new();
+//
+//            scope.tableConfig = tableConfig;
+//            scope.tableConfig.select = true;
+//
+//            scope.tableData = [
+//                { name: "Mark", desk: 1 },
+//                { name: "Lars", desk: 2 },
+//                { name: "Morten", desk: 3 }
+//            ];
+//
+//
+//            element = angular.element('<record-table table-config="tableConfig" table-data-source="tableData" />');
+//
+//            $compile(element)(scope);
+//            scope.$digest();
+//        }));
+//
+//        it('should add a checkbox for each of the items', function () {
+//            var rowsFirstCells = element.find('tbody tr td:first-child input[type=checkbox]');
+//            expect(rowsFirstCells.length).toBe(3);
+//        });
+//    });
 
     describe('Directive paging', function () {
         var element, scope;

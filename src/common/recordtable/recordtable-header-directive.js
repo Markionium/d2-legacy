@@ -31,42 +31,26 @@ function recordTableHeader($compile, $parse) {
             '<a ng-show="tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" href="#" ng-class="\'sorting-\' + tableConfig.columns[' + index + '].sort" translate ng-bind="tableConfig.columns[' + index + '].name"></a>',
             '<span ng-show="!tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" ng-bind="tableConfig.columns[' + index + '].name"></span>',
             '<input ng-show="tableConfig.columns[' + index + '].searchable && !tableConfig.columns[' + index + '].checkbox" ng-model="tableConfig.columns[' + index + '].filter" type="text" ng-class="tableConfig.headerInputClass"',
-            ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8">',
+            ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8"  placeholder="Search in {{tableConfig.columns[' + index + '].name}}">',
             '<input type="checkbox" ng-show="tableConfig.select && tableConfig.columns[' + index + '].checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
             '</th>'
         ].join('');
         var element = angular.element(template);
-        //element.data('$recordTableController', parentCtrl);
+
         return $compile(element)(scope);
     }
 
-    function createHeaders(scope, element) {
+    function createHeaders(scope, element, parentCtrl) {
         if (angular.isArray(scope.tableConfig.columns)) {
             var rowElement = angular.element('<tr></tr>');
             angular.forEach(scope.tableConfig.columns, function (column, index) {
                 rowElement.append(buildColumnHeader(index, scope));
             });
-            element.append(rowElement);
-        }
-    }
-
-    return {
-        restrict: 'A',
-        require: '^recordTable',
-        link: { pre: function (scope, element, attr, parentCtrl) {
-            createHeaders(scope, element);
-
-            //Update the headers when columns are added
-            scope.$watch('tableConfig.columns', function (newVal, oldVal) {
-                if ((angular.isArray(newVal) && angular.isArray(oldVal) && newVal.length !== oldVal.length) ||
-                    (angular.isArray(newVal) && !angular.isArray(oldVal))) {
-                    if (angular.isArray(oldVal)) {
-                        element.contents().remove();
-                    }
-                    createHeaders(scope, element);
-                }
-            });
-
+            if (element.children().length > 0) {
+                element.children().replaceWith(rowElement);
+            } else {
+                element.append(rowElement);
+            }
 
             element.find('a').bind('click', function (event) {
                 var exp = ''.replace.apply(angular.element(event.target).attr('ng-bind'), ['.name', '']);
@@ -77,6 +61,21 @@ function recordTableHeader($compile, $parse) {
                 }
 
             });
+        }
+    }
+
+    return {
+        restrict: 'A',
+        require: '^recordTable',
+        link: { pre: function (scope, element, attr, parentCtrl) {
+            createHeaders(scope, element, parentCtrl);
+
+            //Update the headers when columns are added
+            scope.$watch('tableConfig.columns.length', function (newVal, oldVal) {
+                //TODO: This might not be the most efficient way
+                //new and old however seem to return the same value
+                createHeaders(scope, element, parentCtrl);
+            }, true);
 
             scope.getTypeAheadFor = function (column) {
                 return parentCtrl.typeAheadCache[column.name];

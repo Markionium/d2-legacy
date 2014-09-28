@@ -276,8 +276,13 @@ describe('Directive: RecordTable Header', function () {
     });
 
     it('should only display one select all button for the header row', function () {
-        var checkBox = element.find('thead th').find('input[type="checkbox"]');
-
+        var checkBox = element.find('thead th').find('input[type="checkbox"]:not(.ng-hide)');
         expect(checkBox.length).toBe(1);
+    });
+
+    it('should display a placeholder with the column name', function () {
+        var textInput = element.find('thead tr th input[type="text"]');
+
+        expect(angular.element(textInput[1]).attr('placeholder')).toBe('Search in HeaderColumnText');
     });
 });

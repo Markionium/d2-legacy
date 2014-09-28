@@ -1,17 +1,13 @@
 <div class="record-table">
     <table class="table">
         <thead record-table-header></thead>
-        <!--<thead>
-            <tr>
-                <th record-table-header ng-repeat="column in tableConfig.columns" column="column" config="tableConfig">{{ column.name }}</th>
-            </tr>
-        </thead>-->
-        <tbody>
+        <tbody record-table-body></tbody>
+        <!--<tbody>
             <tr ng-repeat="item in tableData.items" ng-click="recordTable.rowClick(item)">
                 <td ng-if="tableConfig.select"><input type="checkbox" ng-model="item.selected" ng-change="recordTable.checkAllSelected()" /></td>
                 <td ng-repeat="column in recordTable.getRowDataColumns()" ng-bind="item[column.name]"></td>
             </tr>
-        </tbody>
+        </tbody>-->
         <!--<tbody record-table-rows columns="columns" items="items"></tbody>-->
     </table>
     <div class="record-table-pagination" ng-if="tableConfig.pageItems">
