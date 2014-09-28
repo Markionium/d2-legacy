@@ -6,7 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
-//jshint maxstatements:38, maxcomplexity: 7
+//jshint maxstatements:39, maxcomplexity: 7
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
@@ -212,6 +212,10 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
 
     this.getItems = function () {
         return $scope.tableData.items;
+    };
+
+    this.getSelectedItems = function () {
+        return _.filter(this.getItems(), 'selected');
     };
 
     /**

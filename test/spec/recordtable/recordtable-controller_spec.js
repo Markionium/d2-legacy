@@ -640,4 +640,27 @@ describe('Controller: Datatable selectable', function () {
             expect(controller.allSelected).toBe(true);
         });
     });
+
+    describe('getSelectedItems', function () {
+        beforeEach(function () {
+            scope.tableConfig.select = false;
+            controller.processData(scope.tableData);
+
+            scope.tableData.items[0].selected = true;
+            scope.tableData.items[1].selected = true;
+            scope.tableData.items[2].selected = true;
+        });
+
+        it('should return the selected items', function () {
+            expect(controller.getSelectedItems().length).toBe(3);
+        });
+
+        it('should return only the items that are selected', function () {
+            scope.tableData.items[1].selected = false;
+
+            expect(controller.getSelectedItems().length).toBe(2);
+            expect(controller.getSelectedItems()[0].name).toBe('Mark');
+            expect(controller.getSelectedItems()[1].name).toBe('Morten');
+        });
+    });
 });
