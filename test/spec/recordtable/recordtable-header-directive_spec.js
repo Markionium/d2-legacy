@@ -38,17 +38,18 @@ describe('Directive: RecordTable Header', function () {
             expect(firstHeader).toHaveClass('table-header');
         });
 
-        it('should display the content using transclude', function () {
-            expect(firstHeader.text()).toBe('HeaderColumnText');
+        it('should display the content in the span and the a', function () {
+            expect(firstHeader.find('span').text()).toBe('HeaderColumnText');
+            expect(firstHeader.find('a').text()).toBe('HeaderColumnText');
         });
 
         it('should not give a clickable header when sortable is false', function () {
-            expect(firstHeader.find('a').length).toBe(0);
+            expect(firstHeader.find('a:visible').length).toBe(0);
         });
 
         it('should use a span for the header text when not sortable', function () {
-            expect(firstHeader.children().length).toBe(1);
-            expect(firstHeader.children().prop("tagName")).toBe('SPAN');
+            expect(firstHeader.children(':not(.ng-hide)').length).toBe(1);
+            expect(firstHeader.children(':not(.ng-hide)').prop("tagName")).toBe('SPAN');
         });
     });
 
@@ -171,7 +172,7 @@ describe('Directive: RecordTable Header', function () {
         $compile(element)(scope);
         scope.$digest();
 
-        expect(element.find('th').first().find('input').length).toBe(1);
+        expect(element.find('th').first().find('input[type="text"]').length).toBe(1);
     });
 
     it('should call the change method when text is added to the search', function () {
@@ -243,9 +244,11 @@ describe('Directive: RecordTable Header', function () {
     }));
 
     it('should only display the checkbox field', function () {
-        var checkBox = element.find('th').first().find('input');
-        //console.log(checkBox.attr('type'));
+        var checkBox = element.find('th').first().find('input[type="checkbox"]');
+        var textBox = element.find('th').first().find('input[type="text"]:visible');
+
         expect(checkBox.attr('type')).toBe('checkbox');
+        expect(textBox.length).toBe(0);
     });
 
     it('should call the selectAll function when the checkbox is clicked', function () {

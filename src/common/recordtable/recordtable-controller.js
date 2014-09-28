@@ -305,7 +305,6 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      */
     this.setSortOrder = function (currentColumn) {
         var columns = angular.copy($scope.tableConfig.columns);
-
         angular.forEach(columns, function (column) {
             if (column.name === currentColumn.name) {
                 if (currentColumn.sort === 'asc') {

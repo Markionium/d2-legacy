@@ -175,7 +175,7 @@ gulp.task('code-style', function () {
 */
 gulp.task('build', function () {
     destFold = 'dev';
-    runSequence('lint', 'clean', ['make-css', 'src-js', 'templates']);
+    runSequence('clean', ['make-css', 'src-js', 'templates']);
 });
 
 /***********************************************************************************************************************
