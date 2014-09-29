@@ -580,6 +580,25 @@ describe('Controller: Datatable selectable', function () {
 
             expect(controller.allSelected).toBe(false);
         });
+
+        it('should emit an event when the selection changed', function () {
+            var eventHandler = jasmine.createSpy();
+
+            scope.$on('RECORDTABLE.selection.changed', eventHandler);
+            controller.selectAll();
+
+            expect(eventHandler).toHaveBeenCalled();
+        });
+
+        //TODO: Check if the data was passed to the handler
+//        it('should pass all the items to the eventHandler', function () {
+//            var eventHandler = jasmine.createSpy();
+//
+//            scope.$on('RECORDTABLE.selection.changed', eventHandler);
+//            controller.selectAll();
+//
+//            expect(eventHandler).toHaveBeenCalledWith(scope.tableData.items);
+//        });
     });
 
     describe('isAllSelected', function () {
@@ -638,6 +657,15 @@ describe('Controller: Datatable selectable', function () {
             controller.checkAllSelected();
 
             expect(controller.allSelected).toBe(true);
+        });
+
+        it('should emit an event when the selection changed', function () {
+            var eventHandler = jasmine.createSpy();
+
+            scope.$on('RECORDTABLE.selection.changed', eventHandler);
+            controller.checkAllSelected();
+
+            expect(eventHandler).toHaveBeenCalled();
         });
     });
 

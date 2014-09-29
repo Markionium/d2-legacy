@@ -190,6 +190,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
                 this.allSelected = false;
             }
         }
+
+        $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
     this.selectAll = function () {
@@ -202,6 +204,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         angular.forEach($scope.tableData.items, function (item) {
             item.selected = this.allSelected;
         }, this);
+
+        $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
     this.getRowDataColumns = function () {
