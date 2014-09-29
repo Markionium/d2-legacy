@@ -28,9 +28,11 @@ function recordTableHeader($compile, $parse) {
     function buildColumnHeader(index, scope) {
         var template = [
             '<th class="table-header">',
-            '<a ng-show="tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" href="#" ng-class="\'sorting-\' + tableConfig.columns[' + index + '].sort" translate ng-bind="tableConfig.columns[' + index + '].name"></a>',
+            '<a ng-show="tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" href="#" ng-class="\'sorting-\' + tableConfig.columns[' + index + '].sort" ',
+            'translate ng-bind="tableConfig.columns[' + index + '].name"></a>',
             '<span ng-show="!tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" ng-bind="tableConfig.columns[' + index + '].name"></span>',
-            '<input ng-show="tableConfig.columns[' + index + '].searchable && !tableConfig.columns[' + index + '].checkbox" ng-model="tableConfig.columns[' + index + '].filter" type="text" ng-class="tableConfig.headerInputClass"',
+            '<input ng-show="tableConfig.columns[' + index + '].searchable && !tableConfig.columns[' + index + '].checkbox" ng-model="tableConfig.columns[' + index + '].filter" type="text" ',
+            'ng-class="tableConfig.headerInputClass"',
             ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8"  placeholder="Search in {{tableConfig.columns[' + index + '].name}}">',
             '<input type="checkbox" ng-show="tableConfig.select && tableConfig.columns[' + index + '].checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
             '</th>'
@@ -67,20 +69,21 @@ function recordTableHeader($compile, $parse) {
     return {
         restrict: 'A',
         require: '^recordTable',
-        link: { pre: function (scope, element, attr, parentCtrl) {
-            createHeaders(scope, element, parentCtrl);
-
-            //Update the headers when columns are added
-            scope.$watch('tableConfig.columns.length', function (newVal, oldVal) {
-                //TODO: This might not be the most efficient way
-                //new and old however seem to return the same value
+        link: {
+            pre: function (scope, element, attr, parentCtrl) {
                 createHeaders(scope, element, parentCtrl);
-            }, true);
 
-            scope.getTypeAheadFor = function (column) {
-                return parentCtrl.typeAheadCache[column.name];
-            };
-        }
+                //Update the headers when columns are added
+                scope.$watch('tableConfig.columns.length', function (/*newVal, oldVal*/) {
+                    //TODO: This might not be the most efficient way
+                    //new and old however seem to return the same value
+                    createHeaders(scope, element, parentCtrl);
+                }, true);
+
+                scope.getTypeAheadFor = function (column) {
+                    return parentCtrl.typeAheadCache[column.name];
+                };
+            }
         }
     };
 }

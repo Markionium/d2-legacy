@@ -1037,6 +1037,57 @@ periodSelectorDirective.$inject = ["periodService"];
 
 angular.module('d2-period').directive('periodSelector', periodSelectorDirective);
 
+function recordTableBodyDirective($compile) {
+
+    function addRows(columns, items, element, scope) {
+        var rows = [];
+
+        if (!angular.isArray(columns) || !angular.isArray(items)) {
+            return true;
+        }
+        angular.forEach(items, function (item, index) {
+            var row = angular.element('<tr ng-click="recordTable.rowClick(tableData.items[' + index + '])"></tr>');
+            angular.forEach(columns, function (column) {
+                if (column.checkbox && scope.tableConfig.select) {
+                    row.append(angular.element('<td><input type="checkbox" ng-model="tableData.items[' + index + '].selected" ng-change="recordTable.checkAllSelected()" /></td>'));
+                } else {
+                    row.append(angular.element('<td>' + (item[column.name] || '') + '</td>'));
+                }
+            });
+            rows.push($compile(row)(scope));
+        });
+
+        element.children().remove();
+        element.append(rows);
+    }
+
+    return {
+        restrict: 'A',
+        require: '^recordTable',
+        link: function (scope, element) {
+            addRows(scope.tableConfig.columns, scope.items, element);
+            scope.$watch('tableData.items', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    if (angular.isArray(scope.tableConfig.columns)) {
+                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                    }
+                }
+            });
+
+            scope.$watch('tableConfig.columns', function (newVal, oldVal) {
+                if (newVal !== oldVal) {
+                    if (angular.isArray(scope.tableData.items)) {
+                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                    }
+                }
+            });
+        }
+    };
+}
+recordTableBodyDirective.$inject = ["$compile"];
+
+angular.module('d2-recordtable').directive('recordTableBody', recordTableBodyDirective);
+
 /**
  * @ngdoc controller
  * @name RecordTableController
@@ -1229,6 +1280,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
                 this.allSelected = false;
             }
         }
+
+        $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
     this.selectAll = function () {
@@ -1241,6 +1294,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         angular.forEach($scope.tableData.items, function (item) {
             item.selected = this.allSelected;
         }, this);
+
+        $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
     this.getRowDataColumns = function () {
@@ -1344,7 +1399,6 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
      */
     this.setSortOrder = function (currentColumn) {
         var columns = angular.copy($scope.tableConfig.columns);
-
         angular.forEach(columns, function (column) {
             if (column.name === currentColumn.name) {
                 if (currentColumn.sort === 'asc') {
@@ -1749,66 +1803,72 @@ angular.module('d2-recordtable').directive('recordTable', recordTable);
  * #Typeahead
  * When typeahead is available it asks for the typeahead values on {@link RecordTableController} through the `typeAheadCache` property.
  */
-function recordTableHeader() {
-    return {
-        restrict: 'A',
-        replace: true,
-        require: '^recordTable',
-        transclude: true,
-        scope: false,
-        template: [
+function recordTableHeader($compile, $parse) {
+    function buildColumnHeader(index, scope) {
+        var template = [
             '<th class="table-header">',
-            '<a ng-if="column.sortable && !column.checkbox" ng-click="sortOrder()" href="#" ng-transclude ng-class="\'sorting-\' + column.sort" translate></a>',
-            '<span ng-if="!column.sortable && !column.checkbox" ng-transclude></span>',
-            '<input ng-if="column.searchable && !column.checkbox" ng-model="column.filter" type="text" ng-class="tableConfig.headerInputClass"',
-            ' typeahead="name for name in getTypeAheadFor(column) | filter:$viewValue | limitTo:8">',
-            '<input type="checkbox" ng-if="tableConfig.select && column.checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
+            '<a ng-show="tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" href="#" ng-class="\'sorting-\' + tableConfig.columns[' + index + '].sort" ',
+            'translate ng-bind="tableConfig.columns[' + index + '].name"></a>',
+            '<span ng-show="!tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" ng-bind="tableConfig.columns[' + index + '].name"></span>',
+            '<input ng-show="tableConfig.columns[' + index + '].searchable && !tableConfig.columns[' + index + '].checkbox" ng-model="tableConfig.columns[' + index + '].filter" type="text" ',
+            'ng-class="tableConfig.headerInputClass"',
+            ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8"  placeholder="Search in {{tableConfig.columns[' + index + '].name}}">',
+            '<input type="checkbox" ng-show="tableConfig.select && tableConfig.columns[' + index + '].checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
             '</th>'
-        ].join(''),
+        ].join('');
+        var element = angular.element(template);
 
-        link: function (scope, element, attr, parentCtrl) {
-            scope.sortOrder = function () {
-                parentCtrl.setSortOrder(scope.column);
-            };
+        return $compile(element)(scope);
+    }
 
-            scope.getTypeAheadFor = function (column) {
-                return parentCtrl.typeAheadCache[column.name];
-            };
-        }
-    };
-}
-
-angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
-
-function recordTableRowsDirective() {
-
-    function addRows(columns, items, element) {
-        var rows = [];
-
-        if (!angular.isArray(columns) || !angular.isArray(items)) { return true; }
-
-        angular.forEach(items, function (item) {
-            var row = angular.element('<tr ng-click="item.click()"></tr>');
-            angular.forEach(columns, function (column) {
-                row.append(angular.element('<td>' + item[column.name] + '</td>'));
+    function createHeaders(scope, element, parentCtrl) {
+        if (angular.isArray(scope.tableConfig.columns)) {
+            var rowElement = angular.element('<tr></tr>');
+            angular.forEach(scope.tableConfig.columns, function (column, index) {
+                rowElement.append(buildColumnHeader(index, scope));
             });
-            rows.push(row);
-        });
+            if (element.children().length > 0) {
+                element.children().replaceWith(rowElement);
+            } else {
+                element.append(rowElement);
+            }
 
-        element.children().remove();
-        element.append(rows);
-        return rows;
+            element.find('a').bind('click', function (event) {
+                var exp = ''.replace.apply(angular.element(event.target).attr('ng-bind'), ['.name', '']);
+                if (angular.isString(exp)) {
+                    scope.$apply(function () {
+                        parentCtrl.setSortOrder($parse(exp)(scope));
+                    });
+                }
+
+            });
+        }
     }
 
     return {
         restrict: 'A',
-        link: function (scope, element) {
-            addRows(scope.tableConfig.columns, scope.items, element);
+        require: '^recordTable',
+        link: {
+            pre: function (scope, element, attr, parentCtrl) {
+                createHeaders(scope, element, parentCtrl);
+
+                //Update the headers when columns are added
+                scope.$watch('tableConfig.columns.length', function (/*newVal, oldVal*/) {
+                    //TODO: This might not be the most efficient way
+                    //new and old however seem to return the same value
+                    createHeaders(scope, element, parentCtrl);
+                }, true);
+
+                scope.getTypeAheadFor = function (column) {
+                    return parentCtrl.typeAheadCache[column.name];
+                };
+            }
         }
     };
 }
+recordTableHeader.$inject = ["$compile", "$parse"];
 
-angular.module('d2-recordtable').directive('recordTableRows', recordTableRowsDirective);
+angular.module('d2-recordtable').directive('recordTableHeader', recordTableHeader);
 
 function recordTableSelectable($parse) {
     function selectOne(item) {

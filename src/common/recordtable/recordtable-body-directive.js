@@ -3,7 +3,9 @@ function recordTableBodyDirective($compile) {
     function addRows(columns, items, element, scope) {
         var rows = [];
 
-        if (!angular.isArray(columns) || !angular.isArray(items)) { return true; }
+        if (!angular.isArray(columns) || !angular.isArray(items)) {
+            return true;
+        }
         angular.forEach(items, function (item, index) {
             var row = angular.element('<tr ng-click="recordTable.rowClick(tableData.items[' + index + '])"></tr>');
             angular.forEach(columns, function (column) {
@@ -27,15 +29,17 @@ function recordTableBodyDirective($compile) {
             addRows(scope.tableConfig.columns, scope.items, element);
             scope.$watch('tableData.items', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    if (angular.isArray(scope.tableConfig.columns))
+                    if (angular.isArray(scope.tableConfig.columns)) {
                         addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                    }
                 }
             });
 
             scope.$watch('tableConfig.columns', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
-                    if (angular.isArray(scope.tableData.items))
-                        addRows(scope.tableConfig.columns, scope.tableData.items, element,scope);
+                    if (angular.isArray(scope.tableData.items)) {
+                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                    }
                 }
             });
         }
