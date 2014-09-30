@@ -41,3 +41,54 @@ describe('Config: ApiConfig changed config', function () {
         expect(apiConfig.getUrl('i18n')).toBe('dhis2/api/i18n');
     });
 });
+
+//TODO: Some of the test below might be redundant with the ones above.
+describe('Config: apiConfig', function () {
+    var apiConfig;
+
+    beforeEach(module('d2-config'));
+    beforeEach(inject(function (_apiConfig_) {
+        apiConfig = _apiConfig_;
+    }));
+
+    it('should be an object', function () {
+        expect(apiConfig).toBeAnObject();
+    });
+
+    describe('getUrl', function () {
+        it('should be a method on the apiConfig object', function () {
+            expect(apiConfig.getUrl).toBeAFunction();
+        });
+
+        it('should throw an error when the passed resource is not a string', function () {
+            function shouldThrow() {
+                apiConfig.getUrl([]);
+            }
+            expect(shouldThrow).toThrow('Api Config Error: Resource URL should be a string');
+        });
+
+        it('should prefix the resource with the API_ENDPOINT prefix', function () {
+            expect(apiConfig.getUrl('myEndPoint')).toBe('/dhis/api/myEndPoint');
+        });
+
+        it('should strip the leading slash form the path before creating the resource', function () {
+            expect(apiConfig.getUrl('/myEndPoint')).toBe('/dhis/api/myEndPoint');
+        });
+    });
+});
+
+describe('Config: apiConfig with a configured API_ENDPOINT', function () {
+    var apiConfig;
+
+    beforeEach(module('d2-config'));
+    beforeEach(module(function($provide) {
+        $provide.constant('API_ENDPOINT', '/myCustomApiLocation');
+    }));
+    beforeEach(inject(function (_apiConfig_) {
+        apiConfig = _apiConfig_;
+    }));
+
+    it('should use the custom prefix when creating the endpoint', function () {
+        expect(apiConfig.getUrl('myEndPoint')).toBe('/myCustomApiLocation/myEndPoint');
+    });
+});
