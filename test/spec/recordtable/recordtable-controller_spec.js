@@ -691,4 +691,17 @@ describe('Controller: Datatable selectable', function () {
             expect(controller.getSelectedItems()[1].name).toBe('Morten');
         });
     });
+
+    describe('resetAllSelected', function () {
+        it('should reset the all selected back to false when the datasource is changed', function () {
+            console.log(this.description);
+            scope.tableConfig.select = true;
+            controller.processData(scope.tableData);
+
+            controller.allSelected = true;
+            controller.processData(scope.tableData);
+
+            expect(controller.allSelected).toBe(false);
+        });
+    });
 });

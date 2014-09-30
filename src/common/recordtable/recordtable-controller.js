@@ -6,7 +6,7 @@
  *
  * TODO: Document the rest of this Controller.
  */
-//jshint maxstatements:39, maxcomplexity: 7
+//jshint maxstatements:40, maxcomplexity: 7
 function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) {
     var self = this,
         requestServiceTimeoutIsSet = false;
@@ -125,6 +125,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         $scope.tableConfig.columns = $scope.tableConfig.columns || this.getHeadersFromData();
 
         if (this.isSelectable()) {
+            this.allSelected = false;
             this.addSelectable();
         }
 
@@ -511,6 +512,13 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             return item[column.name];
         });
     };
+
+    $scope.$on('RECORDTABLE.selection.clear', function () {
+        _.each($scope.tableData.items, function (item) {
+            item.selected = false;
+        });
+        this.allSelected = false;
+    });
 
     $scope.$watch('tableConfig.columns', function (newValue, oldValue) {
         if (oldValue !== newValue) {
