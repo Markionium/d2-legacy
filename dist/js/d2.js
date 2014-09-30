@@ -1607,7 +1607,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         _.each($scope.tableData.items, function (item) {
             item.selected = false;
         });
-        this.allSelected = false;
+        self.allSelected = false;
     });
 
     $scope.$watch('tableConfig.columns', function (newValue, oldValue) {

@@ -693,15 +693,35 @@ describe('Controller: Datatable selectable', function () {
     });
 
     describe('resetAllSelected', function () {
-        it('should reset the all selected back to false when the datasource is changed', function () {
-            console.log(this.description);
+        beforeEach(function () {
             scope.tableConfig.select = true;
             controller.processData(scope.tableData);
 
             controller.allSelected = true;
+        });
+
+        it('should reset the all selected back to false when the datasource is changed', function () {
             controller.processData(scope.tableData);
 
             expect(controller.allSelected).toBe(false);
+        });
+
+        it('should reset the all selected back to false after the event is called', function () {
+            scope.$broadcast('RECORDTABLE.selection.clear');
+
+            expect(controller.allSelected).toBe(false);
+        });
+
+        it('should set the selected property on all items to false', function () {
+            scope.tableData.items[0].selected = true;
+            scope.tableData.items[1].selected = true;
+            scope.tableData.items[2].selected = true;
+
+            scope.$broadcast('RECORDTABLE.selection.clear');
+
+            expect(scope.tableData.items[0].selected).toBe(false);
+            expect(scope.tableData.items[1].selected).toBe(false);
+            expect(scope.tableData.items[2].selected).toBe(false);
         });
     });
 });
