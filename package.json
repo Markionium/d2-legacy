@@ -33,7 +33,7 @@
     "karma-ng-html2js-preprocessor": "^0.1.0",
     "karma-phantomjs-launcher": "^0.1.4",
     "lodash": "^2.4.1",
-    "run-sequence": "^0.3.6",
+    "run-sequence": "1.0.x",
     "winston": "^0.7.3"
   }
 }

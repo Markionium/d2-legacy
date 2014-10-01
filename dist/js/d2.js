@@ -229,6 +229,56 @@ angular.module('d2-services', ['d2-auth']);
 // Create the final d2 module that can be used when all functionality is required
 angular.module('d2', ['d2-services', 'd2-directives', 'd2-filters']);
 
+function currentUser(d2Api, $q) {
+    var permissions;
+    var user;
+
+    function loadPermissions() {
+        var permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
+            permissions = response.getDataOnly();
+            return permissions;
+        });
+
+        function hasPermission(permissionToCheck) {
+            return permissionPromise.then(function (permissions) {
+                if (permissions.indexOf(permissionToCheck) > 0) {
+                    return true;
+                } else {
+                    return $q.reject('User does not have this permission');
+                }
+            });
+        }
+
+        permissionPromise.hasPermission = hasPermission;
+        return permissionPromise;
+    }
+
+    /**
+     * Loading of the user profile
+     */
+    user = d2Api.currentUser.get();
+
+    user = angular.extend(user, {
+        valueFor: function (valueKey) {
+            if (this[valueKey]) {
+                return this[valueKey];
+            } else {
+                return undefined;
+            }
+        },
+        permissions: loadPermissions()
+    });
+
+    user.then(function (response) {
+        angular.extend(user, response.getDataOnly());
+    });
+
+    return user;
+}
+currentUser.$inject = ["d2Api", "$q"];
+
+angular.module('d2-auth').factory('currentUser', currentUser);
+
 /* global d2 */
 /**
  * @ngdoc controller
@@ -456,56 +506,6 @@ function breadCrumbsService() {
 }
 
 angular.module('d2-breadcrumbs').service('breadCrumbsService', breadCrumbsService);
-
-function currentUser(d2Api, $q) {
-    var permissions;
-    var user;
-
-    function loadPermissions() {
-        var permissionPromise = d2Api.currentUser.permissions.getList().then(function (response) {
-            permissions = response.getDataOnly();
-            return permissions;
-        });
-
-        function hasPermission(permissionToCheck) {
-            return permissionPromise.then(function (permissions) {
-                if (permissions.indexOf(permissionToCheck) > 0) {
-                    return true;
-                } else {
-                    return $q.reject('User does not have this permission');
-                }
-            });
-        }
-
-        permissionPromise.hasPermission = hasPermission;
-        return permissionPromise;
-    }
-
-    /**
-     * Loading of the user profile
-     */
-    user = d2Api.currentUser.get();
-
-    user = angular.extend(user, {
-        valueFor: function (valueKey) {
-            if (this[valueKey]) {
-                return this[valueKey];
-            } else {
-                return undefined;
-            }
-        },
-        permissions: loadPermissions()
-    });
-
-    user.then(function (response) {
-        angular.extend(user, response.getDataOnly());
-    });
-
-    return user;
-}
-currentUser.$inject = ["d2Api", "$q"];
-
-angular.module('d2-auth').factory('currentUser', currentUser);
 
 function apiConfig(API_ENDPOINT) {
     return {
