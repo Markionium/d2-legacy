@@ -61,6 +61,13 @@ describe('D2 Rest Interface', function () {
             expect(indicatorList[0].getDataOnly()).toEqual(expectedObject);
         });
 
+        it('should only add the getDataOnly method when there is a response', function () {
+            $httpBackend.expectGET('/dhis/api/indicators').respond(200);
+
+            api.indicators.getList();
+            $httpBackend.flush();
+        });
+
         it('should add the meta data in a meta data object on the array', function () {
             var actualMeta = {},
                 expectedMeta = {

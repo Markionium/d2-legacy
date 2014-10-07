@@ -220,9 +220,11 @@ function d2Api(RestangularProvider) {
         var newResponse = response,
             dataOnly = angular.copy(response);
 
-        newResponse.getDataOnly = function () {
-            return dataOnly;
-        };
+        if (newResponse) {
+            newResponse.getDataOnly = function () {
+                return dataOnly;
+            };
+        }
 
         return newResponse;
     });
