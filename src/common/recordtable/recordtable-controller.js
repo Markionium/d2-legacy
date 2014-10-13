@@ -304,6 +304,17 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         return $scope.tableData.items;
     };
 
+    /**
+     * @ngdoc method
+     *
+     * @name RecordTableController#getSelectedItems
+     *
+     * @returns {Array} Array of objects that are currently selected
+     *
+     * @description
+     *
+     * Returns the items that are marked as selected
+     */
     this.getSelectedItems = function () {
         return _.filter(this.getItems(), 'selected');
     };
