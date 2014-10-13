@@ -1219,7 +1219,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             this.addSelectable();
         }
 
-        if ($scope.pageItems) {
+        if (angular.isNumber($scope.pageItems) && $scope.pageItems > 0) {
             $scope.tableData.items = $scope.tableData.items.slice(0, $scope.pageItems);
         }
         if (data && data.meta) {
@@ -1615,6 +1615,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             if (self.localData) {
                 self.doLocalFiltering();
                 self.doLocalSorting();
+                self.checkAllSelected();
             }
             if ($scope.d2Service) {
                 if (!requestServiceTimeoutIsSet) {

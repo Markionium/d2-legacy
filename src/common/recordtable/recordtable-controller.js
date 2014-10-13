@@ -129,7 +129,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             this.addSelectable();
         }
 
-        if ($scope.pageItems) {
+        if (angular.isNumber($scope.pageItems) && $scope.pageItems > 0) {
             $scope.tableData.items = $scope.tableData.items.slice(0, $scope.pageItems);
         }
         if (data && data.meta) {
@@ -152,6 +152,17 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         return this;
     };
 
+    /**
+     * @ngdoc method
+     * @name RecordTableController#isSelectable
+     *
+     * @returns {boolean} True if selection for this table is turned on
+     *
+     * @description
+     *
+     * Convenience method to check if selection for this table is enabled. When selection
+     * is enabled the rows of the table will be selectable.
+     */
     this.isSelectable = function () {
         if (angular.isDefined($scope.tableConfig) && $scope.tableConfig.select === true) {
             return true;
@@ -159,6 +170,16 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         return false;
     };
 
+    /**
+     * @ngdoc method
+     * @name RecordTableController#addSelectable
+     *
+     * @returns undefined
+     *
+     * @description
+     *
+     * Adds a `selected` property to each of the items currently in tableData.
+     */
     this.addSelectable = function () {
         var selectableObject = {
             name: '',
@@ -174,6 +195,16 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         });
     };
 
+    /**
+     * @ngdoc method
+     * @name RecordTableController#isAllSelected
+     *
+     * @returns {boolean}
+     *
+     * @description
+     *
+     * Check if all the items in the table are selected.
+     */
     this.isAllSelected = function () {
         if (_.filter($scope.tableData.items, 'selected').length === $scope.tableData.items.length) {
             return true;
@@ -181,6 +212,22 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         return false;
     };
 
+    /**
+     * @ngdoc
+     *
+     * @name RecordTableController#checkAllSelected
+     *
+     * @returns undefined
+     *
+     * @description
+     *
+     * Method is used to check if all the items are currently selected. If so it will set the `allSelected`
+     * flag to true.
+     *
+     * {@note info Emits an event
+     * This method emits the `RECORDTABLE.selection.changed` event when called. In our case this means
+     * that whenever the selection is changed the method will be called.}
+     */
     this.checkAllSelected = function () {
         if (this.isAllSelected()) {
             if (this.allSelected !== true) {
@@ -195,6 +242,21 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
+    //TODO: Rename this? As it also unselects the naming might be confusing.
+    /**
+     * @ngdoc method
+     *
+     * @name RecordTableController#selectAll
+     *
+     * @returns undefined
+     *
+     * @description
+     *
+     * Selects all the elements in the table. If all elements are selected it will unselect them.
+     *
+     * * {@note info Emits an event
+     * This method emits the `RECORDTABLE.selection.changed` event when called. }
+     */
     this.selectAll = function () {
         if (!this.isAllSelected()) {
             this.allSelected = true;
@@ -209,12 +271,35 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
         $scope.$emit('RECORDTABLE.selection.changed', this.getSelectedItems());
     };
 
+    /**
+     * @ngdoc method
+     *
+     * @name RecordTableController#selectAll
+     *
+     * @returns {Array}
+     *
+     * @description
+     *
+     * Returns an array of all the data columns.
+     * This array contains all the column objects except the checkbox column used for selecting.
+     */
     this.getRowDataColumns = function () {
         return _.filter($scope.tableConfig.columns, function (column) {
             return !column.checkbox;
         });
     };
 
+    /**
+     * @ngdoc method
+     *
+     * @name RecordTableController#getItems
+     *
+     * @returns {Array} Array of objects with the items currently in the table.
+     *
+     * @description
+     *
+     *
+     */
     this.getItems = function () {
         return $scope.tableData.items;
     };
@@ -525,6 +610,7 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
             if (self.localData) {
                 self.doLocalFiltering();
                 self.doLocalSorting();
+                self.checkAllSelected();
             }
             if ($scope.d2Service) {
                 if (!requestServiceTimeoutIsSet) {

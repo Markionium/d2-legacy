@@ -724,4 +724,41 @@ describe('Controller: Datatable selectable', function () {
             expect(scope.tableData.items[2].selected).toBe(false);
         });
     });
+
+    describe('reseting filter', function () {
+        beforeEach(function () {
+            scope.tableConfig.columns = [
+                { name: 'name', sortable: true, searchable: true },
+                { name: 'code', sortable: true }
+            ];
+
+            scope.tableDataSource = [
+                { name: "Mark", desk: 1 },
+                { name: "Lars", desk: 2 },
+                { name: "Morten", desk: 3 }
+            ];
+
+            controller.parseTableConfig();
+            controller.parseTableData();
+            scope.$digest();
+
+            scope.tableConfig.columns[0].filter = 'M';
+            scope.$digest();
+        });
+
+        it('Should not mark all selected after removing filtering', function () {
+            controller.selectAll();
+
+            expect(controller.getItems().length).toBe(2);
+            expect(controller.getSelectedItems().length).toBe(2);
+
+            //Remove filter
+            scope.tableConfig.columns[0].filter = '';
+            scope.$apply();
+
+            expect(controller.getItems().length).toBe(3);
+            expect(controller.getSelectedItems().length).toBe(2);
+            expect(controller.allSelected).toBe(false);
+        });
+    });
 });

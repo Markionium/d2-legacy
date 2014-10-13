@@ -31,6 +31,17 @@
  *
  * When angular-ui is available the searchbox will also use the typeahead functionality.
  *
+ * ## Events
+ *
+ * Record table has a couple events that can be used to interact with the table
+ *
+ * ### Events to listen to
+ * `RECORDTABLE.selection.changed` Emits an event upwards to notify that the selection has changed. This event
+ * passes the selected items as data to the listeners.
+ *
+ * ### Events that the table listens for
+ * `RECORDTABLE.selection.clear` Can be broadcasted to the record table to clear it's selection.
+ *
  * @example
  <example name="recordTable" deps="ui-bootstrap-tpls.js" module="table">
     <file name="index.html">
