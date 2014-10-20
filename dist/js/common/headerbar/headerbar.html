@@ -1,9 +1,7 @@
 <div class="header-bar">
-    <a href="{{link}}" title="{{ title }}">
-        <img class="header-logo" ng-src="{{logo}}">
-        <span class="header-text" translate>
-            {{title}}
-        </span>
+    <a ng-href="{{headerLink}}" title="{{headerTitle}}">
+        <img class="header-logo" ng-src="{{headerLogo}}">
+        <span class="header-text" ng-bind="headerTitle" translate></span>
     </a>
     <div ng-transclude></div>
 </div>

@@ -10,7 +10,7 @@ describe('d2-header-bar directive', function () {
         beforeEach(inject(function( $compile, $rootScope ) {
             scope = $rootScope.$new();
 
-            element = angular.element('<header-bar title="DHIS 2 Demo - Sierra Leone" link="../dhis-web-dashboard-integration/index.action" />');
+            element = angular.element('<header-bar title="\'DHIS 2 Demo - Sierra Leone\'" link="\'../dhis-web-dashboard-integration/index.action\'" />');
 
             $compile(element)(scope);
             scope.$digest();
