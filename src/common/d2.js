@@ -46,7 +46,7 @@ angular.module('d2-config', []);
  * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
  * and easy and convenient way to create and resuse your own endpoints.
  */
-angular.module('d2-rest', ['restangular']);
+angular.module('d2-rest', ['restangular', 'd2-config']);
 angular.module('d2-auth', ['d2-rest']);
 angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 

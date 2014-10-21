@@ -279,9 +279,9 @@ function userIsLoggedOutInterceptor($window) {
     };
 }
 
-function restConfig($httpProvider, d2ApiProvider) {
+function restConfig($httpProvider, d2ApiProvider, API_ENDPOINT) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
-    d2ApiProvider.setBaseUrl('/dhis/api');
+    d2ApiProvider.setBaseUrl(API_ENDPOINT);
 }
 
 angular.module('d2-rest').provider('d2Api', d2Api);
