@@ -2403,18 +2403,18 @@ systemSettingsService.$inject = ["d2Api"];
 
 angular.module('d2-settings', ['d2-rest']).service('systemSettingsService', systemSettingsService);
 
-function d2LanguageLoader($q, $http, translateApiService) {
+function d2LanguageLoader($q, $http, translateServiceTranslations) {
     var loadedValues = {};
 
     return function (options) {
         var deferred = $q.defer();
 
         if (loadedValues[options.key]) {
-            loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, loadedValues[options.key]);
-            deferred.resolve(angular.extend(translateApiService.apiTranslations, loadedValues[options.key]));
+            loadedValues[options.key] = angular.extend(translateServiceTranslations.translations, loadedValues[options.key]);
+            deferred.resolve(angular.extend(translateServiceTranslations.translations, loadedValues[options.key]));
         } else {
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
-                loadedValues[options.key] = angular.extend(translateApiService.apiTranslations, data);
+                loadedValues[options.key] = angular.extend(translateServiceTranslations.translations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
                 deferred.reject(options.key);
@@ -2423,7 +2423,7 @@ function d2LanguageLoader($q, $http, translateApiService) {
         return deferred.promise;
     };
 }
-d2LanguageLoader.$inject = ["$q", "$http", "translateApiService"];
+d2LanguageLoader.$inject = ["$q", "$http", "translateServiceTranslations"];
 
 function d2MissingTranslationHandler(translateApiService) {
     return function (translationId, $uses) {
@@ -2433,12 +2433,15 @@ function d2MissingTranslationHandler(translateApiService) {
 }
 d2MissingTranslationHandler.$inject = ["translateApiService"];
 
-function translateApiService($q, $translate, apiConfig, $timeout, $http) {
+function translateServiceTranslations() {
+    this.translations = {};
+}
+
+function translateApiService($q, $translate, apiConfig, $timeout, $http, translateServiceTranslations) {
     var self = this;
     var timeOutSet = false;
     var translateKeys = [];
 
-    this.apiTranslations = {};
     this.add = function (translationId) {
         if (angular.isString(translationId) && translationId.trim() !== '') {
             translateKeys.push(translationId.trim());
@@ -2476,13 +2479,13 @@ function translateApiService($q, $translate, apiConfig, $timeout, $http) {
     this.translateThroughApi = function (languageCode) {
         if (timeOutSet === false) {
             this.getTranslationsFromApi(languageCode).then(function (data) {
-                self.apiTranslations = data;
+                translateServiceTranslations.translations = data;
                 $translate.refresh();
             });
         }
     };
 }
-translateApiService.$inject = ["$q", "$translate", "apiConfig", "$timeout", "$http"];
+translateApiService.$inject = ["$q", "$translate", "apiConfig", "$timeout", "$http", "translateServiceTranslations"];
 
 function translateConfig($translateProvider) {
     $translateProvider.useLoader('d2LanguageLoader');
@@ -2493,6 +2496,7 @@ translateConfig.$inject = ["$translateProvider"];
 
 angular.module('d2-translate').factory('d2MissingTranslationHandler', d2MissingTranslationHandler);
 angular.module('d2-translate').service('translateApiService', translateApiService);
+angular.module('d2-translate').service('translateServiceTranslations', translateServiceTranslations);
 angular.module('d2-translate').factory('d2LanguageLoader', d2LanguageLoader);
 angular.module('d2-translate').config(translateConfig);
 

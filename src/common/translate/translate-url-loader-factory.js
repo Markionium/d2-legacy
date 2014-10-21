@@ -9,7 +9,6 @@ function d2LanguageLoader($q, $http, translateServiceTranslations) {
             deferred.resolve(angular.extend(translateServiceTranslations.translations, loadedValues[options.key]));
         } else {
             $http.get('common/i18n/' + options.key + '.json').success(function (data) {
-                console.log(translateServiceTranslations);
                 loadedValues[options.key] = angular.extend(translateServiceTranslations.translations, data);
                 deferred.resolve(loadedValues[options.key]);
             }).error(function () {
