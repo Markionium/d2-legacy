@@ -75,7 +75,7 @@ angular.module('d2-config', []);
  * It contains a few predefined endpoints that we currently use ourselfs. But it also provides
  * and easy and convenient way to create and resuse your own endpoints.
  */
-angular.module('d2-rest', ['restangular']);
+angular.module('d2-rest', ['restangular', 'd2-config']);
 angular.module('d2-auth', ['d2-rest']);
 angular.module('d2-translate', ['pascalprecht.translate', 'd2-config']);
 
@@ -2268,11 +2268,11 @@ function userIsLoggedOutInterceptor($window) {
 }
 userIsLoggedOutInterceptor.$inject = ["$window"];
 
-function restConfig($httpProvider, d2ApiProvider) {
+function restConfig($httpProvider, d2ApiProvider, API_ENDPOINT) {
     $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
-    d2ApiProvider.setBaseUrl('/dhis/api');
+    d2ApiProvider.setBaseUrl(API_ENDPOINT);
 }
-restConfig.$inject = ["$httpProvider", "d2ApiProvider"];
+restConfig.$inject = ["$httpProvider", "d2ApiProvider", "API_ENDPOINT"];
 
 angular.module('d2-rest').provider('d2Api', d2Api);
 angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
