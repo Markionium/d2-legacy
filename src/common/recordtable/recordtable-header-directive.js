@@ -33,7 +33,7 @@ function recordTableHeader($compile, $parse) {
             '<span ng-show="!tableConfig.columns[' + index + '].sortable && !tableConfig.columns[' + index + '].checkbox" ng-bind="tableConfig.columns[' + index + '].name"></span>',
             '<input ng-show="tableConfig.columns[' + index + '].searchable && !tableConfig.columns[' + index + '].checkbox" ng-model="tableConfig.columns[' + index + '].filter" type="text" ',
             'ng-class="tableConfig.headerInputClass"',
-            ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8"  placeholder="Search in {{tableConfig.columns[' + index + '].name}}">',
+            ' typeahead="name for name in getTypeAheadFor(tableConfig.columns[' + index + ']) | filter:$viewValue | limitTo:8"  placeholder="{{\'Search in\' | translate }} {{tableConfig.columns[' + index + '].name | translate }}">',
             '<input type="checkbox" ng-show="tableConfig.select && tableConfig.columns[' + index + '].checkbox" ng-model="recordTable.allSelected" ng-change="recordTable.selectAll()" />',
             '</th>'
         ].join('');
