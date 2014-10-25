@@ -1236,6 +1236,8 @@ function RecordTableController($scope, $q, $filter, $timeout, typeAheadService) 
                 resultTotal: data.length,
                 itemsPerPage: $scope.pageItems
             };
+            this.doLocalFiltering();
+            this.doLocalSorting();
         }
 
         return this;

@@ -106,7 +106,7 @@ describe('Controller: Datatable', function () {
 
     it('should sort the data in desc order', function () {
         scope.tableConfig.columns = [
-            { name: 'name', sortable: true, sort: 'asc' },
+            { name: 'name', sortable: true },
             { name: 'desk', sortable: true }
         ];
 
@@ -115,6 +115,7 @@ describe('Controller: Datatable', function () {
 
         expect(scope.tableData.items[0].name).toBe('Mark');
 
+        controller.setSortOrder(scope.tableConfig.columns[0]);
         controller.setSortOrder(scope.tableConfig.columns[0]);
         scope.$digest();
 
@@ -159,11 +160,13 @@ describe('Controller: Datatable', function () {
     });
 
     it('should do local filtering when a filter is changed', function () {
-        spyOn(controller, 'doLocalFiltering');
-        spyOn(controller, 'getRemoteParams');
-
         controller.parseTableData();
         scope.$digest();
+
+        //Add spies after initializing the data because we call local filtering
+        //when the data is added to ensure filtering when the data is changed.
+        spyOn(controller, 'doLocalFiltering');
+        spyOn(controller, 'getRemoteParams');
 
         scope.tableConfig.columns[0].filter = 'M';
         scope.$digest();
