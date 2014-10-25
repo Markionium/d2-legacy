@@ -253,7 +253,7 @@ describe('Directive: recordtable', function () {
                 $compile(element)(scope);
                 scope.$digest();
 
-                paginationElement = element.find('table').next().first();
+                paginationElement = element.find('table').next().next().first();
                 controller = element.controller('recordTable');
 
                 $httpBackend.flush();

@@ -3,6 +3,7 @@
         <thead record-table-header></thead>
         <tbody record-table-body></tbody>
     </table>
+    <div class="no-data-available" ng-if="tableData.items.length <= 0" translate>No data available</div>
     <div class="record-table-pagination" ng-if="tableConfig.pageItems">
         <pagination boundary-links="true" items-per-page="recordTable.pager.itemsPerPage" total-items="recordTable.pager.resultTotal" ng-model="recordTable.pager.currentPage" class="pagination-sm" previous-text="{{ 'previous' | translate }}" next-text="{{ 'next' | translate }}" first-text="{{ 'first' | translate }}" last-text="{{ 'last' | translate }}"></pagination>
     </div>
