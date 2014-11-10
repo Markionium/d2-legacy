@@ -1038,26 +1038,58 @@ angular.module('d2-period').directive('periodSelector', periodSelectorDirective)
 
 function recordTableBodyDirective($compile) {
 
+    function createTrNode(index) {
+        var trNode = document.createElement('tr');
+        trNode.setAttribute('ng-click', 'recordTable.rowClick(tableData.items[' + index + '])');
+        return trNode;
+    }
+
+    function createTdNodeWithContent(content) {
+        var textNode = document.createTextNode(content);
+        var tdNode = document.createElement('td');
+
+        tdNode.appendChild(textNode);
+
+        return tdNode;
+    }
+
+    function createCheckboxNode(index) {
+        var cellNode = document.createElement('td');
+        var inputNode = document.createElement('input');
+
+        inputNode.setAttribute('type', 'checkbox');
+        inputNode.setAttribute('ng-model', 'tableData.items[' + index + '].selected');
+        inputNode.setAttribute('ng-change', 'recordTable.checkAllSelected()');
+
+        cellNode.appendChild(inputNode);
+        return cellNode;
+    }
+
     function addRows(columns, items, element, scope) {
-        var rows = [];
+        var trNode;
+        var rows = document.createDocumentFragment();
 
         if (!angular.isArray(columns) || !angular.isArray(items)) {
             return true;
         }
         angular.forEach(items, function (item, index) {
-            var row = angular.element('<tr ng-click="recordTable.rowClick(tableData.items[' + index + '])"></tr>');
+            var cells = document.createDocumentFragment();
+            trNode = createTrNode(index);
+
             angular.forEach(columns, function (column) {
                 if (column.checkbox && scope.tableConfig.select) {
-                    row.append(angular.element('<td><input type="checkbox" ng-model="tableData.items[' + index + '].selected" ng-change="recordTable.checkAllSelected()" /></td>'));
+                    cells.appendChild(createCheckboxNode(index));
                 } else {
-                    row.append(angular.element('<td>' + (item[column.name] || '') + '</td>'));
+                    cells.appendChild(createTdNodeWithContent(item[column.name] || ''));
                 }
             });
-            rows.push($compile(row)(scope));
+
+            trNode.appendChild(cells);
+            rows.appendChild(trNode);
         });
 
         element.children().remove();
-        element.append(rows);
+        element.append($compile(angular.element(rows))(scope));
     }
 
     return {
