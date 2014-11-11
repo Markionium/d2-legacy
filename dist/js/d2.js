@@ -1036,8 +1036,7 @@ periodSelectorDirective.$inject = ["periodService"];
 
 angular.module('d2-period').directive('periodSelector', periodSelectorDirective);
 
-function recordTableBodyDirective($compile) {
-
+function recordTableBodyDirective(/*$compile*/) {
     function createTrNode(index) {
         var trNode = document.createElement('tr');
         trNode.setAttribute('ng-click', 'recordTable.rowClick(tableData.items[' + index + '])');
@@ -1053,19 +1052,17 @@ function recordTableBodyDirective($compile) {
         return tdNode;
     }
 
-    function createCheckboxNode(index) {
+    function createCheckboxNode() {
         var cellNode = document.createElement('td');
         var inputNode = document.createElement('input');
 
         inputNode.setAttribute('type', 'checkbox');
-        inputNode.setAttribute('ng-model', 'tableData.items[' + index + '].selected');
-        inputNode.setAttribute('ng-change', 'recordTable.checkAllSelected()');
 
         cellNode.appendChild(inputNode);
         return cellNode;
     }
 
-    function addRows(columns, items, element, scope) {
+    function addRows(columns, items, element, scope, recordTable) {
         var trNode;
         var rows = document.createDocumentFragment();
 
@@ -1078,10 +1075,27 @@ function recordTableBodyDirective($compile) {
 
             angular.forEach(columns, function (column) {
                 if (column.checkbox && scope.tableConfig.select) {
-                    cells.appendChild(createCheckboxNode(index));
+                    cells.appendChild(createCheckboxNode());
                 } else {
                     cells.appendChild(createTdNodeWithContent(item[column.name] || ''));
                 }
+            });
+
+            trNode.setAttribute('data-index', index);
+            trNode.addEventListener('click', function () {
+                var index = parseInt(this.getAttribute('data-index'), 10);
+                var checkBox = this.querySelector('input[type=checkbox]');
+
+                scope.$apply(function () {
+                    if (scope.tableData.items[index].selected === true) {
+                        checkBox.checked = false;
+                        scope.tableData.items[index].selected = false;
+                    } else {
+                        checkBox.checked = true;
+                        scope.tableData.items[index].selected = true;
+                    }
+                    recordTable.checkAllSelected();
+                });
             });
 
             trNode.appendChild(cells);
@@ -1089,18 +1103,18 @@ function recordTableBodyDirective($compile) {
         });
 
         element.children().remove();
-        element.append($compile(angular.element(rows))(scope));
+        element.append(rows);
     }
 
     return {
         restrict: 'A',
         require: '^recordTable',
-        link: function (scope, element) {
-            addRows(scope.tableConfig.columns, scope.items, element);
+        link: function (scope, element, attrs, recordTable) {
+            addRows(scope.tableConfig.columns, scope.items, element, recordTable);
             scope.$watch('tableData.items', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     if (angular.isArray(scope.tableConfig.columns)) {
-                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope, recordTable);
                     }
                 }
             });
@@ -1108,14 +1122,25 @@ function recordTableBodyDirective($compile) {
             scope.$watch('tableConfig.columns', function (newVal, oldVal) {
                 if (newVal !== oldVal) {
                     if (angular.isArray(scope.tableData.items)) {
-                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope);
+                        addRows(scope.tableConfig.columns, scope.tableData.items, element, scope, recordTable);
                     }
                 }
+            });
+
+            scope.$on('RECORDTABLE.selection.clear', function () {
+                var itemCheckBoxes = element[0].querySelectorAll('input[type="checkbox"]');
+
+                [].forEach.call(itemCheckBoxes, function (checkBox) {
+                    if (recordTable.allSelected === true) {
+                        checkBox.checked = true;
+                    } else {
+                        checkBox.checked = false;
+                    }
+                });
             });
         }
     };
 }
-recordTableBodyDirective.$inject = ["$compile"];
 
 angular.module('d2-recordtable').directive('recordTableBody', recordTableBodyDirective);
 
@@ -2003,7 +2028,7 @@ function recordTableHeader($compile, $parse) {
                 createHeaders(scope, element, parentCtrl);
 
                 //Update the headers when columns are added
-                scope.$watch('tableConfig.columns.length', function (/*newVal, oldVal*/) {
+                scope.$watch('tableConfig.columns.length', function () {
                     //TODO: This might not be the most efficient way
                     //new and old however seem to return the same value
                     createHeaders(scope, element, parentCtrl);
@@ -2012,6 +2037,26 @@ function recordTableHeader($compile, $parse) {
                 scope.getTypeAheadFor = function (column) {
                     return parentCtrl.typeAheadCache[column.name];
                 };
+            },
+            post: function (scope, element, attr, recordTable) {
+                element[0].addEventListener('click', function (event) {
+                    if (event.target.tagName !== 'INPUT' && event.target.type !== 'checkbox') {
+                        return;
+                    }
+
+                    scope.$apply(function () {
+                        var itemCheckBoxes;
+
+                        itemCheckBoxes = element[0].parentNode.querySelectorAll('tbody input[type="checkbox"]');
+                        [].forEach.call(itemCheckBoxes, function (checkBox) {
+                            if (recordTable.allSelected === true) {
+                                checkBox.checked = true;
+                            } else {
+                                checkBox.checked = false;
+                            }
+                        });
+                    });
+                });
             }
         }
     };

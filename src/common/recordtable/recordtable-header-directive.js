@@ -75,7 +75,7 @@ function recordTableHeader($compile, $parse) {
                 createHeaders(scope, element, parentCtrl);
 
                 //Update the headers when columns are added
-                scope.$watch('tableConfig.columns.length', function (/*newVal, oldVal*/) {
+                scope.$watch('tableConfig.columns.length', function () {
                     //TODO: This might not be the most efficient way
                     //new and old however seem to return the same value
                     createHeaders(scope, element, parentCtrl);
@@ -84,6 +84,26 @@ function recordTableHeader($compile, $parse) {
                 scope.getTypeAheadFor = function (column) {
                     return parentCtrl.typeAheadCache[column.name];
                 };
+            },
+            post: function (scope, element, attr, recordTable) {
+                element[0].addEventListener('click', function (event) {
+                    if (event.target.tagName !== 'INPUT' && event.target.type !== 'checkbox') {
+                        return;
+                    }
+
+                    scope.$apply(function () {
+                        var itemCheckBoxes;
+
+                        itemCheckBoxes = element[0].parentNode.querySelectorAll('tbody input[type="checkbox"]');
+                        [].forEach.call(itemCheckBoxes, function (checkBox) {
+                            if (recordTable.allSelected === true) {
+                                checkBox.checked = true;
+                            } else {
+                                checkBox.checked = false;
+                            }
+                        });
+                    });
+                });
             }
         }
     };
