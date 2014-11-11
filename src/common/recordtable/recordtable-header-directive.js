@@ -92,14 +92,17 @@ function recordTableHeader($compile, $parse) {
                     }
 
                     scope.$apply(function () {
-                        var itemCheckBoxes;
+                        var itemRows;
 
-                        itemCheckBoxes = element[0].parentNode.querySelectorAll('tbody input[type="checkbox"]');
-                        [].forEach.call(itemCheckBoxes, function (checkBox) {
+                        itemRows = element[0].parentNode.querySelectorAll('tbody tr');
+                        [].forEach.call(itemRows, function (row) {
+                            var checkBox = row.querySelector('input[type="checkbox"]');
                             if (recordTable.allSelected === true) {
                                 checkBox.checked = true;
+                                row.classList.add('selected');
                             } else {
                                 checkBox.checked = false;
+                                row.classList.remove('selected');
                             }
                         });
                     });

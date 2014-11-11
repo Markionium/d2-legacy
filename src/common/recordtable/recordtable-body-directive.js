@@ -1,6 +1,7 @@
 function recordTableBodyDirective(/*$compile*/) {
     function createTrNode(index) {
         var trNode = document.createElement('tr');
+        //TODO: Add back in support for rowClick
         trNode.setAttribute('ng-click', 'recordTable.rowClick(tableData.items[' + index + '])');
         return trNode;
     }
@@ -45,16 +46,21 @@ function recordTableBodyDirective(/*$compile*/) {
 
             trNode.setAttribute('data-index', index);
             trNode.addEventListener('click', function () {
-                var index = parseInt(this.getAttribute('data-index'), 10);
-                var checkBox = this.querySelector('input[type=checkbox]');
+                var row = this;
+                var index = parseInt(row.getAttribute('data-index'), 10);
+                var checkBox = row.querySelector('input[type=checkbox]');
 
                 scope.$apply(function () {
                     if (scope.tableData.items[index].selected === true) {
                         checkBox.checked = false;
                         scope.tableData.items[index].selected = false;
+
+                        row.classList.remove('selected');
                     } else {
                         checkBox.checked = true;
                         scope.tableData.items[index].selected = true;
+
+                        row.classList.add('selected');
                     }
                     recordTable.checkAllSelected();
                 });
@@ -90,13 +96,16 @@ function recordTableBodyDirective(/*$compile*/) {
             });
 
             scope.$on('RECORDTABLE.selection.clear', function () {
-                var itemCheckBoxes = element[0].querySelectorAll('input[type="checkbox"]');
+                var itemRows = element[0].parentNode.querySelectorAll('tbody tr');
 
-                [].forEach.call(itemCheckBoxes, function (checkBox) {
+                [].forEach.call(itemRows, function (row) {
+                    var checkBox = row.querySelector('input[type="checkbox"]');
                     if (recordTable.allSelected === true) {
                         checkBox.checked = true;
+                        row.classList.add('selected');
                     } else {
                         checkBox.checked = false;
+                        row.classList.remove('selected');
                     }
                 });
             });
