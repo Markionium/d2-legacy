@@ -285,9 +285,9 @@ describe('D2 Rest Interface', function () {
             d2Api = _d2Api_;
             $http = _$http_;
 
-            $window.location.reload = function () {
-                reloaded = true;
-            };
+//            $window.location.reload = function () {
+//                reloaded = true;
+//            };
         }));
 
         afterEach(function () {
@@ -306,14 +306,14 @@ describe('D2 Rest Interface', function () {
             expect(actualResult).toEqual([{}, {}]);
         });
 
-        it('should intercept the response when the response is the login page', function () {
-            $httpBackend.expectGET('/dhis/api/dataIndicators').respond(200, fixtures.api.loginpage);
-
-            $http.get('/dhis/api/dataIndicators');
-
-            $httpBackend.flush();
-
-            expect(reloaded).toBe(true);
-        });
+//        it('should intercept the response when the response is the login page', function () {
+//            $httpBackend.expectGET('/dhis/api/dataIndicators').respond(200, fixtures.api.loginpage);
+//
+//            $http.get('/dhis/api/dataIndicators');
+//
+//            $httpBackend.flush();
+//
+//            expect(reloaded).toBe(true);
+//        });
     });
 });

@@ -249,41 +249,41 @@ function d2Api(RestangularProvider) {
     });
 }
 
-/**
- * TODO: find a way how to define requires that depend on angular modules/objects
- * The userIsLoggedOutInterceptor should have a requires statement that it depends on $window
- *
- * @requires $window
- */
-/**
- * @ngdoc function
- * @name userIsLoggedOutInterceptor
- *
- *
- * @description
- *
- * This interceptor is used to identify when the session expired and the user
- * is logged out. We currently reload the page when the d2Rest service requests a page
- * that returns a response that contains the html fragment `<body class="loginPage">`.
- */
-function userIsLoggedOutInterceptor($window) {
-    return {
-        response: function (response) {
-            if (response && typeof response.data === 'string' &&
-                response.data.indexOf('<body class="loginPage">') >= 0) {
-                $window.location.reload();
-            }
-
-            return response;
-        }
-    };
-}
+///**
+// * TODO: find a way how to define requires that depend on angular modules/objects
+// * The userIsLoggedOutInterceptor should have a requires statement that it depends on $window
+// *
+// * @requires $window
+// */
+///**
+// * @ngdoc function
+// * @name userIsLoggedOutInterceptor
+// *
+// *
+// * @description
+// *
+// * This interceptor is used to identify when the session expired and the user
+// * is logged out. We currently reload the page when the d2Rest service requests a page
+// * that returns a response that contains the html fragment `<body class="loginPage">`.
+// */
+//function userIsLoggedOutInterceptor($window) {
+//    return {
+//        response: function (response) {
+//            if (response && typeof response.data === 'string' &&
+//                response.data.indexOf('<body class="loginPage">') >= 0) {
+//                //$window.location.reload();
+//            }
+//
+//            return response;
+//        }
+//    };
+//}
 
 function restConfig($httpProvider, d2ApiProvider, API_ENDPOINT) {
-    $httpProvider.interceptors.push('userIsLoggedOutInterceptor');
+    //$httpProvider.interceptors.push('userIsLoggedOutInterceptor');
     d2ApiProvider.setBaseUrl(API_ENDPOINT);
 }
 
 angular.module('d2-rest').provider('d2Api', d2Api);
-angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
+//angular.module('d2-rest').factory('userIsLoggedOutInterceptor', userIsLoggedOutInterceptor);
 angular.module('d2-rest').config(restConfig);
