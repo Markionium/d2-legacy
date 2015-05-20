@@ -1,3 +1,6 @@
+#DEPRECATED
+This repo is deprecated (before it was even released :)) and will replaced by https://github.com/dhis2/d2
+
 d2 [![Build Status](https://travis-ci.org/Markionium/d2.svg?branch=master)](https://travis-ci.org/Markionium/d2) [![Coverage Status](https://coveralls.io/repos/Markionium/d2/badge.png?branch=master)](https://coveralls.io/r/Markionium/d2?branch=master)
 =========
 *Angular library for building dhis2 apps*
